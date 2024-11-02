@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cadastro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="signUp()">
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched">
+      Email é obrigatório
+    </ion-text>
+    <ion-text color="danger" *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched">
+      Email inválido
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Usuário</ion-label>
+      <ion-input type="text" formControlName="username"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
+      Usuário é obrigatório
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Nome</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('name')?.hasError('required') && registerForm.get('name')?.touched">
+      Nome é obrigatório
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Sobrenome</ion-label>
+      <ion-input type="text" formControlName="lastname"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('lastname')?.hasError('required') && registerForm.get('lastname')?.touched">
+      Sobrenome é obrigatório
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Senha</ion-label>
+      <ion-input type="password" formControlName="password" (ionInput)="checkPassword()"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched">
+      Senha é obrigatória
+    </ion-text>
+    <ion-text color="danger" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
+      A senha deve ter pelo menos 8 caracteres
+    </ion-text>
+
+    <div class="password-requirements">
+      <p [ngStyle]="{'color': passwordCriteria.length ? 'blue' : 'red'}">Pelo menos 8 caracteres</p>
+      <p [ngStyle]="{'color': passwordCriteria.upper ? 'blue' : 'red'}">Pelo menos 1 letra maiúscula</p>
+      <p [ngStyle]="{'color': passwordCriteria.lower ? 'blue' : 'red'}">Pelo menos 1 letra minúscula</p>
+      <p [ngStyle]="{'color': passwordCriteria.number ? 'blue' : 'red'}">Pelo menos 1 número</p>
+      <p [ngStyle]="{'color': passwordCriteria.special ? 'blue' : 'red'}">Pelo menos 1 caractere especial</p>
+    </div>
+
+    <ion-item>
+      <ion-label position="floating">Confirme a senha</ion-label>
+      <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('passwordConfirmation')?.hasError('required') && registerForm.get('passwordConfirmation')?.touched">
+      Confirmação de senha é obrigatória
+    </ion-text>
+    <ion-text color="danger" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('passwordConfirmation')?.touched">
+      As senhas não conferem
+    </ion-text>
+
+    <ion-item lines="none">
+      <ion-checkbox formControlName="agreement"></ion-checkbox>
+      <ion-label>Declaro que li e aceito os <a href="#" (click)="openTermsDialog()">Termos e Condições</a> e <a href="#" (click)="openPrivacyDialog()">Política de Privacidade</a></ion-label>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('agreement')?.hasError('required') && registerForm.get('agreement')?.touched">
+      Você deve aceitar os termos e condições
+    </ion-text>
+
+    <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">Cadastrar</ion-button>
+
+    <div class="ion-text-center">
+      <p>Já tem uma conta? <a href="#" (click)="redirectToLogin()">Login</a></p>
+    </div>
+  </form>
+</ion-content>

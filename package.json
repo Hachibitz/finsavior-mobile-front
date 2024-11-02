@@ -1,8 +1,8 @@
 {
   "name": "finsavior-mobile-front",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Felipe Almeida",
+  "homepage": "https://github.com/Hachibitz",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -29,7 +29,10 @@
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.3.3",
-    "ionicons": "^7.2.1",
+    "@ionic/storage-angular": "^4.0.0",
+    "cordova-plugin-cookies": "^0.0.2",
+    "ionicons": "^7.4.0",
+    "ngx-cookie-service": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

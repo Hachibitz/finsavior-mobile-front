@@ -14,4 +14,34 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./login/login.page').then( m => m.LoginPage)
   },
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
+  },
+  {
+    path: 'terms-and-privacy-dialog',
+    loadComponent: () => import('./terms-and-privacy-dialog/terms-and-privacy-dialog.page').then( m => m.TermsAndPrivacyDialogPage)
+  },
+  {
+    path: 'password-forgotten',
+    loadComponent: () => import('./password-forgotten/password-forgotten.page').then( m => m.PasswordForgottenPage)
+  },
+  {
+    path: 'main-page',
+    loadComponent: () => import('./main-page/main-page.page').then( m => m.MainPageComponent),
+    children: [
+      {
+        path: 'debits',
+        loadComponent: () => import('./main-debits/main-debits.page').then(m => m.MainDebitsPage)
+      },
+      {
+        path: 'assets',
+        loadComponent: () => import('./main-assets/main-assets.page').then(m => m.MainAssetsPage)
+      },
+      {
+        path: 'summary',
+        loadComponent: () => import('./main-summary/main-summary.page').then(m => m.MainSummaryPage)
+      }
+    ]
+  },
 ];

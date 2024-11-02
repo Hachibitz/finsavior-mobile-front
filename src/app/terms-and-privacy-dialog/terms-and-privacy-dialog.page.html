@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ contentTitle }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Fechar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+  
+  <div [innerHTML]="contentText"></div>
+</ion-content>

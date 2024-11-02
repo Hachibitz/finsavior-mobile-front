@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Resumo Financeiro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  
+  <div *ngIf="!loading">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Saldo Atual</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Liquidez</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ liquidAndRightsStatus | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Situação Atual</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p [style.color]="situationColor">{{ situation }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" color="secondary" (click)="openAiAdviceDialog()">Obter Conselhos da IA</ion-button>
+  </div>
+</ion-content>

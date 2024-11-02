@@ -1,7 +1,13 @@
 {
   "name": "finsavior-mobile-front",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {
+      "plugins": {
+        "CapacitorCookies": {
+          "enabled": true
+        }
+      }
+    }
   },
   "type": "angular-standalone"
 }

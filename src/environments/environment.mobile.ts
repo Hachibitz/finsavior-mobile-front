@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-export const URL_BASE_DEV = 'http://localhost:8085'
+export const URL_BASE_DEV = 'https://714e-187-19-226-220.ngrok-free.app'
 
 /*
  * For easier debugging in development mode, you can import the following file

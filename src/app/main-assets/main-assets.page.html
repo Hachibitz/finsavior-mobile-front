@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ativos & Caixa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  
+  <ion-list *ngIf="!loading">
+    <ion-item *ngFor="let item of incomeRows">
+      <ion-label>
+        <h2>{{ item.billName }}</h2>
+        <p>Valor: {{ item.billValue }}</p>
+        <p>Tipo: {{ item.billType }}</p>
+        <p>Descrição: {{ item.billDescription }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="danger" (click)="deleteItem(item)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+</ion-content>

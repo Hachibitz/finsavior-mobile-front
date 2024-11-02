@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Resumo Mensal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
+    <ion-button expand="block" (click)="goToPage('debits')">Débitos</ion-button>
+    <ion-button expand="block" (click)="goToPage('assets')">Ativos & Caixa</ion-button>
+    <ion-button expand="block" (click)="goToPage('summary')">Resumo Financeiro</ion-button>
+  </div>
+
+  <ng-container *ngIf="selectedPage === 'debits'">
+    <app-main-debits></app-main-debits>
+  </ng-container>
+  <ng-container *ngIf="selectedPage === 'assets'">
+    <app-main-assets></app-main-assets>
+  </ng-container>
+  <ng-container *ngIf="selectedPage === 'summary'">
+    <app-main-summary></app-main-summary>
+  </ng-container>
+</ion-content>
