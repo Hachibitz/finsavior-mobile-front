@@ -5,19 +5,22 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
-    <ion-button expand="block" (click)="goToPage('debits')">Débitos</ion-button>
-    <ion-button expand="block" (click)="goToPage('assets')">Ativos & Caixa</ion-button>
-    <ion-button expand="block" (click)="goToPage('summary')">Resumo Financeiro</ion-button>
-  </div>
+  <ion-tabs>
+    <ion-tab-bar slot="top">
+      <ion-tab-button tab="debits">
+        <ion-icon name="wallet"></ion-icon>
+        <ion-label>Débitos</ion-label>
+      </ion-tab-button>
 
-  <ng-container *ngIf="selectedPage === 'debits'">
-    <app-main-debits></app-main-debits>
-  </ng-container>
-  <ng-container *ngIf="selectedPage === 'assets'">
-    <app-main-assets></app-main-assets>
-  </ng-container>
-  <ng-container *ngIf="selectedPage === 'summary'">
-    <app-main-summary></app-main-summary>
-  </ng-container>
+      <ion-tab-button tab="assets">
+        <ion-icon name="cash"></ion-icon>
+        <ion-label>Ativos & Caixa</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="summary">
+        <ion-icon name="stats-chart"></ion-icon>
+        <ion-label>Resumo</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

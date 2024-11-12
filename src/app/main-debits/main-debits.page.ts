@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { AddRegisterModalComponent } from '../modal/add-register-modal.component';
 import { TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { MainPageComponent } from '../main-page/main-page.page';
@@ -25,7 +26,7 @@ addIcons({
   styleUrls: ['./main-debits.page.scss'],
   standalone: true,
   providers: [
-    BillService
+    BillService, ModalController, AlertController
   ],
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule,
@@ -53,7 +54,8 @@ export class MainDebitsPage implements OnInit {
     private alertController: AlertController,
     private billService: BillService,
     private cdRef: ChangeDetectorRef,
-    private mainPageComponent: MainPageComponent
+    private mainPageComponent: MainPageComponent,
+    private modalController: ModalController
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', Validators.required],
@@ -65,6 +67,20 @@ export class MainDebitsPage implements OnInit {
 
   ngOnInit() {
     this.loadMainTableData();
+  }
+
+  async openAddRegisterModal() {
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data === 'saved') {
+        this.loadMainTableData();
+      }
+    });
+
+    return await modal.present();
   }
 
   async loadMainTableData() {

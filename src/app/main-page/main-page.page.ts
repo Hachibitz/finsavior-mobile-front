@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { BillRegisterRequest, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { AnalysisType, AnalysisTypeEnum } from '../model/ai-advice.model';
@@ -9,6 +9,20 @@ import { UserService } from '../service/user.service';
 import { MainSummaryPage } from '../main-summary/main-summary.page';
 import { MainAssetsPage } from '../main-assets/main-assets.page';
 import { MainDebitsPage } from '../main-debits/main-debits.page';
+import { 
+  IonHeader, IonToolbar, IonTitle, 
+  IonContent, IonTabs, IonTab,
+  IonTabBar, IonTabButton, IonLabel,
+  IonIcon
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { wallet, cash, statsChart } from 'ionicons/icons';
+
+addIcons({
+  'wallet': wallet,
+  'cash': cash,
+  'stats-chart': statsChart
+});
 
 @Component({
   selector: 'app-main-page',
@@ -16,10 +30,12 @@ import { MainDebitsPage } from '../main-debits/main-debits.page';
   styleUrls: ['./main-page.page.scss'],
   standalone: true,
   imports: [
-    IonicModule, CommonModule, 
-    FormsModule, ReactiveFormsModule,
-    MainSummaryPage, MainAssetsPage,
-    MainDebitsPage
+    CommonModule, FormsModule, ReactiveFormsModule,
+    MainSummaryPage, MainAssetsPage, MainDebitsPage,
+    IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonTabs, IonTab,
+    IonTabBar, IonTabButton, IonLabel,
+    IonIcon
   ]
 })
 export class MainPageComponent implements OnInit {
@@ -29,8 +45,6 @@ export class MainPageComponent implements OnInit {
   rows: any[] = [];
   incomeRows: any[] = [];
   cardRows: any[] = [];
-
-  selectedPage = 'debits';
 
   selectedType!: string;
   darkMode: boolean = false;
@@ -69,10 +83,6 @@ export class MainPageComponent implements OnInit {
   ngOnInit(): void {
     this.billDate = new Date();
     this.loadData();
-  }
-
-  goToPage(page: string): void {
-    this.selectedPage = page;
   }
 
   async loadData(): Promise<void> {
@@ -147,8 +157,8 @@ export class MainPageComponent implements OnInit {
         isRecurrent: false
       };
       await this.billService.billRegister(billRequest);
-      await this.showAlert('Sucesso', 'Registro adicionado com sucesso');
       await this.setTableData();
+      await this.showAlert('Sucesso', 'Registro adicionado com sucesso');
     } catch (error) {
       await this.showAlert('Erro', 'Falha ao adicionar registro');
     }
