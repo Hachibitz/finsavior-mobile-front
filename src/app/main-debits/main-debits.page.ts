@@ -1,10 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { MainPageComponent } from '../main-page/main-page.page';
+import { 
+  IonHeader, IonToolbar, IonTitle, 
+  IonContent, IonButton, IonText, 
+  IonLabel, IonItem, IonInput, IonList,
+  IonButtons, IonSelectOption, IonSelect,
+  IonIcon
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { trash } from 'ionicons/icons';
+
+addIcons({
+  'trash': trash
+});
 
 @Component({
   selector: 'app-main-debits',
@@ -15,9 +28,12 @@ import { MainPageComponent } from '../main-page/main-page.page';
     BillService
   ],
   imports: [
-    IonicModule, CommonModule, 
-    FormsModule, ReactiveFormsModule,
-    MainPageComponent
+    CommonModule, FormsModule, ReactiveFormsModule,
+    MainPageComponent, IonHeader, IonToolbar, 
+    IonTitle, IonContent, IonLabel, 
+    IonItem, IonInput, IonButton,
+    IonText, IonList, IonButtons,
+    IonSelectOption, IonSelect, IonIcon
   ]
 })
 export class MainDebitsPage implements OnInit {
@@ -58,6 +74,7 @@ export class MainDebitsPage implements OnInit {
     this.billService.loadMainTableData(this.mainPageComponent.formatDate(this.billDate)).then((result) => {
       this.rows = result.mainTableDataList.filter(row => row.billType === 'Passivo');
     }).catch((error) => {
+      console.log(error)
       this.showAlert('Erro', 'Erro ao carregar dados de débitos');
     }).finally(() => {
       this.loading = false;
@@ -85,6 +102,7 @@ export class MainDebitsPage implements OnInit {
       await this.showAlert('Sucesso', 'Débito cadastrado com sucesso!');
       await this.loadMainTableData();
     } catch (error) {
+      console.log(error)
       await this.showAlert('Erro', 'Erro ao cadastrar débito');
     } finally {
       this.loading = false;

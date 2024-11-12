@@ -5,7 +5,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-spinner *ngIf="loading"></ion-spinner>
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
   
   <ion-list *ngIf="!loading">
     <ion-item *ngFor="let item of incomeRows">

@@ -4,7 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginRequest } from '../model/user.model';
 import { AuthService } from '../service/auth.service';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+import { 
+  IonHeader, IonToolbar, IonTitle, 
+  IonContent, IonButton, IonText, IonLabel, 
+  IonItem, IonIcon, IonCard, IonCardContent, 
+  IonCardHeader, IonCardTitle, IonCheckbox,
+  IonInput 
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +22,12 @@ import { IonicModule, AlertController } from '@ionic/angular';
     AuthService
   ],
   imports: [
-    CommonModule, FormsModule, IonicModule
+    CommonModule, FormsModule, IonHeader, 
+    IonToolbar, IonTitle, IonContent, 
+    IonButton, IonText, IonLabel, 
+    IonItem, IonIcon, IonCard, 
+    IonCardContent, IonCardHeader, IonCardTitle,
+    IonCheckbox, IonInput
   ]
 })
 export class LoginPage implements OnInit {

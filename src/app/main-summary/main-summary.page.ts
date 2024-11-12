@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { BillService } from '../service/bill.service';
 import { MainPageComponent } from '../main-page/main-page.page';
+import { 
+  IonHeader, IonToolbar, IonTitle, 
+  IonContent, IonCard, IonCardContent, 
+  IonCardHeader, IonCardTitle, IonButton
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-main-summary',
@@ -11,9 +16,10 @@ import { MainPageComponent } from '../main-page/main-page.page';
   styleUrls: ['./main-summary.page.scss'],
   standalone: true,
   imports: [
-    IonicModule, CommonModule, 
-    FormsModule, ReactiveFormsModule,
-    MainPageComponent
+    CommonModule, FormsModule, ReactiveFormsModule,
+    MainPageComponent, IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonCard, IonCardContent, 
+    IonCardHeader, IonCardTitle, IonButton
   ]
 })
 export class MainSummaryPage implements OnInit {

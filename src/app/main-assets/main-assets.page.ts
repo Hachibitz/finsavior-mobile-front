@@ -1,9 +1,21 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { BillService } from '../service/bill.service';
 import { MainPageComponent } from '../main-page/main-page.page';
+import { 
+  IonHeader, IonToolbar, IonTitle, 
+  IonContent, IonButton, IonLabel, 
+  IonItem, IonList, IonIcon,
+  IonButtons
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { trash } from 'ionicons/icons';
+
+addIcons({
+  'trash': trash
+});
 
 export interface IncomeRow {
   id: number;
@@ -23,9 +35,11 @@ export interface IncomeRow {
     BillService
   ],
   imports: [
-    IonicModule, CommonModule, 
-    FormsModule, ReactiveFormsModule,
-    MainPageComponent
+    CommonModule, FormsModule, ReactiveFormsModule,
+    MainPageComponent, IonHeader, IonToolbar, 
+    IonTitle, IonContent, IonButton,
+    IonLabel, IonItem, IonList,
+    IonIcon, IonButtons
   ]
 })
 export class MainAssetsPage implements OnInit {
