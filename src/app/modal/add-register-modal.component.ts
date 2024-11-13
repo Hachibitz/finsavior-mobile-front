@@ -10,7 +10,7 @@ import {
     IonSelect, IonSelectOption
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { MainPageComponent } from '../main-page/main-page.page';
+import { CommonService } from '../service/common.service';
 
 @Component({
   selector: 'app-add-register-modal',
@@ -58,7 +58,7 @@ import { MainPageComponent } from '../main-page/main-page.page';
         IonContent, IonButtons, IonButton,
         IonItem, IonLabel, IonInput, 
         IonSelect, IonSelectOption, CommonModule,
-        ReactiveFormsModule, MainPageComponent
+        ReactiveFormsModule
     ]
 })
 export class AddRegisterModalComponent {
@@ -81,7 +81,7 @@ export class AddRegisterModalComponent {
     private modalController: ModalController,
     private fb: FormBuilder,
     private billService: BillService,
-    private mainPageComponent: MainPageComponent
+    private commonService: CommonService
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', Validators.required],
@@ -96,7 +96,7 @@ export class AddRegisterModalComponent {
 
     const billRegisterRequest = {
       ...this.mainTableForm.value,
-      billDate: this.mainPageComponent.formatDate(new Date()),
+      billDate: this.commonService.formatDate(new Date()),
       billTable: this.tableTypes[0],
       isRecurrent: false,
       paid: false

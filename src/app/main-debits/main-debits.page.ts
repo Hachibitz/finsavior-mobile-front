@@ -13,8 +13,10 @@ import {
   IonButtons, IonSelectOption, IonSelect,
   IonIcon
 } from '@ionic/angular/standalone';
+import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
+import { CommonService } from '../service/common.service';
 
 addIcons({
   'trash': trash
@@ -37,7 +39,7 @@ addIcons({
     IonSelectOption, IonSelect, IonIcon
   ]
 })
-export class MainDebitsPage implements OnInit {
+export class MainDebitsPage implements OnInit, ViewWillEnter {
   mainTableForm: FormGroup;
   rows: any[] = [];
   loading: boolean = false;
@@ -55,7 +57,8 @@ export class MainDebitsPage implements OnInit {
     private billService: BillService,
     private cdRef: ChangeDetectorRef,
     private mainPageComponent: MainPageComponent,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private commonService: CommonService
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', Validators.required],
@@ -67,6 +70,13 @@ export class MainDebitsPage implements OnInit {
 
   ngOnInit() {
     this.loadMainTableData();
+  }
+
+  ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(date => {
+      this.billDate = date;
+      this.loadMainTableData();
+    });
   }
 
   async openAddRegisterModal() {
@@ -83,17 +93,17 @@ export class MainDebitsPage implements OnInit {
     return await modal.present();
   }
 
-  async loadMainTableData() {
-    this.loading = true;
+  async loadMainTableData(date: string = this.commonService.formatDate(this.billDate)) {
     this.rows = [];
 
-    this.billService.loadMainTableData(this.mainPageComponent.formatDate(this.billDate)).then((result) => {
+    this.isLoading()
+    this.billService.loadMainTableData(date).then((result) => {
       this.rows = result.mainTableDataList.filter(row => row.billType === 'Passivo');
     }).catch((error) => {
       console.log(error)
       this.showAlert('Erro', 'Erro ao carregar dados de débitos');
     }).finally(() => {
-      this.loading = false;
+      this.isLoading()
       this.cdRef.detectChanges();
     })
   }
@@ -106,13 +116,13 @@ export class MainDebitsPage implements OnInit {
 
     const billRegisterRequest = {
       ...this.mainTableForm.value,
-      billDate: this.mainPageComponent.formatDate(this.billDate),
+      billDate: this.commonService.formatDate(this.billDate),
       billTable: 'main',
       isRecurrent: false,
       paid: false
     };
 
-    this.loading = true;
+    this.isLoading();
     try {
       await this.billService.billRegister(billRegisterRequest);
       await this.showAlert('Sucesso', 'Débito cadastrado com sucesso!');
@@ -121,13 +131,13 @@ export class MainDebitsPage implements OnInit {
       console.log(error)
       await this.showAlert('Erro', 'Erro ao cadastrar débito');
     } finally {
-      this.loading = false;
+      this.isLoading();
       this.cdRef.detectChanges();
     }
   }
 
   async deleteItem(item: any) {
-    this.loading = true;
+    this.isLoading();
     try {
       await this.billService.deleteItemFromMainTable(item.id);
       this.rows = this.rows.filter(row => row.id !== item.id);
@@ -135,7 +145,7 @@ export class MainDebitsPage implements OnInit {
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao deletar item');
     } finally {
-      this.loading = false;
+      this.isLoading();
       this.cdRef.detectChanges();
     }
   }
@@ -147,5 +157,9 @@ export class MainDebitsPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  isLoading(): void {
+    this.loading = !this.loading;
   }
 }

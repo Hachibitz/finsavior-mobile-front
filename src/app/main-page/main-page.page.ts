@@ -13,15 +13,18 @@ import {
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonTabs, IonTab,
   IonTabBar, IonTabButton, IonLabel,
-  IonIcon
+  IonIcon, IonDatetime, IonModal,
+  IonDatetimeButton, IonButtons, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { wallet, cash, statsChart } from 'ionicons/icons';
+import { wallet, cash, statsChart, calendar } from 'ionicons/icons';
+import { CommonService } from '../service/common.service';
 
 addIcons({
   'wallet': wallet,
   'cash': cash,
-  'stats-chart': statsChart
+  'stats-chart': statsChart,
+  'calendar': calendar
 });
 
 @Component({
@@ -35,7 +38,8 @@ addIcons({
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonTabs, IonTab,
     IonTabBar, IonTabButton, IonLabel,
-    IonIcon
+    IonIcon, IonDatetime, IonModal,
+    IonDatetimeButton, IonButtons, IonButton
   ]
 })
 export class MainPageComponent implements OnInit {
@@ -49,7 +53,8 @@ export class MainPageComponent implements OnInit {
   selectedType!: string;
   darkMode: boolean = false;
   loading: boolean = false;
-  billDate!: Date;
+  billDate: Date = new Date();
+  selectedMonthYear: string = '';
   userData: any;
   billTypes: TipoConta[] = [
     { label: 'Ativo', value: 'Ativo' },
@@ -59,11 +64,14 @@ export class MainPageComponent implements OnInit {
   ];
   analysisTypes: AnalysisType[] = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
 
+  isDatePickerOpen: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private billService: BillService,
     private alertController: AlertController,
     private userService: UserService,
+    private commonService: CommonService,
     private cdRef: ChangeDetectorRef
   ) {
     this.mainTableForm = this.fb.group({
@@ -81,24 +89,29 @@ export class MainPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.billDate = new Date();
     this.loadData();
+    this.selectedMonthYear = this.commonService.formatDate(this.billDate);
   }
 
   async loadData(): Promise<void> {
-    await this.setTableData();
+    await this.commonService.selectedDate$.subscribe((date) => {
+      this.billDate = date;
+      this.selectedMonthYear = this.commonService.formatDate(this.billDate);
+    });
+
+    await this.retrieveTableData();
     await this.setUserData();
   }
 
-  async setTableData(): Promise<void> {
+  async retrieveTableData(): Promise<void> {
     try {
-      this.loading = true;
-      const result = await this.billService.loadMainTableData(this.formatDate(this.billDate));
+      this.isLoading();
+      const result = await this.billService.loadMainTableData(this.commonService.formatDate(this.billDate));
       this.updateTableData(result);
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados da tabela principal');
     } finally {
-      this.loading = false;
+      this.isLoading();
     }
   }
 
@@ -115,12 +128,12 @@ export class MainPageComponent implements OnInit {
 
   async setUserData(): Promise<void> {
     try {
-      this.loading = true;
+      this.isLoading();
       this.userData = await this.userService.getProfileData();
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados do usuário');
     } finally {
-      this.loading = false;
+      this.isLoading();
     }
   }
 
@@ -133,16 +146,6 @@ export class MainPageComponent implements OnInit {
     await alert.present();
   }
 
-  formatDate(date: Date): string {
-    const dateString = date.toString();
-    const parts = dateString.split(' ');
-
-    const month = parts[1];
-    const year = parts[3];
-
-    return month+year;
-  }
-
   async addRegisterMain(): Promise<void> {
     if (this.mainTableForm.invalid) {
       await this.showAlert('Erro', 'Preencha todos os campos obrigatórios');
@@ -152,15 +155,37 @@ export class MainPageComponent implements OnInit {
     try {
       const billRequest: BillRegisterRequest = {
         ...this.mainTableForm.value,
-        billDate: this.formatDate(this.billDate),
+        billDate: this.commonService.formatDate(this.billDate),
         billTable: 'main',
         isRecurrent: false
       };
       await this.billService.billRegister(billRequest);
-      await this.setTableData();
+      await this.loadData();
       await this.showAlert('Sucesso', 'Registro adicionado com sucesso');
     } catch (error) {
       await this.showAlert('Erro', 'Falha ao adicionar registro');
     }
+  }
+
+  onDateChange(event: any) {
+    const selectedDate = new Date(event.detail.value);
+    this.billDate = selectedDate;
+    this.commonService.updateSelectedDate(selectedDate);
+    this.loadData();
+    this.closeDatePicker();
+  }
+
+  openDatePicker() {
+    this.isDatePickerOpen = true;
+  }
+
+  closeDatePicker() {
+    if (this.isDatePickerOpen) {
+      this.isDatePickerOpen = false;
+    }
+  }
+
+  isLoading(): void {
+    this.loading = !this.loading;
   }
 }

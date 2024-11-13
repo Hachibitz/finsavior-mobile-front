@@ -1,6 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Resumo Mensal</ion-title>
+    <ion-buttons slot="end">
+      <ion-label>{{ selectedMonthYear }}</ion-label>
+      <ion-button (click)="openDatePicker()">
+        <ion-icon slot="icon-only" name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -23,4 +29,26 @@
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
+
+  <ion-modal [isOpen]="isDatePickerOpen" (ionModalDidDismiss)="closeDatePicker()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Selecione Mês e Ano</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDatePicker()">Fechar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-datetime
+          [value]="billDate.toISOString()"
+          presentation="month-year"
+          (ionChange)="onDateChange($event)"
+          [min]="null"
+          [max]="2099-05-31">
+        </ion-datetime>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

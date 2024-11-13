@@ -12,6 +12,8 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
+import { CommonService } from '../service/common.service';
+import { ViewWillEnter } from '@ionic/angular';
 
 addIcons({
   'trash': trash
@@ -42,25 +44,35 @@ export interface IncomeRow {
     IonIcon, IonButtons
   ]
 })
-export class MainAssetsPage implements OnInit {
+export class MainAssetsPage implements OnInit, ViewWillEnter {
   incomeRows: any[] = [];
   loading: boolean = false;
+
+  billDate: Date = new Date();
 
   constructor(
     private billService: BillService,
     private alertController: AlertController,
     private cdRef: ChangeDetectorRef,
-    private mainPageComponent: MainPageComponent
+    private mainPageComponent: MainPageComponent,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
     this.loadIncomeData();
   }
 
-  async loadIncomeData() {
+  ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(date => {
+      this.billDate = date;
+      this.loadIncomeData();
+    });
+  }
+
+  async loadIncomeData(date: string = this.commonService.formatDate(this.billDate)) {
     this.loading = true;
     try {
-      const result = await this.billService.loadMainTableData(this.mainPageComponent.formatDate(new Date()));
+      const result = await this.billService.loadMainTableData(date);
       this.incomeRows = result.mainTableDataList.filter(row => 
         row.billType === 'Caixa' || row.billType === 'Ativo' || row.billType === 'Poupança'
       );

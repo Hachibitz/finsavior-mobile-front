@@ -8,6 +8,7 @@ import { UserService } from './service/user.service';
 import { TokenInterceptor } from './security/TokenInterceptor';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule, Storage } from '@ionic/storage-angular';
+import { CommonService } from './service/common.service';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ import { IonicStorageModule, Storage } from '@ionic/storage-angular';
     TermsAndPrivacyService,
     IonicStorageModule,
     Storage,
+    CommonService,
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: TokenInterceptor, 

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { BillService } from '../service/bill.service';
-import { MainPageComponent } from '../main-page/main-page.page';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonCard, IonCardContent, 
   IonCardHeader, IonCardTitle, IonButton
 } from '@ionic/angular/standalone';
+import { ViewWillEnter } from '@ionic/angular';
+import { CommonService } from '../service/common.service';
 
 @Component({
   selector: 'app-main-summary',
@@ -17,12 +18,12 @@ import {
   standalone: true,
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule,
-    MainPageComponent, IonHeader, IonToolbar, IonTitle, 
+    IonHeader, IonToolbar, IonTitle, 
     IonContent, IonCard, IonCardContent, 
     IonCardHeader, IonCardTitle, IonButton
   ]
 })
-export class MainSummaryPage implements OnInit {
+export class MainSummaryPage implements OnInit, ViewWillEnter {
   currentlyAvailableIncome: number = 0;
   liquidStatus: number = 0;
   liquidAndRightsStatus: number = 0;
@@ -30,27 +31,35 @@ export class MainSummaryPage implements OnInit {
   situation: string = '';
   situationColor: string = '';
   loading: boolean = false;
+  billDate: Date = new Date();
 
   constructor(
     private billService: BillService,
     private alertController: AlertController,
-    private mainPageComponent: MainPageComponent
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
     this.calculateSummary();
   }
 
-  async calculateSummary() {
-    this.loading = true;
+  ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(date => {
+      this.billDate = date;
+      this.calculateSummary();
+    });
+  }
+
+  async calculateSummary(date: string = this.commonService.formatDate(this.billDate)) {
+    this.isLoading();
     try {
-      const data = await this.billService.loadMainTableData(this.mainPageComponent.formatDate(new Date()));
+      const data = await this.billService.loadMainTableData(date);
       this.updateSummaryData(data.mainTableDataList);
       this.updateSituation();
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar resumo financeiro');
     } finally {
-      this.loading = false;
+      this.isLoading();
     }
   }
 
@@ -111,5 +120,9 @@ export class MainSummaryPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  isLoading(): void {
+    this.loading = !this.loading;
   }
 }
