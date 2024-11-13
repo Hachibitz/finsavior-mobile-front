@@ -12,7 +12,25 @@
   <div *ngIf="!loading">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Saldo Atual</ion-card-title>
+        <ion-card-title>Saldo total</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Status Atual</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Saldo previsto</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
@@ -34,6 +52,7 @@
       </ion-card-header>
       <ion-card-content>
         <p [style.color]="situationColor">{{ situation }}</p>
+        <ion-label>Descrição do status</ion-label>
       </ion-card-content>
     </ion-card>
 

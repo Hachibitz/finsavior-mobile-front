@@ -2,10 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
-import { AddRegisterModalComponent } from '../modal/add-register-modal.component';
+import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
-import { MainPageComponent } from '../main-page/main-page.page';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonButton, IonText, 
@@ -32,7 +31,7 @@ addIcons({
   ],
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule,
-    MainPageComponent, IonHeader, IonToolbar, 
+    IonHeader, IonToolbar, 
     IonTitle, IonContent, IonLabel, 
     IonItem, IonInput, IonButton,
     IonText, IonList, IonButtons,
@@ -56,7 +55,6 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     private alertController: AlertController,
     private billService: BillService,
     private cdRef: ChangeDetectorRef,
-    private mainPageComponent: MainPageComponent,
     private modalController: ModalController,
     private commonService: CommonService
   ) {

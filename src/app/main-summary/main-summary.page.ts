@@ -6,7 +6,8 @@ import { BillService } from '../service/bill.service';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonCard, IonCardContent, 
-  IonCardHeader, IonCardTitle, IonButton
+  IonCardHeader, IonCardTitle, IonButton,
+  IonLabel
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { CommonService } from '../service/common.service';
@@ -20,7 +21,8 @@ import { CommonService } from '../service/common.service';
     CommonModule, FormsModule, ReactiveFormsModule,
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonCard, IonCardContent, 
-    IonCardHeader, IonCardTitle, IonButton
+    IonCardHeader, IonCardTitle, IonButton,
+    IonLabel
   ]
 })
 export class MainSummaryPage implements OnInit, ViewWillEnter {

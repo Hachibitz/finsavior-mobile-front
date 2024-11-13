@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { BillService } from '../service/bill.service';
-import { TipoConta } from '../model/main.model';
+import { BillService } from '../../service/bill.service';
+import { TipoConta } from '../../model/main.model';
 import { 
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonButtons, IonButton,
@@ -10,7 +10,7 @@ import {
     IonSelect, IonSelectOption
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { CommonService } from '../service/common.service';
+import { CommonService } from '../../service/common.service';
 
 @Component({
   selector: 'app-add-register-modal',

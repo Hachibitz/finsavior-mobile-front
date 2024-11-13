@@ -41,7 +41,11 @@ export const routes: Routes = [
       {
         path: 'summary',
         loadComponent: () => import('./main-summary/main-summary.page').then(m => m.MainSummaryPage)
-      }
+      },
+      {
+        path: 'ai-analysis',
+        loadComponent: () => import('./ai-analysis/ai-analysis.page').then( m => m.AiAnalysisPage)
+      },
     ]
   },
 ];

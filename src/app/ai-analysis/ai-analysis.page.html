@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Lista de Análises de IA</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openAiAnalysisDialog()">Nova Análise</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+  
+  <ion-list *ngIf="!loading">
+    <ion-item *ngFor="let analysis of filteredAnalyses" (click)="viewAnalysis(analysis)">
+      <ion-label>
+        <h2>Tipo da Análise: {{ analysis.analysisType }}</h2>
+        <p>Período: {{ analysis.startDate }} - {{ analysis.finishDate }}</p>
+        <p>Data de Solicitação: {{ analysis.date }}</p>
+        <p>Nível de Criatividade: {{ analysis.temperature * 100 }}%</p>
+      </ion-label>
+      <ion-button slot="end" color="danger" (click)="deleteAnalysis(analysis.id, $event)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

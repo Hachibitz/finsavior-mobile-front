@@ -17,14 +17,15 @@ import {
   IonDatetimeButton, IonButtons, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { wallet, cash, statsChart, calendar } from 'ionicons/icons';
+import { wallet, cash, statsChart, calendar, barChart } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 
 addIcons({
   'wallet': wallet,
   'cash': cash,
   'stats-chart': statsChart,
-  'calendar': calendar
+  'calendar': calendar,
+  'bar-chart': barChart
 });
 
 @Component({

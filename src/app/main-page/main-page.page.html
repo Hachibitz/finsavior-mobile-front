@@ -12,7 +12,7 @@
 
 <ion-content class="ion-padding">
   <ion-tabs>
-    <ion-tab-bar slot="top">
+    <ion-tab-bar slot="bottom">
       <ion-tab-button tab="debits">
         <ion-icon name="wallet"></ion-icon>
         <ion-label>Débitos</ion-label>
@@ -26,6 +26,11 @@
       <ion-tab-button tab="summary">
         <ion-icon name="stats-chart"></ion-icon>
         <ion-label>Resumo</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="ai-analysis">
+        <ion-icon name="bar-chart"></ion-icon>
+        <ion-label>Análises de IA</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
@@ -45,8 +50,8 @@
           [value]="billDate.toISOString()"
           presentation="month-year"
           (ionChange)="onDateChange($event)"
-          [min]="null"
-          [max]="2099-05-31">
+          [min]="1900-05-31"
+          [max]="2199-05-31">
         </ion-datetime>
       </ion-content>
     </ng-template>
