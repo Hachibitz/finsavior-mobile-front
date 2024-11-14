@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
-import { TipoConta } from '../model/main.model';
+import { CardTableDataResponse, MainTableDataResponse, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { 
   IonHeader, IonToolbar, IonTitle, 
@@ -67,13 +67,13 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
-    this.loadMainTableData();
+    
   }
 
   ionViewWillEnter() {
     this.commonService.selectedDate$.subscribe(date => {
       this.billDate = date;
-      this.loadMainTableData();
+      this.loadTableData();
     });
   }
 
@@ -84,26 +84,34 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
 
     modal.onDidDismiss().then((result) => {
       if (result.data === 'saved') {
-        this.loadMainTableData();
+        this.loadTableData();
       }
     });
 
     return await modal.present();
   }
 
-  async loadMainTableData(date: string = this.commonService.formatDate(this.billDate)) {
+  async loadTableData(): Promise<void> {
     this.rows = [];
 
-    this.isLoading()
-    this.billService.loadMainTableData(date).then((result) => {
-      this.rows = result.mainTableDataList.filter(row => row.billType === 'Passivo');
-    }).catch((error) => {
-      console.log(error)
-      this.showAlert('Erro', 'Erro ao carregar dados de débitos');
-    }).finally(() => {
-      this.isLoading()
-      this.cdRef.detectChanges();
-    })
+    this.isLoading();
+    try {
+      const requestDate = this.commonService.formatDate(this.billDate);
+      const mainTableResult = await this.billService.loadMainTableData(requestDate);
+      const cardTableResult = await this.billService.loadCardTableData(requestDate);
+      this.updateTableData(mainTableResult, cardTableResult);
+    } catch (error) {
+      await this.showAlert('Erro', 'Erro ao carregar dados das tabelas');
+    } finally {
+      this.isLoading();
+    }
+  }
+
+  updateTableData(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse): void {
+    mainTableData = this.commonService.insertCardTotalRecordIntoMainTable(mainTableData, cardTableData, this.billDate);
+
+    this.rows = mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
+    this.cdRef.detectChanges();
   }
 
   async addRegisterMain() {
@@ -124,7 +132,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     try {
       await this.billService.billRegister(billRegisterRequest);
       await this.showAlert('Sucesso', 'Débito cadastrado com sucesso!');
-      await this.loadMainTableData();
+      await this.loadTableData();
     } catch (error) {
       console.log(error)
       await this.showAlert('Erro', 'Erro ao cadastrar débito');

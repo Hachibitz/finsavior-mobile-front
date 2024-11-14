@@ -9,6 +9,8 @@ import { UserService } from '../service/user.service';
 import { MainSummaryPage } from '../main-summary/main-summary.page';
 import { MainAssetsPage } from '../main-assets/main-assets.page';
 import { MainDebitsPage } from '../main-debits/main-debits.page';
+import { CommonService } from '../service/common.service';
+import { MainCardDetailsPage } from '../main-card-details/main-card-details.page';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonTabs, IonTab,
@@ -17,15 +19,15 @@ import {
   IonDatetimeButton, IonButtons, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { wallet, cash, statsChart, calendar, barChart } from 'ionicons/icons';
-import { CommonService } from '../service/common.service';
+import { wallet, cash, statsChart, calendar, barChart, card } from 'ionicons/icons';
 
 addIcons({
   'wallet': wallet,
   'cash': cash,
   'stats-chart': statsChart,
   'calendar': calendar,
-  'bar-chart': barChart
+  'bar-chart': barChart,
+  'card': card
 });
 
 @Component({
@@ -40,7 +42,8 @@ addIcons({
     IonContent, IonTabs, IonTab,
     IonTabBar, IonTabButton, IonLabel,
     IonIcon, IonDatetime, IonModal,
-    IonDatetimeButton, IonButtons, IonButton
+    IonDatetimeButton, IonButtons, IonButton,
+    MainCardDetailsPage
   ]
 })
 export class MainPageComponent implements OnInit {
@@ -61,7 +64,8 @@ export class MainPageComponent implements OnInit {
     { label: 'Ativo', value: 'Ativo' },
     { label: 'Passivo', value: 'Passivo' },
     { label: 'Caixa', value: 'Caixa' },
-    { label: 'Poupança', value: 'Poupança' }
+    { label: 'Poupança', value: 'Poupança' },
+    { label: 'Pagamento de Cartão', value: 'CardPayment' }
   ];
   analysisTypes: AnalysisType[] = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
 
@@ -99,32 +103,7 @@ export class MainPageComponent implements OnInit {
       this.billDate = date;
       this.selectedMonthYear = this.commonService.formatDate(this.billDate);
     });
-
-    await this.retrieveTableData();
     await this.setUserData();
-  }
-
-  async retrieveTableData(): Promise<void> {
-    try {
-      this.isLoading();
-      const result = await this.billService.loadMainTableData(this.commonService.formatDate(this.billDate));
-      this.updateTableData(result);
-    } catch (error) {
-      await this.showAlert('Erro', 'Erro ao carregar dados da tabela principal');
-    } finally {
-      this.isLoading();
-    }
-  }
-
-  updateTableData(data: any): void {
-    data.mainTableDataList.forEach((row: any) => {
-      if (row.billType === 'Caixa' || row.billType === 'Ativo' || row.billType === 'Poupança') {
-        this.incomeRows.push(row);
-      } else {
-        this.rows.push(row);
-      }
-    });
-    this.cdRef.detectChanges();
   }
 
   async setUserData(): Promise<void> {
@@ -161,7 +140,6 @@ export class MainPageComponent implements OnInit {
         isRecurrent: false
       };
       await this.billService.billRegister(billRequest);
-      await this.loadData();
       await this.showAlert('Sucesso', 'Registro adicionado com sucesso');
     } catch (error) {
       await this.showAlert('Erro', 'Falha ao adicionar registro');

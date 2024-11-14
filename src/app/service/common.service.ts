@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { BillRegisterRequest, CardTableDataResponse, MainTableDataResponse, tableTypes } from '../model/main.model';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
@@ -20,5 +21,27 @@ export class CommonService {
     const year = parts[3];
 
     return `${month}${year}`;
+  }
+
+  insertCardTotalRecordIntoMainTable(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse, billDate: Date): MainTableDataResponse {
+    const cardTotal = cardTableData.cardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
+    const cardTotalRecord = this.getCardTotalRegister(cardTotal, billDate);
+    mainTableData.mainTableDataList.push(cardTotalRecord);
+    return mainTableData;
+  }
+
+  private getCardTotalRegister(cardTotal: number, billDate: Date): BillRegisterRequest {
+    const cardTotalRecord: BillRegisterRequest = {
+      billType: 'Passivo',
+      billName: 'Cartão de crédito',
+      billValue: cardTotal,
+      billDescription: 'Soma total das contas de cartão',
+      billDate: this.formatDate(billDate),
+      billTable: tableTypes[0],
+      isRecurrent: false,
+      paid: true
+    };
+
+    return cardTotalRecord;
   }
 }

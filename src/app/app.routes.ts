@@ -46,6 +46,10 @@ export const routes: Routes = [
         path: 'ai-analysis',
         loadComponent: () => import('./ai-analysis/ai-analysis.page').then( m => m.AiAnalysisPage)
       },
+      {
+        path: 'card-details',
+        loadComponent: () => import('./main-card-details/main-card-details.page').then( m => m.MainCardDetailsPage)
+      },
     ]
   },
 ];

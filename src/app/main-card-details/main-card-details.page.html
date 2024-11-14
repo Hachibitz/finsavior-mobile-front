@@ -1,0 +1,27 @@
+<ion-header  [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Detalhes do Cartão</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+
+  <ion-list *ngIf="!loading && cardRows.length > 0">
+    <ion-item *ngFor="let item of cardRows">
+      <ion-label>
+        <h2>{{ item.billName }}</h2>
+        <p>Valor: {{ item.billValue }}</p>
+        <p>Tipo: {{ item.billType }}</p>
+        <p>Descrição: {{ item.billDescription }}</p>
+      </ion-label>
+      <ion-button color="danger" (click)="deleteItem(item)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <p *ngIf="!loading && cardRows.length === 0" class="ion-text-center">Nenhum registro de cartão encontrado.</p>
+</ion-content>
