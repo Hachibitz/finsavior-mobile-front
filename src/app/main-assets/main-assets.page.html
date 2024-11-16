@@ -8,6 +8,8 @@
   <div class="overlay" *ngIf="loading">
     <div class="custom-loader"></div>
   </div>
+
+  <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
   
   <ion-list *ngIf="!loading">
     <ion-item *ngFor="let item of incomeRows">

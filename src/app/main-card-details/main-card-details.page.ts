@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BillService } from '../service/bill.service';
+import { ModalController } from '@ionic/angular';
 import { 
   AlertController, IonHeader, IonToolbar, 
   IonTitle, IonContent, IonButton, 
@@ -11,6 +12,7 @@ import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
+import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 
 addIcons({ 'trash': trash });
 
@@ -19,7 +21,7 @@ addIcons({ 'trash': trash });
   templateUrl: './main-card-details.page.html',
   styleUrls: ['./main-card-details.page.scss'],
   standalone: true,
-  providers: [BillService],
+  providers: [BillService, ModalController],
   imports: [
     CommonModule, IonHeader, IonToolbar, 
     IonTitle, IonContent, IonLabel, 
@@ -36,12 +38,15 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     private billService: BillService,
     private alertController: AlertController,
     private commonService: CommonService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private modalController: ModalController
   ) {
-      addIcons({trash});}
+      addIcons({trash});
+    
+  }
 
   ngOnInit() {
-    
+
   }
 
   ionViewWillEnter() {
@@ -64,6 +69,24 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
       this.isLoading();
       this.cdRef.detectChanges();
     }
+  }
+
+  async openAddRegisterModal() {
+    const isCardAccount = true;
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        isCardAccount: isCardAccount
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadCardTableData();
+      }
+    });
+
+    return await modal.present();
   }
 
   async deleteItem(item: any) {

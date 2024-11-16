@@ -10,6 +10,20 @@
   </div>
   
   <div *ngIf="!loading">
+
+    <ion-button expand="block" color="secondary" (click)="openAiAdviceDialog()">Obter Conselhos da IA</ion-button>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Situação Atual</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Descrição do status</ion-card-subtitle>
+        <p [style.color]="situationColor">{{ situation }}</p>
+        <ion-label>{{ situationDescription }}</ion-label>
+      </ion-card-content>
+    </ion-card>
+
     <ion-card>
       <ion-card-header>
         <ion-card-title>Saldo total</ion-card-title>
@@ -21,10 +35,28 @@
 
     <ion-card>
       <ion-card-header>
+        <ion-card-title>Total de gastos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ totalDebit | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Total não pago</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ totalLeft | number: '1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
         <ion-card-title>Status Atual</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
+        <p>R$ {{ currentStatus | number: '1.2-2' }}</p>
       </ion-card-content>
     </ion-card>
 
@@ -33,7 +65,7 @@
         <ion-card-title>Saldo previsto</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
+        <p>R$ {{ foreseenBalance | number: '1.2-2' }}</p>
       </ion-card-content>
     </ion-card>
     
@@ -45,17 +77,5 @@
         <p>R$ {{ liquidAndRightsStatus | number: '1.2-2' }}</p>
       </ion-card-content>
     </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Situação Atual</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p [style.color]="situationColor">{{ situation }}</p>
-        <ion-label>Descrição do status</ion-label>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-button expand="block" color="secondary" (click)="openAiAdviceDialog()">Obter Conselhos da IA</ion-button>
   </div>
 </ion-content>

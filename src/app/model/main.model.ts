@@ -1,7 +1,7 @@
-export const tableTypes: string[] = [
-    'main',
-    'credit-card'
-]
+export const tableTypes = {
+    MAIN: 'main',
+    CREDIT_CARD: 'credit-card'
+}
 
 export interface TipoConta {
     label: string;

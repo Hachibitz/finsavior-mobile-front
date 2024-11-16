@@ -9,6 +9,8 @@
     <div class="custom-loader"></div>
   </div>
 
+  <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
+
   <ion-list *ngIf="!loading && cardRows.length > 0">
     <ion-item *ngFor="let item of cardRows">
       <ion-label>

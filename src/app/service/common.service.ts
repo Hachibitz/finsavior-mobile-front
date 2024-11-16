@@ -37,7 +37,7 @@ export class CommonService {
       billValue: cardTotal,
       billDescription: 'Soma total das contas de cartão',
       billDate: this.formatDate(billDate),
-      billTable: tableTypes[0],
+      billTable: tableTypes.CREDIT_CARD,
       isRecurrent: false,
       paid: true
     };

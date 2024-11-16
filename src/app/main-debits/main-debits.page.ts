@@ -78,12 +78,16 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
   }
 
   async openAddRegisterModal() {
+    const isCardAccount = false;
     const modal = await this.modalController.create({
-      component: AddRegisterModalComponent
+      component: AddRegisterModalComponent,
+      componentProps: {
+        isCardAccount: isCardAccount
+      }
     });
 
     modal.onDidDismiss().then((result) => {
-      if (result.data === 'saved') {
+      if (result.role === 'saved') {
         this.loadTableData();
       }
     });
@@ -112,34 +116,6 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
 
     this.rows = mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
     this.cdRef.detectChanges();
-  }
-
-  async addRegisterMain() {
-    if (this.mainTableForm.invalid) {
-      await this.showAlert('Aviso', 'Preencha todos os campos obrigatórios');
-      return;
-    }
-
-    const billRegisterRequest = {
-      ...this.mainTableForm.value,
-      billDate: this.commonService.formatDate(this.billDate),
-      billTable: 'main',
-      isRecurrent: false,
-      paid: false
-    };
-
-    this.isLoading();
-    try {
-      await this.billService.billRegister(billRegisterRequest);
-      await this.showAlert('Sucesso', 'Débito cadastrado com sucesso!');
-      await this.loadTableData();
-    } catch (error) {
-      console.log(error)
-      await this.showAlert('Erro', 'Erro ao cadastrar débito');
-    } finally {
-      this.isLoading();
-      this.cdRef.detectChanges();
-    }
   }
 
   async deleteItem(item: any) {

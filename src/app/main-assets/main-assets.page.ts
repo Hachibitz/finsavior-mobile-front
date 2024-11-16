@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { BillService } from '../service/bill.service';
 import { MainPageComponent } from '../main-page/main-page.page';
 import { 
@@ -14,6 +14,7 @@ import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
+import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 
 addIcons({
   'trash': trash
@@ -34,7 +35,7 @@ export interface IncomeRow {
   styleUrls: ['./main-assets.page.scss'],
   standalone: true,
   providers: [
-    BillService
+    BillService, ModalController
   ],
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule,
@@ -54,9 +55,10 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     private billService: BillService,
     private alertController: AlertController,
     private cdRef: ChangeDetectorRef,
-    private mainPageComponent: MainPageComponent,
-    private commonService: CommonService
-  ) {}
+    private commonService: CommonService,
+    private modalController: ModalController
+  ) {
+      addIcons({trash});}
 
   ngOnInit() {
     this.loadIncomeData();
@@ -67,6 +69,24 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
       this.billDate = date;
       this.loadIncomeData();
     });
+  }
+
+  async openAddRegisterModal() {
+    const isCardAccount = false;
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        isCardAccount: isCardAccount
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadIncomeData();
+      }
+    });
+
+    return await modal.present();
   }
 
   async loadIncomeData(date: string = this.commonService.formatDate(this.billDate)) {

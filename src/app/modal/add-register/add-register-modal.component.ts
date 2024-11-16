@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { BillService } from '../../service/bill.service';
-import { TipoConta } from '../../model/main.model';
+import { tableTypes, TipoConta } from '../../model/main.model';
 import { 
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonButtons, IonButton,
@@ -29,7 +29,7 @@ import { CommonService } from '../../service/common.service';
     </div>
 
     <ion-content class="ion-padding">
-      <form [formGroup]="mainTableForm" (ngSubmit)="addRegisterMain()">
+      <form [formGroup]="billRegisterForm" (ngSubmit)="addRegisterMain()">
         <ion-item>
           <ion-label position="floating">Nome da Conta</ion-label>
           <ion-input formControlName="billName"></ion-input>
@@ -42,13 +42,15 @@ import { CommonService } from '../../service/common.service';
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
-        <ion-item>
-          <ion-label>Tipo</ion-label>
-          <ion-select formControlName="billType" interface="action-sheet">
-            <ion-select-option *ngFor="let type of billTypes" [value]="type.value">{{ type.label }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-button expand="block" type="submit" [disabled]="mainTableForm.invalid">Salvar</ion-button>
+        <div *ngIf="!isCardAccount">
+          <ion-item>
+            <ion-label>Tipo</ion-label>
+            <ion-select formControlName="billType" interface="action-sheet">
+              <ion-select-option *ngFor="let type of billTypes" [value]="type.value">{{ type.label }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <ion-button expand="block" type="submit" [disabled]="billRegisterForm.invalid">Salvar</ion-button>
       </form>
     </ion-content>
   `,
@@ -62,18 +64,25 @@ import { CommonService } from '../../service/common.service';
     ]
 })
 export class AddRegisterModalComponent {
-  mainTableForm: FormGroup;
+
+  @Input() set isCardAccount(value: boolean) {
+    this._isCardAccount = value;
+    this.setValidationRules();
+  }
+  
+  private _isCardAccount: boolean = false;
+  get isCardAccount(): boolean {
+    return this._isCardAccount;
+  }
+
+  billRegisterForm: FormGroup;
   billTypes: TipoConta[] = [
     { label: 'Ativo', value: 'Ativo' },
     { label: 'Passivo', value: 'Passivo' },
     { label: 'Caixa', value: 'Caixa' },
-    { label: 'Poupança', value: 'Poupança' }
+    { label: 'Poupança', value: 'Poupança' },
+    { label: 'Pagamento de Cartão', value: 'CardPayment' }
   ];
-
-  tableTypes: string[] = [
-    'main',
-    'credit-card'
-  ]
 
   loading: boolean =  false;
 
@@ -83,21 +92,35 @@ export class AddRegisterModalComponent {
     private billService: BillService,
     private commonService: CommonService
   ) {
-    this.mainTableForm = this.fb.group({
+    this.billRegisterForm = this.fb.group({
       billName: ['', Validators.required],
       billValue: ['', [Validators.required, Validators.min(1)]],
       billDescription: [''],
-      billType: ['', Validators.required]
+      billType: ['']
     });
+
+    this.setValidationRules();
+  }
+
+  private setValidationRules() {
+    if (this.isCardAccount) {
+      this.billRegisterForm.get('billType')?.clearValidators();
+    } else {
+      this.billRegisterForm.get('billType')?.setValidators(Validators.required);
+    }
+  
+    this.billRegisterForm.get('billType')?.updateValueAndValidity();
   }
 
   async addRegisterMain() {
-    if (this.mainTableForm.invalid) return;
+    if (this.billRegisterForm.invalid) return;
+
+    let tableType = this.isCardAccount ? tableTypes.CREDIT_CARD : tableTypes.MAIN;
 
     const billRegisterRequest = {
-      ...this.mainTableForm.value,
+      ...this.billRegisterForm.value,
       billDate: this.commonService.formatDate(new Date()),
-      billTable: this.tableTypes[0],
+      billTable: tableType,
       isRecurrent: false,
       paid: false
     };

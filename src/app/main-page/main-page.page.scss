@@ -1,3 +1,9 @@
 ion-button {
     margin: 0 8px;
 }
+
+ion-tab-button {
+    max-width: 80px;
+    padding: 0 0px;
+    /* Reduz espaçamento interno */
+}
