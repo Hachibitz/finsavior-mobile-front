@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
-import { LoginPage } from '../login/login.page';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +9,12 @@ import { LoginPage } from '../login/login.page';
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.goToLoginPage();
+  }
 
   goToLoginPage() {
     this.router.navigate(["/login"])

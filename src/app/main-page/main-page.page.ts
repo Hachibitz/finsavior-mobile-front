@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
@@ -16,10 +16,14 @@ import {
   IonContent, IonTabs, IonTab,
   IonTabBar, IonTabButton, IonLabel,
   IonIcon, IonDatetime, IonModal,
-  IonDatetimeButton, IonButtons, IonButton
+  IonDatetimeButton, IonButtons, IonButton,
+  IonItem, IonMenu, IonList,
+  IonAvatar, IonMenuButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { wallet, cash, statsChart, calendar, barChart, card } from 'ionicons/icons';
+import { AuthService } from '../service/auth.service';
+import { Router } from '@angular/router';
 
 addIcons({
   'wallet': wallet,
@@ -43,10 +47,13 @@ addIcons({
     IonTabBar, IonTabButton, IonLabel,
     IonIcon, IonDatetime, IonModal,
     IonDatetimeButton, IonButtons, IonButton,
-    MainCardDetailsPage
+    MainCardDetailsPage, IonItem, IonMenu,
+    IonList, IonAvatar, IonMenuButton
   ]
 })
 export class MainPageComponent implements OnInit {
+  showDropdown: boolean = false;
+
   mainTableForm: FormGroup;
   cardTableForm: FormGroup;
 
@@ -70,6 +77,10 @@ export class MainPageComponent implements OnInit {
   analysisTypes: AnalysisType[] = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
 
   isDatePickerOpen: boolean = false;
+  userLogin: string = '';
+  password: string = '';
+  rememberMe: boolean = false;
+  isAuthenticated: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -77,7 +88,8 @@ export class MainPageComponent implements OnInit {
     private alertController: AlertController,
     private userService: UserService,
     private commonService: CommonService,
-    private cdRef: ChangeDetectorRef
+    private authService: AuthService,
+    private router: Router
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', [Validators.required]],
@@ -93,9 +105,10 @@ export class MainPageComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loadData();
     this.selectedMonthYear = this.commonService.formatDate(this.billDate);
+    this.isAuthenticated = await this.authService.isAuthenticated();
   }
 
   async loadData(): Promise<void> {
@@ -107,9 +120,14 @@ export class MainPageComponent implements OnInit {
   }
 
   async setUserData(): Promise<void> {
+    this.isLoading();
     try {
-      this.isLoading();
-      this.userData = await this.userService.getProfileData();
+      const userProfile = await this.userService.getProfileData();
+      const base64Image = `data:image/png;base64,${userProfile.profilePicture}`;
+      this.userData = {
+        ...userProfile,
+        profilePicture: base64Image
+      };
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados do usuário');
     } finally {
@@ -162,6 +180,42 @@ export class MainPageComponent implements OnInit {
     if (this.isDatePickerOpen) {
       this.isDatePickerOpen = false;
     }
+  }
+
+  toggleDropdown() {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  async login(): Promise<void> {
+    const loginRequest = {
+      userLogin: this.userLogin,
+      password: this.password,
+      rememberMe: this.rememberMe,
+    };
+
+    try {
+      await this.authService.login(loginRequest);
+      this.isAuthenticated = true;
+      this.showAlert('Sucesso', 'Login realizado com sucesso!');
+      this.navigateTo('main-page/debits');
+      this.toggleDropdown();
+    } catch (error: any) {
+      this.showAlert('Erro', error.error);
+    }
+  }
+
+  async navigateTo(route: string): Promise<void> {
+    this.router.navigate([route]);
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
+    this.navigateTo('login');
+  }
+
+  async upgradeToPro(): Promise<void> {
+    // Implementar funcionalidade para "Seja PRO"
+    console.log('Upgrade para PRO solicitado.');
   }
 
   isLoading(): void {

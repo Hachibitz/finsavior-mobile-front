@@ -38,12 +38,16 @@ export class LoginPage implements OnInit {
   loginRequest!: LoginRequest;
   loading: boolean = false;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private alertController: AlertController) {
 
   }
 
-  ngOnInit() {
-    
+  async ngOnInit(): Promise<void> {
+    const isAuthenticated = await this.authService.isAuthenticated();
+
+    if(isAuthenticated) {
+      this.router.navigate(['main-page/debits']);
+    }
   }
 
   onLogin() {
@@ -55,13 +59,30 @@ export class LoginPage implements OnInit {
     
     this.isLoading();
     this.authService.login(this.loginRequest).then((response) => {
-      console.log('Login realizado com sucesso!');
+      this.showAlert('Sucesso', 'Login realizado com sucesso!');
       this.router.navigate(['/main-page/debits']);
     }).catch((error) => {
       console.log(error)
+      this.showAlert('Erro', error.error);
     }).finally(() => {
+      this.clearCredentials();
       this.isLoading();
     })
+  }
+
+  clearCredentials() {
+    this.userLogin = '';
+    this.password = '';
+    this.rememberMe = false;
+  }
+
+  async showAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   redirectToRegistration() {

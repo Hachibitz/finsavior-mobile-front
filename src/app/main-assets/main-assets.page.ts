@@ -76,7 +76,8 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount
+        isCardAccount: isCardAccount,
+        billDate: this.billDate
       }
     });
 

@@ -7,11 +7,14 @@ import {
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonCard, IonCardContent, 
   IonCardHeader, IonCardTitle, IonButton,
-  IonLabel, IonCardSubtitle
+  IonLabel, IonCardSubtitle, IonIcon,
+  IonButtons
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { CommonService } from '../service/common.service';
 import { CardTableDataResponse, MainTableDataResponse } from '../model/main.model';
+import { addIcons } from 'ionicons';
+import { helpCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-main-summary',
@@ -23,10 +26,12 @@ import { CardTableDataResponse, MainTableDataResponse } from '../model/main.mode
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonCard, IonCardContent, 
     IonCardHeader, IonCardTitle, IonButton,
-    IonLabel, IonCardSubtitle
+    IonLabel, IonCardSubtitle, IonIcon,
+    IonButtons
   ]
 })
 export class MainSummaryPage implements OnInit, ViewWillEnter {
+  cards: { title: string; value: number; description: string }[] = [];
   currentlyAvailableIncome: number = 0;
   currentStatus: number = 0;
   liquidAndRightsStatus: number = 0;
@@ -38,13 +43,15 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   billDate: Date = new Date();
   totalPaid: number = 0;
   totalDebit: number = 0;
-  totalLeft: string = '';
+  totalLeft: number = 0;
 
   constructor(
     private billService: BillService,
     private alertController: AlertController,
     private commonService: CommonService
-  ) {}
+  ) {
+    addIcons({helpCircle});
+  }
 
   ngOnInit() {
 
@@ -58,18 +65,21 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   }
 
   async loadData() {
-    const currentDate = this.commonService.formatDate(this.billDate);
+    this.isLoading();
+    const currentDate = await this.commonService.formatDate(this.billDate);
     const mainTableData = await this.billService.loadMainTableData(currentDate);
     const cardTableData = await this.billService.loadCardTableData(currentDate);
 
-    this.calculateSummary(mainTableData, cardTableData);
+    await this.calculateSummary(mainTableData, cardTableData);
+    await this.populateCards();
+    this.isLoading();
   }
 
   async calculateSummary(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse) {
     this.totalPaid = mainTableData.mainTableDataList.filter(row => row.paid).reduce((acc, row) => acc + row.billValue, 0);
     this.currentlyAvailableIncome = this.getAvailableIncome(mainTableData);
-    this.setTotals(mainTableData, cardTableData);
-
+    this.totalDebit = this.getTotalDebit(mainTableData, cardTableData);
+    this.totalLeft = (this.totalDebit - this.totalPaid);
     this.currentStatus = this.currentlyAvailableIncome - this.totalPaid;
     this.liquidAndRightsStatus = this.getIncomeTotal(mainTableData) - this.totalDebit;
     this.foreseenBalance = this.currentlyAvailableIncome - this.totalDebit;
@@ -83,15 +93,10 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
     ).reduce((acc, incomeRow) => acc + incomeRow.billValue, 0);
   }
 
-  setTotals(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse): void {
-    this.totalDebit = this.getTotalDebit(mainTableData, cardTableData);
-    this.totalLeft = (this.totalDebit - this.totalPaid).toFixed(2);
-  }
-
-  getIncomeTotal(mainTableData: MainTableDataResponse): number {
+  getIncomeTotal(mainTableData: any): number {
     return mainTableData.mainTableDataList.filter(
-      row => row.billType === 'Caixa' || row.billType === 'Ativo' || row.billType === 'Poupança'
-    ).reduce((acc, incomeRow) => acc + incomeRow.billValue, 0);
+      (row: { billType: string; }) => ['Caixa', 'Ativo', 'Poupança'].includes(row.billType)
+    ).reduce((acc: any, row: { billValue: any; }) => acc + row.billValue, 0);
   }
 
   getTotalDebit(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse): number {
@@ -104,16 +109,63 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
     if (this.foreseenBalance < 0) {
       this.situation = 'Vermelho';
       this.situationColor = 'red';
-      this.situationDescription = 'Saldo previsto menor que 0. Faça uma análise com a IA, pode te ajudar!';
+      this.situationDescription =
+        'Você está no vermelho. Considere rever suas despesas e fazer uma análise detalhada para planejar melhor seus pagamentos.';
     } else if (percentage >= 10) {
       this.situation = 'Azul';
       this.situationColor = 'blue';
-      this.situationDescription = 'Saldo previsto maior que 10% do saldo disponível. Parabéns! Você está bem organizado com suas finanças. Faça uma análise de IA para te ajudar a se manter no Azul.';
+      this.situationDescription =
+        'Ótimo trabalho! Sua situação financeira está estável e saudável. Continue mantendo boas práticas financeiras.';
     } else {
       this.situation = 'Amarelo';
       this.situationColor = 'yellow';
-      this.situationDescription = 'Ponto de atenção: saldo previsto positivo mas próximo de 0. Uma análise com a IA pode te ajudar a evitar desvios futuros.';
+      this.situationDescription =
+        'Atenção: Sua liquidez está positiva, mas baixa. Considere ajustes para garantir mais segurança financeira.';
     }
+  }
+
+  populateCards() {
+    this.cards = [
+      {
+        title: 'Saldo total',
+        value: this.currentlyAvailableIncome,
+        description: 'Saldo total disponível do mês (Caixa + Ativos)'
+      },
+      {
+        title: 'Total de gastos',
+        value: this.totalDebit,
+        description: 'Somatório das contas do mês (Passivos e cartão)'
+      },
+      {
+        title: 'Total não pago',
+        value: this.totalLeft,
+        description: 'Somatório do total de contas não pagas ainda.'
+      },
+      {
+        title: 'Status atual',
+        value: this.currentStatus,
+        description: 'Saldo total menos o total pago.'
+      },
+      {
+        title: 'Saldo previsto',
+        value: this.foreseenBalance,
+        description: 'Saldo disponível após todas as contas serem pagas.'
+      },
+      {
+        title: 'Liquidez',
+        value: this.liquidAndRightsStatus,
+        description: 'Soma de ativos e direitos menos passivos do mês.'
+      }
+    ];
+  }
+
+  async showDescription(description: string) {
+    const alert = await this.alertController.create({
+      header: 'Detalhes do Cálculo',
+      message: description,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   async showAlert(header: string, message: string): Promise<void> {

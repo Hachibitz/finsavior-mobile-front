@@ -65,14 +65,24 @@ import { CommonService } from '../../service/common.service';
 })
 export class AddRegisterModalComponent {
 
+  private _isCardAccount: boolean = false;
   @Input() set isCardAccount(value: boolean) {
     this._isCardAccount = value;
     this.setValidationRules();
   }
   
-  private _isCardAccount: boolean = false;
   get isCardAccount(): boolean {
     return this._isCardAccount;
+  }
+
+  private _billDate: Date = new Date();
+  @Input() set billDate(value: Date) {
+    this._billDate = value;
+    this.setValidationRules();
+  }
+  
+  get billDate(): Date {
+    return this._billDate;
   }
 
   billRegisterForm: FormGroup;
@@ -119,7 +129,7 @@ export class AddRegisterModalComponent {
 
     const billRegisterRequest = {
       ...this.billRegisterForm.value,
-      billDate: this.commonService.formatDate(new Date()),
+      billDate: this.commonService.formatDate(this.billDate),
       billTable: tableType,
       isRecurrent: false,
       paid: false

@@ -20,9 +20,11 @@
         <p>Data de Solicitação: {{ analysis.date }}</p>
         <p>Nível de Criatividade: {{ analysis.temperature * 100 }}%</p>
       </ion-label>
-      <ion-button slot="end" color="danger" (click)="deleteAnalysis(analysis.id, $event)">
-        <ion-icon name="trash"></ion-icon>
-      </ion-button>
+      <ion-buttons>
+        <ion-button slot="end" color="danger" (click)="deleteAnalysis(analysis.id, $event)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-item>
   </ion-list>
 </ion-content>

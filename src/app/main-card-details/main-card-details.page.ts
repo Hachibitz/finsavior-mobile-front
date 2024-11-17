@@ -6,7 +6,7 @@ import {
   AlertController, IonHeader, IonToolbar, 
   IonTitle, IonContent, IonButton, 
   IonItem, IonLabel, IonList , 
-  IonIcon
+  IonIcon, IonButtons
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
@@ -26,7 +26,7 @@ addIcons({ 'trash': trash });
     CommonModule, IonHeader, IonToolbar, 
     IonTitle, IonContent, IonLabel, 
     IonItem, IonButton, IonList,
-    IonIcon
+    IonIcon, IonButtons
   ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {
@@ -76,7 +76,8 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount
+        isCardAccount: isCardAccount,
+        billDate: this.billDate
       }
     });
 

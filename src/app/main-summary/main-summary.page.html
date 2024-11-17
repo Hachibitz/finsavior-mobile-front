@@ -24,58 +24,18 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Saldo total</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ currentlyAvailableIncome | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Total de gastos</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ totalDebit | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Total não pago</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ totalLeft | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Status Atual</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ currentStatus | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Saldo previsto</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ foreseenBalance | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
-    
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Liquidez</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>R$ {{ liquidAndRightsStatus | number: '1.2-2' }}</p>
-      </ion-card-content>
-    </ion-card>
+    <div *ngIf="!loading">  
+      <ion-card *ngFor="let card of cards">
+        <ion-card-header>
+          <ion-card-title>{{ card.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="card-content">
+          <p class="value">{{ card.value | number: '1.2-2' }}</p>
+          <ion-button fill="clear" class="help-icon" (click)="showDescription(card.description)">
+            <ion-icon slot="icon-only" name="help-circle"></ion-icon>
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>

@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
-import { CardTableDataResponse, MainTableDataResponse, TipoConta } from '../model/main.model';
+import { BillRegisterRequest, CardTableDataResponse, MainTableDataResponse, tableTypes, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonButton, IonText, 
   IonLabel, IonItem, IonInput, IonList,
   IonButtons, IonSelectOption, IonSelect,
-  IonIcon
+  IonIcon, IonCheckbox
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -35,7 +35,8 @@ addIcons({
     IonTitle, IonContent, IonLabel, 
     IonItem, IonInput, IonButton,
     IonText, IonList, IonButtons,
-    IonSelectOption, IonSelect, IonIcon
+    IonSelectOption, IonSelect, IonIcon,
+    IonCheckbox
   ]
 })
 export class MainDebitsPage implements OnInit, ViewWillEnter {
@@ -82,7 +83,8 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount
+        isCardAccount: isCardAccount,
+        billDate: this.billDate
       }
     });
 
@@ -102,8 +104,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     try {
       const requestDate = this.commonService.formatDate(this.billDate);
       const mainTableResult = await this.billService.loadMainTableData(requestDate);
-      const cardTableResult = await this.billService.loadCardTableData(requestDate);
-      this.updateTableData(mainTableResult, cardTableResult);
+      this.updateTableData(mainTableResult);
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados das tabelas');
     } finally {
@@ -111,9 +112,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     }
   }
 
-  updateTableData(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse): void {
-    mainTableData = this.commonService.insertCardTotalRecordIntoMainTable(mainTableData, cardTableData, this.billDate);
-
+  updateTableData(mainTableData: MainTableDataResponse): void {
     this.rows = mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
     this.cdRef.detectChanges();
   }
@@ -126,6 +125,33 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
       await this.showAlert('Sucesso', 'Item deletado com sucesso');
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao deletar item');
+    } finally {
+      this.isLoading();
+      this.cdRef.detectChanges();
+    }
+  }
+
+  async togglePaid(item: any) {
+    const updatedStatus = !item.paid;
+    const billUpdate: BillRegisterRequest = {
+      id: item.id,
+      billName: item.billName,
+      billValue: item.billValue,
+      billDescription: item.billDescription,
+      billType: item.billType,
+      billDate: this.commonService.formatDate(this.billDate),
+      paid: updatedStatus,
+      billTable: tableTypes.MAIN,
+      isRecurrent: false
+    };
+  
+    this.isLoading();
+    try {
+      await this.billService.editItemFromMainTable(billUpdate);
+      await this.loadTableData();
+      await this.showAlert('Sucesso', `Item marcado como ${updatedStatus ? 'pago' : 'não pago'}.`);
+    } catch (error) {
+      await this.showAlert('Erro', 'Não foi possível atualizar o estado do item.');
     } finally {
       this.isLoading();
       this.cdRef.detectChanges();

@@ -49,7 +49,13 @@ export class RegisterPage implements OnInit {
     }, { validators: this.passwordMatchValidator });
   }
 
-  ngOnInit() {}
+  async ngOnInit(): Promise<void> {
+    const isAuthenticated = await this.authService.isAuthenticated();
+
+    if(isAuthenticated) {
+      this.router.navigate(['main-page/debits']);
+    }
+  }
 
   signUp() {
     if (this.registerForm.invalid) {
