@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Minha Conta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label>Tema Escuro</ion-label>
+    <ion-toggle [(ngModel)]="isDarkMode" (ionChange)="toggleTheme()"></ion-toggle>
+  </ion-item>
+
+  <ion-button expand="full" (click)="openChangePasswordModal()">Alterar Senha</ion-button>
+  <ion-button expand="full" (click)="openProfileEditModal()">Editar Perfil</ion-button>
+  <ion-button expand="full" color="danger" (click)="openDeleteAccountModal()">Excluir Conta</ion-button>
+  <ion-button expand="full" (click)="navigateTo('/main-page/debits')">Voltar</ion-button>
+</ion-content>

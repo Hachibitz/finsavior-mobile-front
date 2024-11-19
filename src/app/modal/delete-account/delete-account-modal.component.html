@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Excluir Conta</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">Fechar</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <ion-item>
+            <ion-label position="floating">Usuário</ion-label>
+            <ion-input formControlName="username" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="floating">Senha</ion-label>
+            <ion-input formControlName="password" type="password"></ion-input>
+        </ion-item>
+        <ion-button expand="full" color="danger" type="submit">Excluir Conta</ion-button>
+    </form>
+</ion-content>

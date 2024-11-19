@@ -50,6 +50,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     { label: 'Caixa', value: 'Caixa' },
     { label: 'Poupança', value: 'Poupança' }
   ];
+  totalDebit: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -112,8 +113,9 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     }
   }
 
-  updateTableData(mainTableData: MainTableDataResponse): void {
-    this.rows = mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
+  async updateTableData(mainTableData: MainTableDataResponse): Promise<void> {
+    this.rows = await mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
+    this.totalDebit = await this.rows.reduce((acc, row) => acc + row.billValue, 0);
     this.cdRef.detectChanges();
   }
 

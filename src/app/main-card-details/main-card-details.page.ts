@@ -13,6 +13,7 @@ import { trash } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
+import { CardTableDataResponse } from '../model/main.model';
 
 addIcons({ 'trash': trash });
 
@@ -33,6 +34,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   cardRows: any[] = [];
   loading: boolean = false;
   billDate: Date = new Date();
+  creditCardTotal: number = 0;
 
   constructor(
     private billService: BillService,
@@ -63,6 +65,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     try {
       const result = await this.billService.loadCardTableData(this.commonService.formatDate(this.billDate));
       this.cardRows = result.cardTableDataList;
+      this.creditCardTotal = this.getTotalCreditCard(result);
     } catch (error) {
       this.showAlert('Erro', 'Erro ao carregar dados de cartões');
     } finally {
@@ -102,6 +105,10 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
       this.isLoading();
       this.cdRef.detectChanges();
     }
+  }
+
+  getTotalCreditCard(cardTableData: CardTableDataResponse): number {
+    return cardTableData.cardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
   }
 
   async showAlert(header: string, message: string): Promise<void> {

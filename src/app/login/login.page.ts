@@ -87,7 +87,6 @@ export class LoginPage implements OnInit {
 
   redirectToRegistration() {
     this.router.navigate(['/register']);
-    console.log('Redirecionando para cadastro...');
   }
 
   redirectToForgottenPassword() {
