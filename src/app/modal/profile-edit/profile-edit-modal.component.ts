@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ModalController, AlertController } from '@ionic/angular';
 import { UserService } from 'src/app/service/user.service';
 import {
     IonButton, IonLabel, IonItem,
@@ -15,6 +15,9 @@ import { FileInputComponent } from 'src/app/file-input-component/file-input.comp
   templateUrl: './profile-edit-modal.component.html',
   styleUrls: ['./profile-edit-modal.component.scss'],
   standalone: true,
+  providers: [
+    AlertController
+  ],
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule, 
     IonButton, IonLabel, IonItem,
@@ -29,7 +32,8 @@ export class ProfileEditModalComponent {
 
   constructor(
     private modalController: ModalController,
-    private userService: UserService
+    private userService: UserService,
+    private alertController: AlertController
   ) {}
 
   closeModal() {
@@ -51,28 +55,58 @@ export class ProfileEditModalComponent {
   }
 
   async saveProfileData() {
+    this.configureFormCustomValidator();
+
     if (this.form.invalid) {
-      alert('Preencha todos os campos corretamente.');
+      await this.showAlert('Inválido', 'Pelo menos um campo deve ser preenchido.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('username', this.form.get('username')?.value);
-    formData.append('firstName', this.form.get('firstName')?.value);
-    formData.append('lastName', this.form.get('lastName')?.value);
-    formData.append('email', this.form.get('email')?.value);
 
+    const firstName = this.form.get('firstName')?.value;
+    const lastName = this.form.get('lastName')?.value;
     const profilePicture = this.form.get('profilePicture')?.value;
-    if (profilePicture) {
-      formData.append('profilePicture', profilePicture);
-    }
+
+    if (firstName) formData.append('firstName', firstName);
+    if (lastName) formData.append('lastName', lastName);
+    if (profilePicture) formData.append('profilePicture', profilePicture);
 
     try {
-      //await this.userService.updateProfile(formData);
-      alert('Perfil atualizado com sucesso!');
+      await this.userService.updateProfile(formData);
+      await this.showAlert('Sucesso', 'Perfil atualizado com sucesso!');
       this.closeModal();
-    } catch (error) {
-      alert('Erro ao atualizar perfil.');
+    } catch (error: any) {
+      await this.showAlert('Erro', error.message || 'Erro ao atualizar perfil.');
     }
+  }
+
+  configureFormCustomValidator() {
+    this.form.clearValidators();
+    this.form.setValidators(this.atLeastOneFieldRequired());
+    this.form.updateValueAndValidity();
+  }
+
+  atLeastOneFieldRequired(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const firstName = control.get('firstName')?.value;
+      const lastName = control.get('lastName')?.value;
+      const profilePicture = control.get('profilePicture')?.value;
+
+      if (firstName || lastName || profilePicture) {
+        return null;
+      }
+
+      return { atLeastOneRequired: true };
+    };
+  }
+
+  async showAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }

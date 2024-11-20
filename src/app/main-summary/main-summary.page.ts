@@ -12,7 +12,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { CommonService } from '../service/common.service';
-import { CardTableDataResponse, MainTableDataResponse } from '../model/main.model';
+import { CardTableDataResponse, MainTableDataResponse, PaymentCardTableDataResponse } from '../model/main.model';
 import { addIcons } from 'ionicons';
 import { helpCircle } from 'ionicons/icons';
 
@@ -44,6 +44,7 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   totalPaid: number = 0;
   totalDebit: number = 0;
   totalLeft: number = 0;
+  cardPaymentTotal: number = 0;
 
   constructor(
     private billService: BillService,
@@ -69,14 +70,16 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
     const currentDate = await this.commonService.formatDate(this.billDate);
     const mainTableData = await this.billService.loadMainTableData(currentDate);
     const cardTableData = await this.billService.loadCardTableData(currentDate);
+    const paymentCardTableData = await this.billService.loadPaymentCardTableData(currentDate);
 
-    await this.calculateSummary(mainTableData, cardTableData);
+    await this.calculateSummary(mainTableData, cardTableData, paymentCardTableData);
     await this.populateCards();
     this.isLoading();
   }
 
-  async calculateSummary(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse) {
-    this.totalPaid = mainTableData.mainTableDataList.filter(row => row.paid).reduce((acc, row) => acc + row.billValue, 0);
+  async calculateSummary(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse, paymentCardTableData: PaymentCardTableDataResponse) {
+    this.cardPaymentTotal = paymentCardTableData.paymentCardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
+    this.totalPaid = mainTableData.mainTableDataList.filter(row => row.paid).reduce((acc, row) => acc + row.billValue, 0) + this.cardPaymentTotal;
     this.currentlyAvailableIncome = this.getAvailableIncome(mainTableData);
     this.totalDebit = this.getTotalDebit(mainTableData, cardTableData);
     this.totalLeft = (this.totalDebit - this.totalPaid);
@@ -140,6 +143,11 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
         title: 'Total não pago',
         value: this.totalLeft,
         description: 'Somatório do total de contas não pagas ainda.'
+      },
+      {
+        title: 'Total pago de cartão',
+        value: this.cardPaymentTotal,
+        description: 'Somatório do total de pagamentos de cartão de crédito.'
       },
       {
         title: 'Status atual',

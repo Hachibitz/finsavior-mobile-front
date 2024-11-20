@@ -15,6 +15,7 @@ import { trash } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
+import { tableTypes } from '../model/main.model';
 
 addIcons({
   'trash': trash
@@ -72,11 +73,10 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
   }
 
   async openAddRegisterModal() {
-    const isCardAccount = false;
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount,
+        tableType: tableTypes.MAIN,
         billDate: this.billDate
       }
     });

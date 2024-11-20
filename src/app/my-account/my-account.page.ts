@@ -55,10 +55,8 @@ export class MyAccountPage implements OnInit {
     });
 
     this.profileDataForm = this.fb.group({
-      username: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      firstName: ['', null],
+      lastName: ['', null],
       profilePicture: [null]
     });
   }

@@ -1,0 +1,19 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Guia de Contas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" expand="block" (click)="navigateTo('main-page')">Voltar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngFor="let card of cards">
+    <ion-card-header>
+      <ion-card-title>{{ card.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <p>{{ card.description }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -29,7 +29,7 @@ import { CommonService } from '../../service/common.service';
     </div>
 
     <ion-content class="ion-padding">
-      <form [formGroup]="billRegisterForm" (ngSubmit)="addRegisterMain()">
+      <form [formGroup]="billRegisterForm" (ngSubmit)="addRegister()">
         <ion-item>
           <ion-label position="floating">Nome da Conta</ion-label>
           <ion-input formControlName="billName"></ion-input>
@@ -42,7 +42,7 @@ import { CommonService } from '../../service/common.service';
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
-        <div *ngIf="!isCardAccount">
+        <div *ngIf="tableType == 'main'">
           <ion-item>
             <ion-label>Tipo</ion-label>
             <ion-select formControlName="billType" interface="action-sheet">
@@ -65,20 +65,19 @@ import { CommonService } from '../../service/common.service';
 })
 export class AddRegisterModalComponent {
 
-  private _isCardAccount: boolean = false;
-  @Input() set isCardAccount(value: boolean) {
-    this._isCardAccount = value;
+  private _tableType: string = '';
+  @Input() set tableType(value: string) {
+    this._tableType = value;
     this.setValidationRules();
   }
   
-  get isCardAccount(): boolean {
-    return this._isCardAccount;
+  get tableType(): string {
+    return this._tableType;
   }
 
   private _billDate: Date = new Date();
   @Input() set billDate(value: Date) {
     this._billDate = value;
-    this.setValidationRules();
   }
   
   get billDate(): Date {
@@ -108,12 +107,10 @@ export class AddRegisterModalComponent {
       billDescription: [''],
       billType: ['']
     });
-
-    this.setValidationRules();
   }
 
-  private setValidationRules() {
-    if (this.isCardAccount) {
+  setValidationRules() {
+    if (this.tableType != tableTypes.MAIN) {
       this.billRegisterForm.get('billType')?.clearValidators();
     } else {
       this.billRegisterForm.get('billType')?.setValidators(Validators.required);
@@ -122,22 +119,24 @@ export class AddRegisterModalComponent {
     this.billRegisterForm.get('billType')?.updateValueAndValidity();
   }
 
-  async addRegisterMain() {
+  async addRegister() {
     if (this.billRegisterForm.invalid) return;
-
-    let tableType = this.isCardAccount ? tableTypes.CREDIT_CARD : tableTypes.MAIN;
 
     const billRegisterRequest = {
       ...this.billRegisterForm.value,
       billDate: this.commonService.formatDate(this.billDate),
-      billTable: tableType,
+      billTable: this.tableType,
       isRecurrent: false,
       paid: false
     };
 
     this.isLoading();
     try {
-      await this.billService.billRegister(billRegisterRequest);
+      if(this.tableType == tableTypes.PAYMENT_CARD) {
+        await this.billService.cardPaymentRegister(billRegisterRequest);
+      } else {
+        await this.billService.billRegister(billRegisterRequest);
+      }
       this.isLoading();
       this.dismiss('saved');
     } catch (error) {

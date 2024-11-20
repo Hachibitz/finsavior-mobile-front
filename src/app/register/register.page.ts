@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
-import { TermsAndPrivacyDialogPage } from '../terms-and-privacy-dialog/terms-and-privacy-dialog.page';
+import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -13,7 +13,7 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./register.page.scss'],
   standalone: true,
   providers: [
-    AuthService
+    AuthService, ModalController
   ],
   imports: [
     CommonModule, FormsModule,

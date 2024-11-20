@@ -57,6 +57,22 @@ export class UserService {
         return promessa;
     }
 
+    updateProfile(request: FormData): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.http.patch<void>(
+                `${USER_PROFILE}/update-profile`,
+                request
+            ).subscribe({
+                next: () => {
+                    resolve();
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e.error || 'Erro ao atualizar perfil.');
+                },
+            });
+        });
+    }    
+
     getProfileData(): Promise<UserData> {
         const promessa = new Promise<UserData>((resolve, reject) => {
                 this.http.get<UserData>(GET_PROFILE_DATA, { responseType: 'json' }).subscribe({

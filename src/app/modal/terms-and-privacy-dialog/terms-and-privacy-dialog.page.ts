@@ -1,18 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { 
+  IonHeader, IonContent, IonToolbar,
+  IonTitle, IonButtons, IonButton
+} from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular';
-import { TermsAndPrivacyService } from '../service/terms-and-privacy-service';
+import { TermsAndPrivacyService } from '../../service/terms-and-privacy-service';
 
 @Component({
   selector: 'app-terms-and-privacy-dialog',
   templateUrl: './terms-and-privacy-dialog.page.html',
   styleUrls: ['./terms-and-privacy-dialog.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [
+    ReactiveFormsModule, CommonModule, FormsModule,
+    IonHeader, IonContent, IonToolbar,
+    IonTitle, IonButtons, IonButton
+  ]
 })
 export class TermsAndPrivacyDialogPage implements OnInit {
+  @Input() type!: string;
+
   public contentTitle: string = '';
   public contentText: string = '';
   loading: boolean = false;
@@ -28,7 +37,7 @@ export class TermsAndPrivacyDialogPage implements OnInit {
   }
 
   async loadContent() {
-    if (this.contentTitle === 'privacy') {
+    if (this.type === 'privacy') {
       this.contentTitle = 'Política de Privacidade';
       this.contentText = await this.termsAndPrivacyService.loadPrivacyPolicy();
     } else {

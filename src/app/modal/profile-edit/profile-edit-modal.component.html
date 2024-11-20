@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-title>Editar Perfil</ion-title>
         <ion-buttons slot="end">
-            <ion-button (click)="closeModal()">Fechar</ion-button>
+            <ion-button (click)="closeModal()">Cancelar</ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -10,20 +10,12 @@
 <ion-content class="ion-padding">
     <form [formGroup]="form">
         <ion-item>
-            <ion-label position="floating">Usuário</ion-label>
-            <ion-input formControlName="username" type="text"></ion-input>
-        </ion-item>
-        <ion-item>
             <ion-label position="floating">Nome</ion-label>
             <ion-input formControlName="firstName" type="text"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="floating">Sobrenome</ion-label>
             <ion-input formControlName="lastName" type="text"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input formControlName="email" type="email"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label>Foto de Perfil</ion-label>

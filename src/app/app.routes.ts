@@ -21,8 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'terms-and-privacy-dialog',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./terms-and-privacy-dialog/terms-and-privacy-dialog.page').then( m => m.TermsAndPrivacyDialogPage)
+    loadComponent: () => import('./modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page').then( m => m.TermsAndPrivacyDialogPage)
   },
   {
     path: 'password-forgotten',
@@ -60,9 +59,14 @@ export const routes: Routes = [
         loadComponent: () => import('./main-card-details/main-card-details.page').then( m => m.MainCardDetailsPage)
       },
     ]
-  },  {
+  },
+  {
     path: 'my-account',
     loadComponent: () => import('./my-account/my-account.page').then( m => m.MyAccountPage)
+  },
+  {
+    path: 'billtypes-guide',
+    loadComponent: () => import('./billtypes-guide/billtypes-guide.page').then( m => m.BilltypesGuidePage)
   },
 
 ];

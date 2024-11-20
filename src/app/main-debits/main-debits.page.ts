@@ -80,11 +80,10 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
   }
 
   async openAddRegisterModal() {
-    const isCardAccount = false;
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount,
+        tableType: tableTypes.MAIN,
         billDate: this.billDate
       }
     });

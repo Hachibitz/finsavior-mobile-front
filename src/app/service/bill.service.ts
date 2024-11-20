@@ -8,13 +8,15 @@ import { DELETE_ITEM_CARD_TABLE,
          BILLS_SERVICE_BILL_REGISTER, 
          GENERATE_AI_ADVICE,
          GET_AI_ADVICE,
-         DELETE_AI_ANALYSIS} from 'src/environments/environment';
+         DELETE_AI_ANALYSIS,
+         BILLS_SERVICE_CARD_PAYMENT_REGISTER,
+         LOAD_PAYMENT_CARD_TABLE_DATA} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
     HttpParams
 } from '@angular/common/http';
-import { BillRegisterRequest, CardTableDataResponse, GenericResponse, MainTableDataResponse } from '../model/main.model';
+import { BillRegisterRequest, CardTableDataResponse, GenericResponse, MainTableDataResponse, PaymentCardTableDataResponse } from '../model/main.model';
 import { AiAdviceRequest, AiAdviceResponse, Analysis } from '../model/ai-advice.model';
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +30,38 @@ export class BillService {
         const promessa = new Promise<string>((resolve, reject) => {
             this.http.post<string>(BILLS_SERVICE_BILL_REGISTER, saveRequest, { params: params, responseType: 'json' }).subscribe({
                 next: (result: string) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
+        return promessa;
+    };
+
+    cardPaymentRegister(saveRequest: BillRegisterRequest): Promise<string> {
+        const params = new HttpParams().set('isRecurrent', false);
+
+        const promessa = new Promise<string>((resolve, reject) => {
+            this.http.post<string>(BILLS_SERVICE_CARD_PAYMENT_REGISTER, saveRequest, { params: params, responseType: 'json' }).subscribe({
+                next: (result: string) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
+        return promessa;
+    };
+
+    loadPaymentCardTableData(billDate: string): Promise<PaymentCardTableDataResponse> {
+        const params = new HttpParams().set('billDate', encodeURIComponent(billDate));
+
+        const promessa = new Promise<PaymentCardTableDataResponse>((resolve, reject) => {
+            this.http.get<PaymentCardTableDataResponse>(LOAD_PAYMENT_CARD_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
+                next: (result: PaymentCardTableDataResponse) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {

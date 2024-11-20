@@ -10,7 +10,10 @@
     <div class="custom-loader"></div>
   </div>
 
-  <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
+  <div class="buttons-credit-card-tab">
+    <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
+    <ion-button expand="block" (click)="cardPaymentRegisterModal()">Adicionar Pagamento</ion-button>
+  </div>
 
   <ion-list *ngIf="!loading && cardRows.length > 0">
     <ion-item *ngFor="let item of cardRows">

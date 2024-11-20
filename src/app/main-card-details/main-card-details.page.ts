@@ -13,7 +13,7 @@ import { trash } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
-import { CardTableDataResponse } from '../model/main.model';
+import { CardTableDataResponse, tableTypes } from '../model/main.model';
 
 addIcons({ 'trash': trash });
 
@@ -75,11 +75,28 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   }
 
   async openAddRegisterModal() {
-    const isCardAccount = true;
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        isCardAccount: isCardAccount,
+        tableType: tableTypes.CREDIT_CARD,
+        billDate: this.billDate
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadCardTableData();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async cardPaymentRegisterModal() {
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        tableType: tableTypes.PAYMENT_CARD,
         billDate: this.billDate
       }
     });
