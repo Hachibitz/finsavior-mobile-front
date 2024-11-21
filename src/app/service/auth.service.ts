@@ -58,8 +58,9 @@ export class AuthService {
 
     validateToken(token: string): Promise<boolean> {
         const url = VALIDATE_TOKEN_SERVICE+"?token="+token;
+        const headers = { 'ngrok-skip-browser-warning': 'true' };
         const promessa = new Promise<boolean>((resolve, reject) => {
-            this.http.get<boolean>(url, { responseType: 'json' }).subscribe({
+            this.http.get<boolean>(url, { headers, responseType: 'json' as 'json' }).subscribe({
                 next: (result: boolean) => {
                     resolve(result);
                 },

@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
     CapacitorCookies: {
       enabled: true
     }
+  },
+  server: {
+    cleartext: true,
+    allowNavigation: ['*']
   }
 };
 

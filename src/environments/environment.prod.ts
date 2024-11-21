@@ -2,7 +2,7 @@ export const environment = {
   production: true
 };
 
-export const URL_BASE_DEV = 'https://aef6-187-19-226-220.ngrok-free.app'
+export const URL_BASE_DEV = 'https://772b-187-19-226-220.ngrok-free.app'
 
 export const USER_SERVICE = "/users";
 export const BILL_SERVICE = "/bills";
@@ -21,8 +21,10 @@ export const PASSWORD_RESET_REQUEST = URL_BASE_DEV + AUTH_SERVICE + '/password-r
 export const USER_PROFILE = URL_BASE_DEV + USER_SERVICE + '/profile-data';
 export const GET_PROFILE_DATA = URL_BASE_DEV + USER_SERVICE + '/get-profile-data';
 export const BILLS_SERVICE_BILL_REGISTER = URL_BASE_DEV + BILL_SERVICE + '/bill-register';
+export const BILLS_SERVICE_CARD_PAYMENT_REGISTER = URL_BASE_DEV + BILL_SERVICE + '/card-payment-register';
 export const LOAD_MAIN_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-main-table-data';
 export const LOAD_CARD_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-card-table-data';
+export const LOAD_PAYMENT_CARD_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-payment-card-table-data';
 export const DELETE_ITEM_MAIN_TABLE = URL_BASE_DEV + BILL_SERVICE + '/delete-item-table-main';
 export const DELETE_ITEM_CARD_TABLE = URL_BASE_DEV + BILL_SERVICE + '/delete-item-table-card';
 export const EDIT_ITEM_MAIN_TABLE = URL_BASE_DEV + BILL_SERVICE + '/edit-item-table-main';
