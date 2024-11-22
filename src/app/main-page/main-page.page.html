@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
+      <div class="logo-finsavior">
+        <img [src]="'assets/default-avatar.png'">
+      </div>
       <ion-menu-button menu="main-menu"></ion-menu-button>
       <ion-label>{{ selectedMonthYear }}</ion-label>
       <ion-button (click)="openDatePicker()">
@@ -9,7 +12,12 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-avatar class="profile-avatar" slot="end" (click)="toggleDropdown()">
-        <img [src]="userData?.profilePicture || 'assets/default-avatar.png'" alt="Foto de Perfil">
+        <ng-container *ngIf="userData?.profilePicture; else fallbackIcon">
+          <img [src]="userData.profilePicture" alt="Foto de Perfil">
+        </ng-container>
+        <ng-template #fallbackIcon>
+          <ion-icon name="person-circle-outline" class="fallback-icon"></ion-icon>
+        </ng-template>
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>

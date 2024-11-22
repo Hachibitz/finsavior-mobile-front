@@ -21,7 +21,7 @@ import {
   IonAvatar, IonMenuButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { wallet, cash, statsChart, calendar, barChart, card } from 'ionicons/icons';
+import { wallet, cash, statsChart, calendar, barChart, card, personCircleOutline } from 'ionicons/icons';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 
@@ -31,7 +31,8 @@ addIcons({
   'stats-chart': statsChart,
   'calendar': calendar,
   'bar-chart': barChart,
-  'card': card
+  'card': card,
+  'person-circle-outline': personCircleOutline
 });
 
 @Component({
@@ -123,11 +124,13 @@ export class MainPageComponent implements OnInit {
     this.isLoading();
     try {
       const userProfile = await this.userService.getProfileData();
-      const base64Image = `data:image/png;base64,${userProfile.profilePicture}`;
-      this.userData = {
-        ...userProfile,
-        profilePicture: base64Image
-      };
+      if(userProfile.profilePicture) {
+        const base64Image = `data:image/png;base64,${userProfile.profilePicture}`;
+        this.userData = {
+          ...userProfile,
+          profilePicture: base64Image
+        };
+      }
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados do usuário');
     } finally {

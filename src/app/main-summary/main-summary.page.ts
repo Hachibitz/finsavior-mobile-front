@@ -15,6 +15,7 @@ import { CommonService } from '../service/common.service';
 import { CardTableDataResponse, MainTableDataResponse, PaymentCardTableDataResponse } from '../model/main.model';
 import { addIcons } from 'ionicons';
 import { helpCircle } from 'ionicons/icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-summary',
@@ -49,7 +50,8 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   constructor(
     private billService: BillService,
     private alertController: AlertController,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private router: Router
   ) {
     addIcons({helpCircle});
   }
@@ -130,6 +132,11 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   populateCards() {
     this.cards = [
       {
+        title: 'Saldo previsto',
+        value: this.foreseenBalance,
+        description: 'Saldo disponível após todas as contas serem pagas.'
+      },
+      {
         title: 'Saldo total',
         value: this.currentlyAvailableIncome,
         description: 'Saldo total disponível do mês (Caixa + Ativos)'
@@ -153,11 +160,6 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
         title: 'Status atual',
         value: this.currentStatus,
         description: 'Saldo total menos o total pago.'
-      },
-      {
-        title: 'Saldo previsto',
-        value: this.foreseenBalance,
-        description: 'Saldo disponível após todas as contas serem pagas.'
       },
       {
         title: 'Liquidez',
@@ -186,31 +188,7 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
   }
 
   async openAiAdviceDialog() {
-    const alert = await this.alertController.create({
-      header: 'Conselhos da IA',
-      message: 'Deseja gerar conselhos e insights financeiros?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Gerar',
-          handler: async () => {
-            this.loading = true;
-            try {
-              //await this.billService.generateAiAdvice(/* request data here */);
-              await this.showAlert('Sucesso', 'Conselho da IA gerado com sucesso!');
-            } catch (error) {
-              await this.showAlert('Erro', 'Erro ao gerar conselho da IA');
-            } finally {
-              this.loading = false;
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
+    this.router.navigate(['main-page/ai-analysis']);
   }
 
   isLoading(): void {
