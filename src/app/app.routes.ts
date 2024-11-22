@@ -4,11 +4,12 @@ import { AuthGuard } from './security/AuthGuard';
 export const routes: Routes = [
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    redirectTo: 'landing-page',
+    //loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'landing-page',
     pathMatch: 'full',
   },
   {
@@ -68,5 +69,10 @@ export const routes: Routes = [
     path: 'billtypes-guide',
     loadComponent: () => import('./billtypes-guide/billtypes-guide.page').then( m => m.BilltypesGuidePage)
   },
+  {
+    path: 'landing-page',
+    loadComponent: () => import('./landing-page/landing-page.page').then( m => m.LandingPagePage)
+  },
+
 
 ];

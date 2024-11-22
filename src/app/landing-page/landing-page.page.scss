@@ -1,0 +1,23 @@
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .app-logo {
+        width: 150px;
+        margin: 20px auto;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--ion-color-primary);
+    }
+
+    p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+}

@@ -2,7 +2,7 @@ export const environment = {
   production: true
 };
 
-export const URL_BASE_DEV = 'https://772b-187-19-226-220.ngrok-free.app'
+export const URL_BASE_DEV = 'https://e3b3-187-19-226-220.ngrok-free.app'
 
 export const USER_SERVICE = "/users";
 export const BILL_SERVICE = "/bills";
