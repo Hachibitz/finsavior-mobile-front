@@ -76,7 +76,7 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     const modal = await this.modalController.create({
       component: AddRegisterModalComponent,
       componentProps: {
-        tableType: tableTypes.MAIN,
+        tableType: tableTypes.ASSETS,
         billDate: this.billDate
       }
     });

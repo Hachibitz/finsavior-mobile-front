@@ -42,7 +42,7 @@ import { CommonService } from '../../service/common.service';
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
-        <div *ngIf="tableType == 'main'">
+        <div *ngIf="isAssets">
           <ion-item>
             <ion-label>Tipo</ion-label>
             <ion-select formControlName="billType" interface="action-sheet">
@@ -65,9 +65,12 @@ import { CommonService } from '../../service/common.service';
 })
 export class AddRegisterModalComponent {
 
+  isAssets: boolean = false;
+
   private _tableType: string = '';
   @Input() set tableType(value: string) {
     this._tableType = value;
+    this.isAssets = this.tableType == tableTypes.ASSETS ? true : false;
     this.setValidationRules();
   }
   
@@ -87,10 +90,8 @@ export class AddRegisterModalComponent {
   billRegisterForm: FormGroup;
   billTypes: TipoConta[] = [
     { label: 'Ativo', value: 'Ativo' },
-    { label: 'Passivo', value: 'Passivo' },
     { label: 'Caixa', value: 'Caixa' },
-    { label: 'Poupança', value: 'Poupança' },
-    { label: 'Pagamento de Cartão', value: 'CardPayment' }
+    { label: 'Poupança', value: 'Poupança' }
   ];
 
   loading: boolean =  false;
@@ -110,10 +111,10 @@ export class AddRegisterModalComponent {
   }
 
   setValidationRules() {
-    if (this.tableType != tableTypes.MAIN) {
-      this.billRegisterForm.get('billType')?.clearValidators();
-    } else {
+    if (this.isAssets) {
       this.billRegisterForm.get('billType')?.setValidators(Validators.required);
+    } else {
+      this.billRegisterForm.get('billType')?.clearValidators();
     }
   
     this.billRegisterForm.get('billType')?.updateValueAndValidity();
@@ -125,7 +126,7 @@ export class AddRegisterModalComponent {
     const billRegisterRequest = {
       ...this.billRegisterForm.value,
       billDate: this.commonService.formatDate(this.billDate),
-      billTable: this.tableType,
+      billTable: this.isAssets ? tableTypes.MAIN : this.tableType,
       isRecurrent: false,
       paid: false
     };

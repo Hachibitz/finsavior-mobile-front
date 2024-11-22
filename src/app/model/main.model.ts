@@ -1,7 +1,8 @@
 export const tableTypes = {
     MAIN: 'main',
     CREDIT_CARD: 'credit-card',
-    PAYMENT_CARD: 'payment-card'
+    PAYMENT_CARD: 'payment-card',
+    ASSETS: 'assets'
 }
 
 export interface TipoConta {
