@@ -15,7 +15,12 @@ const config: CapacitorConfig = {
       androidScaleType: 'CENTER_CROP',
       showSpinner: true,
       spinnerColor: '#007bff',
-    }
+    },
+    GoogleAuth: {
+      scopes: ['profile', 'email'],
+      serverClientId: '770396493441-m20ptqar465dckq4ur9hg597t6tq7v3o.apps.googleusercontent.com', //'770396493441-kva8gnbn5jr3dqe0gcodtu03sgpiolj1.apps.googleusercontent.com'
+      forceCodeForRefreshToken: true,
+    },
   },
   server: {
     cleartext: true,

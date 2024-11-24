@@ -4,4 +4,7 @@
     <string name="title_activity_main">finsavior-mobile-front</string>
     <string name="package_name">io.ionic.starter</string>
     <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="server_client_id">770396493441-m20ptqar465dckq4ur9hg597t6tq7v3o.apps.googleusercontent.com</string>
+    <!--<string name="server_client_id">770396493441-kva8gnbn5jr3dqe0gcodtu03sgpiolj1.apps.googleusercontent.com</string>-->
+    <!--<string name="default_web_client_id">770396493441-m20ptqar465dckq4ur9hg597t6tq7v3o.apps.googleusercontent.com</string>-->
 </resources>

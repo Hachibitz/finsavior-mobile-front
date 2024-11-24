@@ -24,6 +24,7 @@ export class LandingPagePage implements OnInit {
   constructor(private router: Router, private authService: AuthService) { }
 
   async ngOnInit(): Promise<void> {
+    await this.authService.checkGoogleLoggedIn();
     const isLoggedIn = await this.authService.isAuthenticated();
 
     if(isLoggedIn) {

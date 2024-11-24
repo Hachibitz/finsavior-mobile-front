@@ -37,6 +37,7 @@ export class LoginPage implements OnInit {
   rememberMe: boolean = false;
   loginRequest!: LoginRequest;
   loading: boolean = false;
+  googleUser: any;
 
   constructor(private router: Router, private authService: AuthService, private alertController: AlertController) {
 
@@ -62,12 +63,26 @@ export class LoginPage implements OnInit {
       this.showAlert('Sucesso', 'Login realizado com sucesso!');
       this.router.navigate(['/main-page/debits']);
     }).catch((error) => {
-      console.log(error)
       this.showAlert('Erro', error.error);
     }).finally(() => {
       this.clearCredentials();
       this.isLoading();
     })
+  }
+
+  async googleSignIn() {
+    try {
+      const googleUser = await this.authService.googleSignIn();
+      const idToken = googleUser.authentication.idToken;
+
+      this.authService.loginWithGoogle(idToken).then(() => {
+        this.router.navigate(['/main-page/debits']);
+      }).catch((error) => {
+        this.showAlert('Erro', 'Falha ao autenticar com Google');
+      });
+    } catch (error) {
+      this.showAlert('Erro', 'Falha no login com Google');
+    }
   }
 
   clearCredentials() {

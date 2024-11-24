@@ -31,6 +31,12 @@
         </ion-item>
 
         <ion-button expand="block" type="submit" [disabled]="!userLogin || !password">Login</ion-button>
+        <div style="margin-bottom: 20px;">
+          <ion-button color="light" expand="block" (click)="googleSignIn()">
+            <ion-icon src="assets/google.svg"></ion-icon>
+            <ion-text style="margin-left: 10px; text-align: center;">Continue with Google</ion-text>
+          </ion-button>
+        </div>
       </form>
 
       <div class="ion-text-center">
@@ -39,4 +45,8 @@
       </div>
     </ion-card-content>
   </ion-card>
+
+  <div style="max-width: 100px; max-height: 100px; display: flex;">
+    <img src="assets/logo.png">
+  </div>
 </ion-content>

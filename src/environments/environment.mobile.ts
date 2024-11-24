@@ -24,9 +24,11 @@ export const AI_ADVICE_SERVICE = "/ai-advice";
 export const PAYMENT_SERVICE = '/payment';
 export const TERMS_AND_PRIVACY_SERVICE = '/terms-and-privacy';
 
+export const GOOGLE_LOGIN = URL_BASE_DEV + AUTH_SERVICE + '/login-google';
 export const SERVICE_LOGIN = URL_BASE_DEV + AUTH_SERVICE + '/login-auth';
 export const SIGNUP_SERVICE = URL_BASE_DEV + AUTH_SERVICE + '/signup';
 export const VALIDATE_TOKEN_SERVICE = URL_BASE_DEV + AUTH_SERVICE + '/validate-token';
+export const REFRESH_TOKEN = URL_BASE_DEV + AUTH_SERVICE + '/refresh-token';
 export const DELETE_ACCOUNT_AND_DATA = URL_BASE_DEV + USER_SERVICE + '/delete-account';
 export const CHANGE_ACCOUNT_PASSWORD = URL_BASE_DEV + USER_SERVICE + '/change-password';
 export const PASSWORD_RESET = URL_BASE_DEV + AUTH_SERVICE + '/reset-password';
