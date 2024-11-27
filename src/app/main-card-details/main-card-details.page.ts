@@ -9,11 +9,12 @@ import {
   IonIcon, IonButtons
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trash } from 'ionicons/icons';
+import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { CardTableDataResponse, tableTypes } from '../model/main.model';
+import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 
 addIcons({ 'trash': trash });
 
@@ -43,7 +44,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     private cdRef: ChangeDetectorRef,
     private modalController: ModalController
   ) {
-      addIcons({trash});
+      addIcons({create,trash});
     
   }
 
@@ -107,6 +108,32 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
       }
     });
 
+    return await modal.present();
+  }
+
+  async openEditModal(item: any) {
+    item.billTable = tableTypes.CREDIT_CARD;
+    const modal = await this.modalController.create({
+      component: EditRegisterModalComponent,
+      componentProps: { registerData: item },
+    });
+  
+    modal.onDidDismiss().then(async (result) => {
+      if (result.role === 'saved') {
+        const updatedItem = result.data;
+        this.isLoading();
+        try {
+          await this.billService.editItemFromCardTable(updatedItem);
+          await this.loadCardTableData();
+          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+        } catch (error) {
+          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+        } finally {
+          this.isLoading();
+        }
+      }
+    });
+  
     return await modal.present();
   }
 

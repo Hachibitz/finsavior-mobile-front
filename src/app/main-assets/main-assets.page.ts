@@ -11,11 +11,12 @@ import {
   IonButtons
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trash } from 'ionicons/icons';
+import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { tableTypes } from '../model/main.model';
+import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 
 addIcons({
   'trash': trash
@@ -59,7 +60,7 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     private commonService: CommonService,
     private modalController: ModalController
   ) {
-      addIcons({trash});}
+      addIcons({create,trash});}
 
   ngOnInit() {
     this.loadIncomeData();
@@ -90,8 +91,34 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     return await modal.present();
   }
 
+  async openEditModal(item: any) {
+    item.billTable = tableTypes.ASSETS;
+    const modal = await this.modalController.create({
+      component: EditRegisterModalComponent,
+      componentProps: { registerData: item },
+    });
+  
+    modal.onDidDismiss().then(async (result) => {
+      if (result.role === 'saved') {
+        const updatedItem = result.data;
+        this.isLoading();
+        try {
+          await this.billService.editItemFromMainTable(updatedItem);
+          await this.loadIncomeData();
+          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+        } catch (error) {
+          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+        } finally {
+          this.isLoading();
+        }
+      }
+    });
+  
+    return await modal.present();
+  }
+
   async loadIncomeData(date: string = this.commonService.formatDate(this.billDate)) {
-    this.loading = true;
+    this.isLoading();
     try {
       const result = await this.billService.loadMainTableData(date);
       this.incomeRows = result.mainTableDataList.filter(row => 
@@ -100,13 +127,13 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados de ativos e caixa');
     } finally {
-      this.loading = false;
+      this.isLoading();
       this.cdRef.detectChanges();
     }
   }
 
   async deleteItem(item: any) {
-    this.loading = true;
+    this.isLoading();
     try {
       await this.billService.deleteItemFromMainTable(item.id);
       this.incomeRows = this.incomeRows.filter(row => row.id !== item.id);
@@ -114,7 +141,7 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao deletar item');
     } finally {
-      this.loading = false;
+      this.isLoading();
       this.cdRef.detectChanges();
     }
   }
@@ -126,5 +153,9 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  isLoading() {
+    this.loading = !this.loading;
   }
 }

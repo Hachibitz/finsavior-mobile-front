@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
+import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 import { BillRegisterRequest, CardTableDataResponse, MainTableDataResponse, tableTypes, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { 
@@ -14,11 +15,12 @@ import {
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { trash } from 'ionicons/icons';
+import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 
 addIcons({
-  'trash': trash
+  'trash': trash,
+  'create': create
 });
 
 @Component({
@@ -96,6 +98,32 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
 
     return await modal.present();
   }
+
+  async openEditModal(item: any) {
+    item.billTable = tableTypes.MAIN;
+    const modal = await this.modalController.create({
+      component: EditRegisterModalComponent,
+      componentProps: { registerData: item },
+    });
+  
+    modal.onDidDismiss().then(async (result) => {
+      if (result.role === 'saved') {
+        const updatedItem = result.data;
+        this.isLoading();
+        try {
+          await this.billService.editItemFromMainTable(updatedItem);
+          await this.loadTableData();
+          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+        } catch (error) {
+          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+        } finally {
+          this.isLoading();
+        }
+      }
+    });
+  
+    return await modal.present();
+  }  
 
   async loadTableData(): Promise<void> {
     this.rows = [];

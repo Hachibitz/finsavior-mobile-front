@@ -23,6 +23,9 @@
         <p>Descrição: {{ item.billDescription }}</p>
       </ion-label>
       <ion-buttons>
+        <ion-button color="primary" (click)="openEditModal(item)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
         <ion-button color="danger" (click)="deleteItem(item)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
