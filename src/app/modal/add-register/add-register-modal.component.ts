@@ -127,6 +127,7 @@ export class AddRegisterModalComponent {
       ...this.billRegisterForm.value,
       billDate: this.commonService.formatDate(this.billDate),
       billTable: this.isAssets ? tableTypes.MAIN : this.tableType,
+      billType: this.getBillType(),
       isRecurrent: false,
       paid: false
     };
@@ -148,6 +149,11 @@ export class AddRegisterModalComponent {
 
   dismiss(role: string = 'cancel') {
     this.modalController.dismiss(null, role);
+  }
+
+  getBillType() {
+    const result = this.tableType != tableTypes.ASSETS ? 'Passivo' : null;
+    return result;
   }
 
   private isLoading() {
