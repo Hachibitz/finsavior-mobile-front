@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ModalController, AlertController } from '@ionic/angular';
 import { UserService } from 'src/app/service/user.service';
@@ -26,7 +26,7 @@ import { FileInputComponent } from 'src/app/file-input-component/file-input.comp
     FileInputComponent
   ]
 })
-export class ProfileEditModalComponent {
+export class ProfileEditModalComponent implements OnInit {
   @Input() form!: FormGroup;
   profilePicturePreview: string | ArrayBuffer | null = null;
 
@@ -35,6 +35,10 @@ export class ProfileEditModalComponent {
     private userService: UserService,
     private alertController: AlertController
   ) {}
+  
+  ngOnInit(): void {
+    this.profilePicturePreview = this.form.value.profilePicture || null;
+  }
 
   closeModal() {
     this.modalController.dismiss();
@@ -44,11 +48,14 @@ export class ProfileEditModalComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
+  
+      // Atualiza o valor do formulário
       this.form.get('profilePicture')?.setValue(file);
-
+  
+      // Atualiza o preview da imagem
       const reader = new FileReader();
       reader.onload = () => {
-        this.profilePicturePreview = reader.result;
+        this.profilePicturePreview = reader.result as string;
       };
       reader.readAsDataURL(file);
     }

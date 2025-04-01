@@ -12,6 +12,7 @@ import { ProfileEditModalComponent } from '../modal/profile-edit/profile-edit-mo
 import { DeleteAccountModalComponent } from '../modal/delete-account/delete-account-modal.component';
 import { ChangePasswordModalComponent } from '../modal/change-password/change-password-modal.component';
 import { Router } from '@angular/router';
+import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-my-account',
@@ -28,12 +29,13 @@ import { Router } from '@angular/router';
     IonItem, IonInput
   ]
 })
-export class MyAccountPage implements OnInit {
+export class MyAccountPage implements OnInit, ViewWillEnter {
 
   isDarkMode: boolean = false;
   passwordForm: FormGroup;
   deleteAccountForm: FormGroup;
   profileDataForm: FormGroup;
+  profilePicturePreview: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -57,8 +59,13 @@ export class MyAccountPage implements OnInit {
     this.profileDataForm = this.fb.group({
       firstName: ['', null],
       lastName: ['', null],
-      profilePicture: [null]
+      profilePicture: [null],
+      name: ['', null],
     });
+  }
+
+  ionViewWillEnter(): void {
+    this.loadUserProfile();
   }
 
   ngOnInit(): void {
@@ -68,6 +75,35 @@ export class MyAccountPage implements OnInit {
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     document.body.classList.toggle('dark', this.isDarkMode);
+  }
+  
+  async loadUserProfile() {
+    try {
+      const profile = await this.userService.getProfileData();
+      const profilePictureBase64 = profile.profilePicture
+        ? `data:image/jpeg;base64,${profile.profilePicture}`
+        : null;
+
+      this.profilePicturePreview = profilePictureBase64;
+
+      this.profileDataForm.patchValue({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        profilePicture: profilePictureBase64,
+        name: profile.name
+      });
+
+      this.deleteAccountForm.patchValue({
+        username: profile.username
+      });
+
+      this.passwordForm.patchValue({
+        username: profile.username
+      });
+    } catch (error) {
+      console.error('Erro ao carregar perfil:', error);
+      await this.showAlert('Erro', 'Não foi possível carregar os dados do perfil.');
+    }
   }
 
   async changePassword(data: any) {

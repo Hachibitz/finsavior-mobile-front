@@ -43,6 +43,9 @@ export interface UserData {
   email: string;
   plan: Plan;
   profilePicture: ArrayBuffer;
+  firstName: string;
+  lastName: string;
+  name: string;
 }
 
 export interface UploadProfilePictureRequest {
