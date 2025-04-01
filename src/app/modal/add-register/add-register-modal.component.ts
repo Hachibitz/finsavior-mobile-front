@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { BillService } from '../../service/bill.service';
-import { tableTypes, TipoConta } from '../../model/main.model';
+import { BillRegisterRequest, tableTypes, TipoConta } from '../../model/main.model';
 import { 
     IonHeader, IonToolbar, IonTitle, 
     IonContent, IonButtons, IonButton,
     IonItem, IonLabel, IonInput, 
-    IonSelect, IonSelectOption
+    IonSelect, IonSelectOption,
+    IonCheckbox
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../service/common.service';
@@ -50,6 +51,13 @@ import { CommonService } from '../../service/common.service';
             </ion-select>
           </ion-item>
         </div>
+        <ion-item *ngIf="showRecurrentCheckbox">
+          <ion-label>Recorrente</ion-label>
+          <ion-checkbox 
+            formControlName="isRecurrent" 
+            (ionChange)="onRecurrentChange($event)">
+          </ion-checkbox>
+        </ion-item>
         <ion-button expand="block" type="submit" [disabled]="billRegisterForm.invalid">Salvar</ion-button>
       </form>
     </ion-content>
@@ -60,17 +68,19 @@ import { CommonService } from '../../service/common.service';
         IonContent, IonButtons, IonButton,
         IonItem, IonLabel, IonInput, 
         IonSelect, IonSelectOption, CommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule, IonCheckbox
     ]
 })
 export class AddRegisterModalComponent {
 
   isAssets: boolean = false;
+  showRecurrentCheckbox: boolean = false;
 
   private _tableType: string = '';
   @Input() set tableType(value: string) {
     this._tableType = value;
     this.isAssets = this.tableType == tableTypes.ASSETS ? true : false;
+    this.showRecurrentCheckbox = this.tableType !== tableTypes.PAYMENT_CARD;
     this.setValidationRules();
   }
   
@@ -98,6 +108,7 @@ export class AddRegisterModalComponent {
 
   constructor(
     private modalController: ModalController,
+    private alertController: AlertController,
     private fb: FormBuilder,
     private billService: BillService,
     private commonService: CommonService
@@ -106,7 +117,8 @@ export class AddRegisterModalComponent {
       billName: ['', Validators.required],
       billValue: ['', [Validators.required, Validators.min(1)]],
       billDescription: [''],
-      billType: ['']
+      billType: [''],
+      isRecurrent: [false]
     });
   }
 
@@ -120,15 +132,45 @@ export class AddRegisterModalComponent {
     this.billRegisterForm.get('billType')?.updateValueAndValidity();
   }
 
+  onRecurrentChange(event: any) {
+    if (event.detail.checked) {
+      this.confirmRecurrentChange();
+    }
+  }
+
+  async confirmRecurrentChange() {
+    const alert = await this.alertController.create({
+      header: 'Confirmação',
+      message: 'Deseja realmente marcar este registro como recorrente? Irá adicionar em todos os meses restantes do ano.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            this.billRegisterForm.patchValue({ isRecurrent: false });
+          },
+        },
+        {
+          text: 'Oxe, claro! Só faça como pedi >:[',
+          handler: () => {
+            
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
+  }
+
   async addRegister() {
     if (this.billRegisterForm.invalid) return;
 
-    const billRegisterRequest = {
+    const billRegisterRequest: BillRegisterRequest = {
       ...this.billRegisterForm.value,
       billDate: this.commonService.formatDate(this.billDate),
-      billTable: this.isAssets ? tableTypes.MAIN : this.tableType,
-      isRecurrent: false,
-      paid: false
+      billTable: this.tableType,
+      paid: false,
+      isRecurrent: this.billRegisterForm.value.isRecurrent
     };
 
     if(this.tableType != tableTypes.ASSETS) {
@@ -137,11 +179,7 @@ export class AddRegisterModalComponent {
 
     this.isLoading();
     try {
-      if(this.tableType == tableTypes.PAYMENT_CARD) {
-        await this.billService.cardPaymentRegister(billRegisterRequest);
-      } else {
-        await this.billService.billRegister(billRegisterRequest);
-      }
+      await this.billService.billRegister(billRegisterRequest);
       this.isLoading();
       this.dismiss('saved');
     } catch (error) {

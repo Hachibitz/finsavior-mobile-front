@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BillRegisterRequest, CardTableDataResponse, MainTableDataResponse, tableTypes } from '../model/main.model';
+import { BillRegisterRequest, TableDataResponse, tableTypes } from '../model/main.model';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {

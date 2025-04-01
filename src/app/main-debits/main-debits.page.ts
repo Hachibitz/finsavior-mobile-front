@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
-import { BillRegisterRequest, CardTableDataResponse, MainTableDataResponse, tableTypes, TipoConta } from '../model/main.model';
+import { BillRegisterRequest, TableDataResponse, tableTypes, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { 
   IonHeader, IonToolbar, IonTitle, 
@@ -111,7 +111,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
         const updatedItem = result.data;
         this.isLoading();
         try {
-          await this.billService.editItemFromMainTable(updatedItem);
+          await this.billService.editItem(updatedItem);
           await this.loadTableData();
           await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
         } catch (error) {
@@ -140,24 +140,42 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     }
   }
 
-  async updateTableData(mainTableData: MainTableDataResponse): Promise<void> {
-    this.rows = await mainTableData.mainTableDataList.filter((row: { billType: string; }) => row.billType === 'Passivo');
+  async updateTableData(mainTableData: TableDataResponse): Promise<void> {
+    this.rows = await mainTableData.filter((row: { billType: string; }) => row.billType === 'Passivo');
     this.totalDebit = await this.rows.reduce((acc, row) => acc + row.billValue, 0);
     this.cdRef.detectChanges();
   }
 
-  async deleteItem(item: any) {
-    this.isLoading();
-    try {
-      await this.billService.deleteItemFromMainTable(item.id);
-      this.rows = this.rows.filter(row => row.id !== item.id);
-      await this.showAlert('Sucesso', 'Item deletado com sucesso');
-    } catch (error) {
-      await this.showAlert('Erro', 'Erro ao deletar item');
-    } finally {
-      this.isLoading();
-      this.cdRef.detectChanges();
-    }
+    async deleteItem(item: any) {
+    const alert = await this.alertController.create({
+      header: 'Confirmação',
+      message: 'Deseja realmente excluir este item?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          role: 'destructive',
+          handler: async () => {
+            this.isLoading();
+            try {
+              await this.billService.deleteItem(item.id);
+              this.rows = this.rows.filter(row => row.id !== item.id);
+              await this.showAlert('Sucesso', 'Item deletado com sucesso');
+            } catch (error) {
+              await this.showAlert('Erro', 'Erro ao deletar item');
+            } finally {
+              this.isLoading();
+              this.cdRef.detectChanges();
+            }
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
   }
 
   async togglePaid(item: any) {
@@ -171,12 +189,12 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
       billDate: this.commonService.formatDate(this.billDate),
       paid: updatedStatus,
       billTable: tableTypes.MAIN,
-      isRecurrent: false
+      isRecurrent: item.isRecurrent
     };
   
     this.isLoading();
     try {
-      await this.billService.editItemFromMainTable(billUpdate);
+      await this.billService.editItem(billUpdate);
       await this.loadTableData();
       await this.showAlert('Sucesso', `Item marcado como ${updatedStatus ? 'pago' : 'não pago'}.`);
     } catch (error) {

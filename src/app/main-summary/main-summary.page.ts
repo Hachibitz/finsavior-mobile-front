@@ -12,7 +12,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { CommonService } from '../service/common.service';
-import { CardTableDataResponse, MainTableDataResponse, PaymentCardTableDataResponse } from '../model/main.model';
+import { TableDataResponse } from '../model/main.model';
 import { addIcons } from 'ionicons';
 import { helpCircle } from 'ionicons/icons';
 import { Router } from '@angular/router';
@@ -69,44 +69,49 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
 
   async loadData() {
     this.isLoading();
-    const currentDate = await this.commonService.formatDate(this.billDate);
-    const mainTableData = await this.billService.loadMainTableData(currentDate);
-    const cardTableData = await this.billService.loadCardTableData(currentDate);
-    const paymentCardTableData = await this.billService.loadPaymentCardTableData(currentDate);
+    try {
+      const currentDate = await this.commonService.formatDate(this.billDate);
+      const mainTableData = await this.billService.loadMainTableData(currentDate);
+      const assetsTableData = await this.billService.loadAssetsTableData(currentDate);
+      const cardTableData = await this.billService.loadCardTableData(currentDate);
+      const paymentCardTableData = await this.billService.loadPaymentCardTableData(currentDate);
 
-    await this.calculateSummary(mainTableData, cardTableData, paymentCardTableData);
-    await this.populateCards();
-    this.isLoading();
+      await this.calculateSummary(mainTableData, cardTableData, paymentCardTableData, assetsTableData);
+      await this.populateCards();
+    } catch(error: any) {
+      console.log(error)
+      this.showAlert('Error', "Não há dados suficientes para o resumo")
+    } finally {
+      this.isLoading();
+    }
   }
 
-  async calculateSummary(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse, paymentCardTableData: PaymentCardTableDataResponse) {
-    this.cardPaymentTotal = paymentCardTableData.paymentCardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
-    this.totalPaid = mainTableData.mainTableDataList.filter(row => row.paid).reduce((acc, row) => acc + row.billValue, 0) + this.cardPaymentTotal;
-    this.currentlyAvailableIncome = this.getAvailableIncome(mainTableData);
+  async calculateSummary(mainTableData: TableDataResponse, cardTableData: TableDataResponse, paymentCardTableData: TableDataResponse, assetsTableData: TableDataResponse) {
+    this.cardPaymentTotal = paymentCardTableData.reduce((acc, row) => acc + row.billValue, 0);
+    this.totalPaid = mainTableData.filter(row => row.paid).reduce((acc, row) => acc + row.billValue, 0) + this.cardPaymentTotal;
+    this.currentlyAvailableIncome = this.getAvailableIncome(assetsTableData);
     this.totalDebit = this.getTotalDebit(mainTableData, cardTableData);
     this.totalLeft = (this.totalDebit - this.totalPaid);
     this.currentStatus = this.currentlyAvailableIncome - this.totalPaid;
-    this.liquidAndRightsStatus = this.getIncomeTotal(mainTableData) - this.totalDebit;
+    this.liquidAndRightsStatus = this.getAvailableIncome(assetsTableData) - this.totalDebit;
     this.foreseenBalance = this.currentlyAvailableIncome - this.totalDebit;
 
     this.updateSituation();
   }
 
-  getAvailableIncome(mainTableData: MainTableDataResponse): any {
-    return mainTableData.mainTableDataList.filter(
+  getAvailableIncome(assetsTableData: TableDataResponse): any {
+    return assetsTableData.filter(
       row => row.billType === 'Caixa' || row.billType === 'Ativo'
     ).reduce((acc, incomeRow) => acc + incomeRow.billValue, 0);
   }
 
-  getIncomeTotal(mainTableData: any): number {
-    return mainTableData.mainTableDataList.filter(
-      (row: { billType: string; }) => ['Caixa', 'Ativo', 'Poupança'].includes(row.billType)
-    ).reduce((acc: any, row: { billValue: any; }) => acc + row.billValue, 0);
+  getIncomeTotal(assetsTableData: TableDataResponse): number {
+    return assetsTableData.reduce((acc: any, row: { billValue: any; }) => acc + row.billValue, 0);
   }
 
-  getTotalDebit(mainTableData: MainTableDataResponse, cardTableData: CardTableDataResponse): number {
-    return (mainTableData.mainTableDataList.filter(row => row.billType === 'Passivo').reduce((acc, row) => acc + row.billValue, 0)) 
-    + cardTableData.cardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
+  getTotalDebit(mainTableData: TableDataResponse, cardTableData: TableDataResponse): number {
+    return (mainTableData.filter(row => row.billType === 'Passivo').reduce((acc, row) => acc + row.billValue, 0)) 
+    + cardTableData.reduce((acc, row) => acc + row.billValue, 0);
   }
 
   updateSituation() {

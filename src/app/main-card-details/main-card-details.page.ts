@@ -13,7 +13,7 @@ import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
-import { CardTableDataResponse, tableTypes } from '../model/main.model';
+import { TableDataResponse, tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 
 addIcons({ 'trash': trash });
@@ -65,7 +65,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
 
     try {
       const result = await this.billService.loadCardTableData(this.commonService.formatDate(this.billDate));
-      this.cardRows = result.cardTableDataList;
+      this.cardRows = result;
       this.creditCardTotal = this.getTotalCreditCard(result);
     } catch (error) {
       this.showAlert('Erro', 'Erro ao carregar dados de cartões');
@@ -123,7 +123,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
         const updatedItem = result.data;
         this.isLoading();
         try {
-          await this.billService.editItemFromCardTable(updatedItem);
+          await this.billService.editItem(updatedItem);
           await this.loadCardTableData();
           await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
         } catch (error) {
@@ -138,21 +138,39 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   }
 
   async deleteItem(item: any) {
-    this.isLoading();
-    try {
-      await this.billService.deleteItemFromCardTable(item.id);
-      this.cardRows = this.cardRows.filter(row => row.id !== item.id);
-      await this.showAlert('Sucesso', 'Item de cartão excluído com sucesso');
-    } catch (error) {
-      await this.showAlert('Erro', 'Erro ao excluir item');
-    } finally {
-      this.isLoading();
-      this.cdRef.detectChanges();
-    }
+    const alert = await this.alertController.create({
+      header: 'Confirmação',
+      message: 'Deseja realmente excluir este item?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          role: 'destructive',
+          handler: async () => {
+            this.isLoading();
+            try {
+              await this.billService.deleteItem(item.id);
+              this.cardRows = this.cardRows.filter(row => row.id !== item.id);
+              await this.showAlert('Sucesso', 'Item de cartão excluído com sucesso');
+            } catch (error) {
+              await this.showAlert('Erro', 'Erro ao excluir item');
+            } finally {
+              this.isLoading();
+              this.cdRef.detectChanges();
+            }
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
   }
 
-  getTotalCreditCard(cardTableData: CardTableDataResponse): number {
-    return cardTableData.cardTableDataList.reduce((acc, row) => acc + row.billValue, 0);
+  getTotalCreditCard(cardTableData: TableDataResponse): number {
+    return cardTableData.reduce((acc, row) => acc + row.billValue, 0);
   }
 
   async showAlert(header: string, message: string): Promise<void> {

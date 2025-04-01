@@ -17,8 +17,8 @@ export const URL_BASE_DEV = 'https://714e-187-19-226-220.ngrok-free.app'
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
-export const USER_SERVICE = "/users";
-export const BILL_SERVICE = "/bills";
+export const USER_SERVICE = "/user";
+export const BILL_SERVICE = "/bill";
 export const AUTH_SERVICE = "/auth";
 export const AI_ADVICE_SERVICE = "/ai-advice";
 export const PAYMENT_SERVICE = '/payment';
@@ -39,11 +39,10 @@ export const BILLS_SERVICE_BILL_REGISTER = URL_BASE_DEV + BILL_SERVICE + '/bill-
 export const BILLS_SERVICE_CARD_PAYMENT_REGISTER = URL_BASE_DEV + BILL_SERVICE + '/card-payment-register';
 export const LOAD_MAIN_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-main-table-data';
 export const LOAD_CARD_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-card-table-data';
+export const LOAD_ASSETS_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-assets-table-data';
 export const LOAD_PAYMENT_CARD_TABLE_DATA = URL_BASE_DEV + BILL_SERVICE + '/load-payment-card-table-data';
-export const DELETE_ITEM_MAIN_TABLE = URL_BASE_DEV + BILL_SERVICE + '/delete-item-table-main';
-export const DELETE_ITEM_CARD_TABLE = URL_BASE_DEV + BILL_SERVICE + '/delete-item-table-card';
-export const EDIT_ITEM_MAIN_TABLE = URL_BASE_DEV + BILL_SERVICE + '/edit-item-table-main';
-export const EDIT_ITEM_CARD_TABLE = URL_BASE_DEV + BILL_SERVICE + '/edit-item-table-card';
+export const DELETE_ITEM = URL_BASE_DEV + BILL_SERVICE + '/delete';
+export const EDIT_ITEM = URL_BASE_DEV + BILL_SERVICE + '/edit';
 export const GENERATE_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/generate-ai-advice-and-insights';
 export const DELETE_AI_ANALYSIS = URL_BASE_DEV + AI_ADVICE_SERVICE + '/delete-analysis';
 export const GET_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice-and-insights';

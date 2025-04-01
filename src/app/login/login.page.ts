@@ -53,7 +53,7 @@ export class LoginPage implements OnInit {
 
   onLogin() {
     this.loginRequest = {
-      userLogin: this.userLogin,
+      username: this.userLogin,
       password: this.password,
       rememberMe: this.rememberMe
     }

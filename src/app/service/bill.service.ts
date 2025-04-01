@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DELETE_ITEM_CARD_TABLE, 
-         DELETE_ITEM_MAIN_TABLE, 
-         EDIT_ITEM_CARD_TABLE, 
-         EDIT_ITEM_MAIN_TABLE, 
+import { 
          LOAD_CARD_TABLE_DATA, 
          LOAD_MAIN_TABLE_DATA, 
          BILLS_SERVICE_BILL_REGISTER, 
@@ -10,13 +7,16 @@ import { DELETE_ITEM_CARD_TABLE,
          GET_AI_ADVICE,
          DELETE_AI_ANALYSIS,
          BILLS_SERVICE_CARD_PAYMENT_REGISTER,
-         LOAD_PAYMENT_CARD_TABLE_DATA} from 'src/environments/environment';
+         LOAD_PAYMENT_CARD_TABLE_DATA,
+         EDIT_ITEM,
+         DELETE_ITEM,
+         LOAD_ASSETS_TABLE_DATA} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
     HttpParams
 } from '@angular/common/http';
-import { BillRegisterRequest, CardTableDataResponse, GenericResponse, MainTableDataResponse, PaymentCardTableDataResponse } from '../model/main.model';
+import { BillRegisterRequest, GenericResponse, TableDataResponse } from '../model/main.model';
 import { AiAdviceRequest, AiAdviceResponse, Analysis } from '../model/ai-advice.model';
 
 @Injectable({ providedIn: 'root' })
@@ -25,10 +25,8 @@ export class BillService {
     constructor(private http: HttpClient) { }
 
     billRegister(saveRequest: BillRegisterRequest): Promise<string> {
-        const params = new HttpParams().set('isRecurrent', saveRequest.isRecurrent);
-
         const promessa = new Promise<string>((resolve, reject) => {
-            this.http.post<string>(BILLS_SERVICE_BILL_REGISTER, saveRequest, { params: params, responseType: 'json' }).subscribe({
+            this.http.post<string>(BILLS_SERVICE_BILL_REGISTER, saveRequest, { responseType: 'json' }).subscribe({
                 next: (result: string) => {
                     resolve(result);
                 },
@@ -40,28 +38,12 @@ export class BillService {
         return promessa;
     };
 
-    cardPaymentRegister(saveRequest: BillRegisterRequest): Promise<string> {
-        const params = new HttpParams().set('isRecurrent', false);
-
-        const promessa = new Promise<string>((resolve, reject) => {
-            this.http.post<string>(BILLS_SERVICE_CARD_PAYMENT_REGISTER, saveRequest, { params: params, responseType: 'json' }).subscribe({
-                next: (result: string) => {
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                },
-            });
-        });
-        return promessa;
-    };
-
-    loadPaymentCardTableData(billDate: string): Promise<PaymentCardTableDataResponse> {
+    loadPaymentCardTableData(billDate: string): Promise<TableDataResponse> {
         const params = new HttpParams().set('billDate', encodeURIComponent(billDate));
 
-        const promessa = new Promise<PaymentCardTableDataResponse>((resolve, reject) => {
-            this.http.get<PaymentCardTableDataResponse>(LOAD_PAYMENT_CARD_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
-                next: (result: PaymentCardTableDataResponse) => {
+        const promessa = new Promise<TableDataResponse>((resolve, reject) => {
+            this.http.get<TableDataResponse>(LOAD_PAYMENT_CARD_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
+                next: (result: TableDataResponse) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {
@@ -72,12 +54,12 @@ export class BillService {
         return promessa;
     };
 
-    loadMainTableData(billDate: string): Promise<MainTableDataResponse> {
+    loadMainTableData(billDate: string): Promise<TableDataResponse> {
         const params = new HttpParams().set('billDate', encodeURIComponent(billDate));
 
-        const promessa = new Promise<MainTableDataResponse>((resolve, reject) => {
-            this.http.get<MainTableDataResponse>(LOAD_MAIN_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
-                next: (result: MainTableDataResponse) => {
+        const promessa = new Promise<TableDataResponse>((resolve, reject) => {
+            this.http.get<TableDataResponse>(LOAD_MAIN_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
+                next: (result: TableDataResponse) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {
@@ -88,12 +70,12 @@ export class BillService {
         return promessa;
     };
 
-    loadCardTableData(billDate: string): Promise<CardTableDataResponse> {
+    loadCardTableData(billDate: string): Promise<TableDataResponse> {
         const params = new HttpParams().set('billDate', billDate);
 
-        const promessa = new Promise<CardTableDataResponse>((resolve, reject) => {
-            this.http.get<CardTableDataResponse>(LOAD_CARD_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
-                next: (result: CardTableDataResponse) => {
+        const promessa = new Promise<TableDataResponse>((resolve, reject) => {
+            this.http.get<TableDataResponse>(LOAD_CARD_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
+                next: (result: TableDataResponse) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {
@@ -104,11 +86,27 @@ export class BillService {
         return promessa;
     };
 
-    deleteItemFromMainTable(itemId: number): Promise<GenericResponse> {
+    loadAssetsTableData(billDate: string): Promise<TableDataResponse> {
+        const params = new HttpParams().set('billDate', encodeURIComponent(billDate));
+
+        const promessa = new Promise<TableDataResponse>((resolve, reject) => {
+            this.http.get<TableDataResponse>(LOAD_ASSETS_TABLE_DATA, { params: params, responseType: 'json' }).subscribe({
+                next: (result: TableDataResponse) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
+        return promessa;
+    };
+
+    deleteItem(itemId: number): Promise<GenericResponse> {
         const promessa = new Promise<GenericResponse>((resolve, reject) => {
             const params = new HttpParams().set('itemId', itemId.toString());
 
-            this.http.delete<GenericResponse>(DELETE_ITEM_MAIN_TABLE, { params: params, responseType: 'json' }).subscribe({
+            this.http.delete<GenericResponse>(DELETE_ITEM, { params: params, responseType: 'json' }).subscribe({
                 next: (result: GenericResponse) => {
                     resolve(result);
                 },
@@ -120,40 +118,10 @@ export class BillService {
         return promessa;
     };
 
-    deleteItemFromCardTable(itemId: number): Promise<GenericResponse> {
-        const promessa = new Promise<GenericResponse>((resolve, reject) => {
-            const params = new HttpParams().set('itemId', itemId.toString());
-
-            this.http.delete<GenericResponse>(DELETE_ITEM_CARD_TABLE, { params: params, responseType: 'json' }).subscribe({
-                next: (result: GenericResponse) => {
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                },
-            });
-        });
-        return promessa;
-    };
-
-    editItemFromMainTable(billUpdate: BillRegisterRequest): Promise<GenericResponse> {
+    editItem(billUpdate: BillRegisterRequest): Promise<GenericResponse> {
         const promessa = new Promise<GenericResponse>((resolve, reject) => {
 
-            this.http.put<GenericResponse>(EDIT_ITEM_MAIN_TABLE, billUpdate, { responseType: 'json' }).subscribe({
-                next: (result: GenericResponse) => {
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                },
-            });
-        });
-        return promessa;
-    };
-
-    editItemFromCardTable(billUpdate: BillRegisterRequest): Promise<GenericResponse> {
-        const promessa = new Promise<GenericResponse>((resolve, reject) => {
-            this.http.put<GenericResponse>(EDIT_ITEM_CARD_TABLE, billUpdate, { responseType: 'json' }).subscribe({
+            this.http.put<GenericResponse>(EDIT_ITEM, billUpdate, { responseType: 'json' }).subscribe({
                 next: (result: GenericResponse) => {
                     resolve(result);
                 },

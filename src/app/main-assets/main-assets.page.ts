@@ -103,7 +103,7 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
         const updatedItem = result.data;
         this.isLoading();
         try {
-          await this.billService.editItemFromMainTable(updatedItem);
+          await this.billService.editItem(updatedItem);
           await this.loadIncomeData();
           await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
         } catch (error) {
@@ -120,10 +120,7 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
   async loadIncomeData(date: string = this.commonService.formatDate(this.billDate)) {
     this.isLoading();
     try {
-      const result = await this.billService.loadMainTableData(date);
-      this.incomeRows = result.mainTableDataList.filter(row => 
-        row.billType === 'Caixa' || row.billType === 'Ativo' || row.billType === 'Poupança'
-      );
+      this.incomeRows = await this.billService.loadAssetsTableData(date);
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados de ativos e caixa');
     } finally {
@@ -133,17 +130,35 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
   }
 
   async deleteItem(item: any) {
-    this.isLoading();
-    try {
-      await this.billService.deleteItemFromMainTable(item.id);
-      this.incomeRows = this.incomeRows.filter(row => row.id !== item.id);
-      await this.showAlert('Sucesso', 'Item deletado com sucesso');
-    } catch (error) {
-      await this.showAlert('Erro', 'Erro ao deletar item');
-    } finally {
-      this.isLoading();
-      this.cdRef.detectChanges();
-    }
+    const alert = await this.alertController.create({
+      header: 'Confirmação',
+      message: 'Deseja realmente excluir este item?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          role: 'destructive',
+          handler: async () => {
+            this.isLoading();
+            try {
+              await this.billService.deleteItem(item.id);
+              this.incomeRows = this.incomeRows.filter(row => row.id !== item.id);
+              await this.showAlert('Sucesso', 'Item deletado com sucesso');
+            } catch (error) {
+              await this.showAlert('Erro', 'Erro ao deletar item');
+            } finally {
+              this.isLoading();
+              this.cdRef.detectChanges();
+            }
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
   }
 
   async showAlert(header: string, message: string): Promise<void> {

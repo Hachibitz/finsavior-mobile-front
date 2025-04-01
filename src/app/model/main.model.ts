@@ -1,8 +1,8 @@
 export const tableTypes = {
-    MAIN: 'main',
-    CREDIT_CARD: 'credit-card',
-    PAYMENT_CARD: 'payment-card',
-    ASSETS: 'assets'
+    MAIN: 'MAIN',
+    CREDIT_CARD: 'CREDIT_CARD',
+    PAYMENT_CARD: 'PAYMENT_CARD',
+    ASSETS: 'ASSETS'
 }
 
 export interface TipoConta {
@@ -27,17 +27,7 @@ export interface BillRegisterRequest {
     paid: boolean;
 }
 
-export interface MainTableDataResponse {
-    mainTableDataList: BillRegisterRequest[];
-}
-
-export interface CardTableDataResponse {
-    cardTableDataList: BillRegisterRequest[];
-}
-
-export interface PaymentCardTableDataResponse {
-    paymentCardTableDataList: BillRegisterRequest[];
-}
+export type TableDataResponse = BillRegisterRequest[];
 
 export interface GenericResponse {
     status: string;

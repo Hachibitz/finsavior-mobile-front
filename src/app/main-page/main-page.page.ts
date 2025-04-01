@@ -191,7 +191,7 @@ export class MainPageComponent implements OnInit {
 
   async login(): Promise<void> {
     const loginRequest = {
-      userLogin: this.userLogin,
+      username: this.userLogin,
       password: this.password,
       rememberMe: this.rememberMe,
     };

@@ -2,7 +2,7 @@ import { AnalysisTypeEnum } from "./ai-advice.model";
 import { Plan } from "./payment.model";
 
 export interface LoginRequest {
-  userLogin: string;
+  username: string;
   password: string;
   rememberMe: boolean;
 }

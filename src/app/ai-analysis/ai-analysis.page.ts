@@ -213,11 +213,12 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       const currentMonth = this.addMonths(startingDate, i);
   
       const mainTableData = await this.billService.loadMainTableData(this.commonService.formatDate(currentMonth));
-      const incomeData = mainTableData.mainTableDataList.filter(row => ['Caixa', 'Ativo', 'Poupança'].includes(row.billType));
+      const assetsTableData = await this.billService.loadAssetsTableData(this.commonService.formatDate(currentMonth));
+      const incomeData = assetsTableData;
   
       combinedString += `\n--- Mês: ${this.commonService.formatDate(currentMonth)} ---\n`;
       combinedString += '### Dados Gerais (Main Table):\n';
-      combinedString += this.generateFormattedTable(mainTableData.mainTableDataList);
+      combinedString += this.generateFormattedTable(mainTableData);
   
       combinedString += '\n### Rendas (Income Table):\n';
       combinedString += this.generateFormattedTable(incomeData);
@@ -236,7 +237,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       const cardTableData = await this.billService.loadCardTableData(this.commonService.formatDate(currentMonth));
       combinedString += `\n--- Mês: ${this.commonService.formatDate(currentMonth)} ---\n`;
       combinedString += '### Cartões de Crédito (Card Table):\n';
-      combinedString += this.generateFormattedTable(cardTableData.cardTableDataList);
+      combinedString += this.generateFormattedTable(cardTableData);
     }
   
     return combinedString;
