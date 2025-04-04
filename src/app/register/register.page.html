@@ -77,7 +77,11 @@
 
     <ion-item lines="none">
       <ion-checkbox formControlName="agreement"></ion-checkbox>
-      <ion-label>Declaro que li e aceito os <a href="#" (click)="openTermsDialog()">Termos e Condições</a> e <a href="#" (click)="openPrivacyDialog()">Política de Privacidade</a></ion-label>
+      <ion-label>
+        Declaro que li e aceito os 
+        <span class="link" (click)="openTermsDialog()">Termos e Condições</span> e 
+        <span class="link" (click)="openPrivacyDialog()">Política de Privacidade</span>
+      </ion-label>
     </ion-item>
     <ion-text color="danger" *ngIf="registerForm.get('agreement')?.hasError('required') && registerForm.get('agreement')?.touched">
       Você deve aceitar os termos e condições

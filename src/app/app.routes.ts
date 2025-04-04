@@ -21,10 +21,6 @@ export const routes: Routes = [
     loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
   },
   {
-    path: 'terms-and-privacy-dialog',
-    loadComponent: () => import('./modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page').then( m => m.TermsAndPrivacyDialogPage)
-  },
-  {
     path: 'password-forgotten',
     loadComponent: () => import('./password-forgotten/password-forgotten.page').then( m => m.PasswordForgottenPage)
   },
@@ -66,10 +62,12 @@ export const routes: Routes = [
   },
   {
     path: 'my-account',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./my-account/my-account.page').then( m => m.MyAccountPage)
   },
   {
     path: 'billtypes-guide',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./billtypes-guide/billtypes-guide.page').then( m => m.BilltypesGuidePage)
   },
   {
