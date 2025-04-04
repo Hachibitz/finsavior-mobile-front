@@ -26,7 +26,6 @@ export const routes: Routes = [
   },
   {
     path: 'password-forgotten',
-    canActivate: [AuthGuard],
     loadComponent: () => import('./password-forgotten/password-forgotten.page').then( m => m.PasswordForgottenPage)
   },
   {

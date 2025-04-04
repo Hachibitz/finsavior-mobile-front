@@ -8,6 +8,7 @@ import { LoginRequest, SignUpRequest, SignUpResponse } from '../model/user.model
 import { Storage } from '@ionic/storage-angular';
 import { Platform, isPlatform } from '@ionic/angular';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { Observable } from 'rxjs';
 
 declare const google: any;
 declare const gapi: any;
@@ -144,33 +145,12 @@ export class AuthService {
         })
     }
 
-    resetPassword(token: string, newPassword: string): Promise<any> {
-        const promessa = new Promise<any>((resolve, reject) => {
-            this.http.post(PASSWORD_RESET, { token, newPassword }).subscribe({
-                next: (result: any) => {
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                }
-            });
-        });
-        return promessa;
+    resetPassword(token: string, newPassword: string): Observable<any> {
+        return this.http.post(PASSWORD_RESET, { token, newPassword });
     }
 
-    passwordRecovery(identifier: string): Promise<any> {
-        const url = PASSWORD_RESET_REQUEST+"?email="+identifier;
-        const promessa = new Promise<any>((resolve, reject) => {
-            this.http.post(url, null).subscribe({
-                next: (result: any) => {
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                }
-            });
-        });
-        return promessa;
+    passwordRecovery(email: string): Observable<any> {
+        return this.http.post(PASSWORD_RESET_REQUEST, { email });
     }
 
     async isAuthenticated(): Promise<boolean> {

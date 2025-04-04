@@ -105,8 +105,7 @@ export class LoginPage implements OnInit {
   }
 
   redirectToForgottenPassword() {
-    // Lógica para redirecionar para a página de recuperação de senha
-    console.log('Redirecionando para recuperação de senha...');
+    this.router.navigate(['/password-forgotten']);
   }
 
   isLoading() {
