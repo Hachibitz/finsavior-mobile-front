@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-forgotten',
@@ -29,7 +29,8 @@ export class PasswordForgottenPage implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.passwordRecoveryForm = this.fb.group({
       identifier: ['', [Validators.required, Validators.email]]
@@ -41,7 +42,15 @@ export class PasswordForgottenPage implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const token = params['token'];
+      if (token) {
+        this.step = 2;
+        this.resetPasswordForm.patchValue({ token });
+      }
+    });
+  }
 
   async sendRecoveryEmail() {
     if (this.passwordRecoveryForm.invalid) {
