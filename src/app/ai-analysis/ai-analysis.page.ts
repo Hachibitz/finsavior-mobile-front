@@ -102,6 +102,12 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   }
 
   async viewAnalysis(analysis: Analysis): Promise<void> {
+    if (!analysis) {
+      console.error('Análise inválida:', analysis);
+      this.showAlert('Erro', 'Análise não encontrada.');
+      return;
+    }
+
     const modal = await this.modalController.create({
       component: AiAnalysisDetailModalComponent,
       componentProps: { analysis }
@@ -195,11 +201,11 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     try {
       this.isLoading();
       const result = await this.billService.generateAiAdvice(aiAdviceRequest);
-      await this.loadAnalysis();
-      const data = await this.analyses.find(analysis => analysis.id == result.id)!;
-      await this.viewAnalysis(data);
+      const analysis: Analysis = await this.billService.getAiAdviceById(result.id);
+      analysis.analysisType = this.analysisTypeListLabels.filter(type => type.id == analysis.analysisType)[0].label;
+      await this.viewAnalysis(analysis);
     } catch (error: any) {
-      this.showAlert('Erro', error.message || 'Erro ao gerar conselho de IA');
+      this.showAlert('Erro', error.error.message || 'Erro ao gerar conselho de IA');
     } finally {
       this.isLoading();
     }

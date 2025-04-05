@@ -31,7 +31,9 @@ export class AiAnalysisDetailModalComponent implements OnInit {
     private alertController: AlertController
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.analysis);
+  }
 
   closeModal(): void {
     this.modalController.dismiss();
@@ -55,14 +57,14 @@ export class AiAnalysisDetailModalComponent implements OnInit {
   }
 
   async deleteAnalysis(): Promise<void> {
-    this.loading = true;
+    this.isLoading();
     try {
       await this.billService.deleteAiAnalysis(this.analysis.id);
       this.modalController.dismiss({ deleted: true });
     } catch (error) {
       this.showAlert('Erro', 'Erro ao excluir análise');
     } finally {
-      this.loading = false;
+      this.isLoading();
     }
   }
 
@@ -73,5 +75,9 @@ export class AiAnalysisDetailModalComponent implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  isLoading(): void {
+    this.loading = !this.loading;
   }
 }

@@ -34,6 +34,7 @@ export const EDIT_ITEM = URL_BASE_DEV + BILL_SERVICE + '/edit';
 export const GENERATE_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/generate-ai-advice-and-insights';
 export const DELETE_AI_ANALYSIS = URL_BASE_DEV + AI_ADVICE_SERVICE + '/delete-analysis';
 export const GET_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice-and-insights';
+export const GET_AI_ADVICE_BY_ID = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice';
 export const CREATE_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/create-subscription';
 
 export const CLIENT_ID = 'ARBQ9WR2ziMtCYL7jaVFixfJqueUZFrFx1W_tlWdqTCjJf8wSoST6DZrRq9JQb3tqvOVDHmJ9drge69f';

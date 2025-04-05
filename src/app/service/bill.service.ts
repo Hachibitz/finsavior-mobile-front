@@ -10,7 +10,8 @@ import {
          LOAD_PAYMENT_CARD_TABLE_DATA,
          EDIT_ITEM,
          DELETE_ITEM,
-         LOAD_ASSETS_TABLE_DATA} from 'src/environments/environment';
+         LOAD_ASSETS_TABLE_DATA,
+         GET_AI_ADVICE_BY_ID} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
@@ -123,6 +124,20 @@ export class BillService {
 
             this.http.put<GenericResponse>(EDIT_ITEM, billUpdate, { responseType: 'json' }).subscribe({
                 next: (result: GenericResponse) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
+        return promessa;
+    };
+
+    getAiAdviceById(aiAdviceId: number): Promise<Analysis> {
+        const promessa = new Promise<Analysis>((resolve, reject) => {
+            this.http.get<Analysis>(`${GET_AI_ADVICE_BY_ID}/${aiAdviceId}`, { responseType: 'json' }).subscribe({
+                next: (result: Analysis) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {
