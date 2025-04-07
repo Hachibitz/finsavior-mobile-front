@@ -53,7 +53,8 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     private router: Router,
     private authService: AuthService,
     private loadingController: LoadingController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private alertController: AlertController
   ) { }
   
   ngOnInit(): void {
@@ -78,14 +79,11 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async subscribe(plan: any) {
-    console.log('subscribe', plan);
     try {  
       console.log('Current plan:', this.currentPlan);
       if (this.currentPlan.planDs === 'FREE') {
-        console.log('Criando nova sessão de checkout...');
         await this.showLoading();
         const checkoutSession = await this.paymentService.createCheckoutSession(plan.type, this.userEmail);
-        console.log('Checkout session criada:', checkoutSession);
         await this.hideLoading();
         window.location.href = checkoutSession.url;
       } else {
@@ -115,9 +113,10 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     
         await confirmAlert.present();
       }
-    } catch (error) {
-      console.error('Erro no subscribe:', error);
+    } catch (error: any) {
       console.error('Erro ao preparar alteração de plano:', error);
+      this.showErrorAlert('Erro ao preparar alteração de plano', error.message 
+        || 'Erro ao processar a solicitação. Tente novamente mais tarde.');
     }
   }
   
@@ -291,5 +290,14 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
       await this.loadingElement.dismiss();
       this.loadingElement = null;
     }
+  }
+
+  async showErrorAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }

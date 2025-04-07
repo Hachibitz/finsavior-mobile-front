@@ -9,15 +9,12 @@ export class PaymentService {
     constructor(private http: HttpClient) {}
 
     createCheckoutSession(planType: string, email: string): Promise<CheckoutSessionDTO> {
-      console.log('Enviando requisição para:', `${CREATE_CHECKOUT}`);
         const promessa = new Promise<CheckoutSessionDTO>((resolve, reject) => {
             this.http.post<CheckoutSessionDTO>(CREATE_CHECKOUT, { planType, email }).subscribe({
                 next: (result: CheckoutSessionDTO) => {
-                    console.log('Resposta da API:', result);
                     resolve(result);
                 },
                 error: (e) => {
-                    console.error('Erro na chamada:', e);
                     reject(e.error);
                 },
             });
