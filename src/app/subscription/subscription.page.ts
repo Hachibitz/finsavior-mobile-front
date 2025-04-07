@@ -72,6 +72,15 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     this.username = profileData.username;
   }
 
+  handleSubscriptionClick(event: Event, plan: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    setTimeout(() => {
+      this.openPlanChoiceModal(plan);
+    }, 0);
+  }
+
   async subscribe(plan: any) {
     console.log('subscribe', plan);
     try {  

@@ -28,10 +28,9 @@
           <li *ngFor="let feature of plan.monthly.features">✔ {{ feature }}</li>
         </ul>
         <ion-button
-          type="button"
           expand="block"
           [disabled]="plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs"
-          (click)="openPlanChoiceModal(plan)"
+          (click)="handleSubscriptionClick($event, plan)"
         >
           {{ plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs ? 'Plano Atual' : 'Mudar para este plano' }}
         </ion-button>
