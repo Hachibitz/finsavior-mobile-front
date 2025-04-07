@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Escolha o tipo de assinatura</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Fechar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item button (click)="selectPlan(planGroup.monthly)" *ngIf="planGroup.monthly">
+      <ion-label>
+        <h2>Plano Mensal</h2>
+        <p>{{ planGroup.monthly.priceMonthly }}</p>
+        <p *ngIf="planGroup.monthly.trial" class="trial-text">Teste gratuito 7 dias</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item button (click)="selectPlan(planGroup.yearly)" *ngIf="planGroup.yearly">
+      <ion-label>
+        <h2>Plano Anual</h2>
+        <p>{{ planGroup.yearly.priceYearly }} ({{ planGroup.yearly.priceMonthly }}/mês)</p>
+        <p *ngIf="planGroup.yearly.trial" class="trial-text">Teste gratuito 7 dias</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

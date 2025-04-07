@@ -1,0 +1,16 @@
+ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 16px;
+    margin-left: 20px;
+}
+
+.trial-text {
+    color: var(--ion-color-success);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+ion-label p {
+    white-space: normal;
+}

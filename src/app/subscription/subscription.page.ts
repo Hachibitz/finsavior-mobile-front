@@ -12,17 +12,21 @@ import { UserService } from '../service/user.service';
 import { PaymentService } from '../service/payment.service';
 import { PLANS } from '../model/plan.model';
 import { Plan } from '../model/payment.model';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 import { LoginRequest } from '../model/user.model';
 import { AuthService } from '../service/auth.service';
+import { PlanChoiceModalComponent } from '../modal/plan-choice-modal/plan-choice-modal.component';
 
 @Component({
   selector: 'app-subscription',
   templateUrl: './subscription.page.html',
   styleUrls: ['./subscription.page.scss'],
   standalone: true,
+  providers: [
+    ModalController
+  ],
   imports: [
     IonContent, IonHeader, IonTitle, 
     IonToolbar, CommonModule, FormsModule, 
@@ -48,7 +52,8 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     private alertCtrl: AlertController, private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private modalCtrl: ModalController
   ) { }
   
   ngOnInit(): void {
@@ -70,15 +75,6 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     this.currentPlan = profileData.plan;
     this.userEmail = profileData.email;
     this.username = profileData.username;
-  }
-
-  handleSubscriptionClick(event: Event, plan: any) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    setTimeout(() => {
-      this.openPlanChoiceModal(plan);
-    }, 0);
   }
 
   async subscribe(plan: any) {
@@ -247,34 +243,24 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async openPlanChoiceModal(planGroup: any) {
-    console.log('openPlanChoiceModal', planGroup);
-    const buttons = [];
-
-    if (planGroup.monthly) {
-      buttons.push({
-        text: `Mensal - ${planGroup.monthly.priceMonthly}`,
-        handler: () => this.subscribe(planGroup.monthly),
-      });
-    }
-
-    if (planGroup.yearly) {
-      buttons.push({
-        text: `Anual - ${planGroup.yearly.priceYearly}`,
-        handler: () => this.subscribe(planGroup.yearly),
-      });
-    }
-
-    buttons.push({
-      text: 'Cancelar',
-      role: 'cancel',
+    const modal = await this.modalCtrl.create({
+      component: PlanChoiceModalComponent,
+      componentProps: { 
+        planGroup: planGroup 
+      },
+      breakpoints: [0, 0.5, 0.8],
+      initialBreakpoint: 0.5,
+      backdropDismiss: false,
+      cssClass: 'plan-choice-modal'
     });
-
-    const alert = await this.alertCtrl.create({
-      header: 'Escolha o tipo de assinatura',
-      buttons,
+  
+    modal.onDidDismiss().then((data) => {
+      if (data?.data?.selectedPlan) {
+        this.subscribe(data.data.selectedPlan);
+      }
     });
-
-    await alert.present();
+  
+    await modal.present();
   }
 
   async handleSuccessfulCheckout(sessionId: string) {
