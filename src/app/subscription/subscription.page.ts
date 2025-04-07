@@ -75,9 +75,12 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   async subscribe(plan: any) {
     console.log('subscribe', plan);
     try {  
+      console.log('Current plan:', this.currentPlan);
       if (this.currentPlan.planDs === 'FREE') {
+        console.log('Criando nova sessão de checkout...');
         await this.showLoading();
         const checkoutSession = await this.paymentService.createCheckoutSession(plan.type, this.userEmail);
+        console.log('Checkout session criada:', checkoutSession);
         await this.hideLoading();
         window.location.href = checkoutSession.url;
       } else {
@@ -108,6 +111,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
         await confirmAlert.present();
       }
     } catch (error) {
+      console.error('Erro no subscribe:', error);
       console.error('Erro ao preparar alteração de plano:', error);
     }
   }
