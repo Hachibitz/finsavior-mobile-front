@@ -55,10 +55,10 @@
   <ion-content>
     <ion-list>
       <ion-item (click)="navigateTo('my-account')">Minha Conta</ion-item>
-      <ion-item (click)="navigateTo('suggestions')">Sugestões</ion-item>
+      <ion-item (click)="navigateTo('suggestions')">Fale conosco</ion-item>
       <ion-item (click)="navigateTo('billtypes-guide')">Guia de contas</ion-item>
       <ion-item (click)="logout()">Sair</ion-item>
-      <ion-item (click)="upgradeToPro()">Seja PRO</ion-item>
+      <ion-item (click)="upgradeToPro()">Assinatura premium</ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>
@@ -89,6 +89,11 @@
       <ion-tab-button tab="ai-analysis">
         <ion-icon name="bar-chart"></ion-icon>
         <ion-label>IA</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="subscription">
+        <ion-icon name="card"></ion-icon>
+        <ion-label>Planos</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

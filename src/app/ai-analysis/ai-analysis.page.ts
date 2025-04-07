@@ -156,7 +156,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   
         const haveCoverage = this.validateSelectedAnalisysAndPlan(this.userData, analysisTypeId);
         if (!haveCoverage) {
-          this.showAlert(
+          this.showUpgradePlanAlert(
             'Aviso',
             'Seu plano não cobre a análise selecionada. Faça o upgrade agora mesmo!'
           );
@@ -170,17 +170,29 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   }
 
   validateSelectedAnalisysAndPlan(userData: UserData, selectedAnalisys: number): boolean {
-    const plan: Plan = PlanEnum.find(profilePlan => profilePlan.planId == userData.plan.planId)!!;
-    const coverageList: AnalysisType[] = Object.values(PlanCoverageEnum).find(planCoverage => planCoverage.planId === plan.planId)!!.coverages;
-
-    const chosenAnalysis: AnalysisType = coverageList.find(coverage => coverage.analysisTypeId == selectedAnalisys)!!;
-
-    if(chosenAnalysis) {
-      return true;
+    const allCoverages = Object.values(PlanCoverageEnum);
+  
+    for (const planCoverage of allCoverages) {
+      if ('planIdList' in planCoverage) {
+        if (planCoverage.planIdList.includes(userData.plan.planId)) {
+          const chosenAnalysis = planCoverage.coverages.find(
+            coverage => coverage.analysisTypeId === selectedAnalisys
+          );
+          return !!chosenAnalysis;
+        }
+      }
+      else if ('planId' in planCoverage) {
+        if (planCoverage.planId === userData.plan.planId) {
+          const chosenAnalysis = planCoverage.coverages.find(
+            coverage => coverage.analysisTypeId === selectedAnalisys
+          );
+          return !!chosenAnalysis;
+        }
+      }
     }
-
+  
     return false;
-  }
+  }  
   
   async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date): Promise<void> {
     const [mainAndIncomeTable, cardTable] = await Promise.all([
@@ -286,6 +298,27 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     });
     await alert.present();
   }
+
+  async showUpgradePlanAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: [
+        {
+          text: 'Planos',
+          handler: () => {
+            this.router.navigate(['main-page/subscription']);
+          }
+        },
+        {
+          text: 'Fechar',
+          role: 'cancel'
+        }
+      ]
+    });
+  
+    await alert.present();
+  }  
 
   isLoading(): void {
     this.loading = !this.loading;

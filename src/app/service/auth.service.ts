@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AUTH_SERVICE, GOOGLE_LOGIN, PASSWORD_RESET, PASSWORD_RESET_REQUEST, REFRESH_TOKEN, SERVICE_LOGIN, SIGNUP_SERVICE, VALIDATE_TOKEN_SERVICE } from 'src/environments/environment';
+import { AUTH_SERVICE, GOOGLE_LOGIN, PASSWORD_RESET, PASSWORD_RESET_REQUEST, REFRESH_TOKEN, SERVICE_LOGIN, SIGNUP_SERVICE, VALIDATE_LOGIN, VALIDATE_TOKEN_SERVICE } from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse
@@ -45,6 +45,19 @@ export class AuthService {
             },
           });
         });
+    }
+    
+    async validateLogin(loginRequest: LoginRequest): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.http.post<{ accessToken: string; refreshToken: string }>(VALIDATE_LOGIN, loginRequest).subscribe({
+              next: (result) => {
+                resolve();
+              },
+              error: (e: HttpErrorResponse) => {
+                reject(e);
+              },
+            });
+          });
     }      
 
     async googleSignIn() {

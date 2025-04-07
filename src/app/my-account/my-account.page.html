@@ -10,8 +10,42 @@
     <h2>{{ profileDataForm.value.name }}</h2>
   </div>
 
+  <div class="plans-container ion-margin-top">
+    <ion-card class="plan-card active" *ngIf="profilePlan">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ profilePlan.split('_')[1] }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="ion-text-center">
+        <ion-label>
+          Este é o seu plano atual.
+        </ion-label>
+        <ion-chip color="success" *ngIf="profilePlan === 'FREE'">Gratuito</ion-chip>
+        <ion-chip color="warning" *ngIf="profilePlan === 'BASIC'">Básico</ion-chip>
+        <ion-chip color="primary" *ngIf="profilePlan === 'PLUS'">Plus</ion-chip>
+        <ion-chip color="tertiary" *ngIf="profilePlan === 'PREMIUM'">Premium</ion-chip>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <ion-button expand="full" (click)="openChangePasswordModal()">Alterar Senha</ion-button>
   <ion-button expand="full" (click)="openProfileEditModal()">Editar Perfil</ion-button>
+
+  <ion-button *ngIf="profilePlan === 'FREE'" expand="full" color="success" (click)="navigateTo('/main-page/subscription')">
+    Ver Planos Disponíveis
+  </ion-button>
+  
+  <ion-button *ngIf="profilePlan !== 'FREE'" expand="full" color="warning" (click)="navigateTo('/main-page/subscription')">
+    Alterar Plano
+  </ion-button>
+
+  <ion-button *ngIf="profilePlan !== 'FREE'" expand="full" color="primary" (click)="openCustomerPortal()">
+    Atualizar Forma de Pagamento
+  </ion-button>
+  
+  <ion-button *ngIf="profilePlan !== 'FREE'" expand="full" color="medium" (click)="confirmCancelSubscription()">
+    Cancelar Assinatura
+  </ion-button>  
+
   <ion-button expand="full" color="danger" (click)="openDeleteAccountModal()">Excluir Conta</ion-button>
   <ion-button expand="full" (click)="navigateTo('/main-page')">Voltar</ion-button>
 </ion-content>

@@ -7,42 +7,33 @@ export interface Plan {
 
 export const PlanEnum: Plan[] = [
   { planId: "1L", planDs: "FREE" },
-  { planId: "P-2BA47576SC596340BMZMJJRQ", planDs: "PLUS" },
-  { planId: "3L", planDs: "PREMIUM" },
+  { planId: "prod_S4glYFmVdBHCgV", planDs: "BASIC" },
+  { planId: "prod_S4gn06jEDZZ0Sk", planDs: "BASIC" },
+  { planId: "prod_S4goVk8ymnbNd7", planDs: "PLUS" },
+  { planId: "prod_S4goyrBbOeFrR2", planDs: "PLUS" },
+  { planId: "prod_S4gsYwP1g3VUYG", planDs: "PREMIUM" },
+  { planId: "prod_S4gq1Q2s1Et4tm", planDs: "PREMIUM" },
 ];
+
 
 export const PlanCoverageEnum = {
-  FREE: { planId: "1L", coverages: [AnalysisTypeEnum.FREE] },
+  FREE: {
+    planId: "1L",
+    coverages: [AnalysisTypeEnum.FREE],
+  },
+  BASIC: {
+    planIdList: ["prod_S4glYFmVdBHCgV", "prod_S4gn06jEDZZ0Sk"],
+    coverages: [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER],
+  },
   PLUS: {
-    planId: "P-2BA47576SC596340BMZMJJRQ",
-    coverages: [
-      AnalysisTypeEnum.FREE,
-      AnalysisTypeEnum.TRIMESTER,
-      AnalysisTypeEnum.ANNUAL,
-    ],
+    planIdList: ["prod_S4goVk8ymnbNd7", "prod_S4goyrBbOeFrR2"],
+    coverages: [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL],
   },
   PREMIUM: {
-    planId: "3L",
-    coverages: [
-      AnalysisTypeEnum.FREE,
-      AnalysisTypeEnum.TRIMESTER,
-      AnalysisTypeEnum.ANNUAL,
-    ],
+    planIdList: ["prod_S4gsYwP1g3VUYG", "prod_S4gq1Q2s1Et4tm"],
+    coverages: [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL],
   },
 };
-
-export const PLANS_LIST = [
-  {
-    id: "P-2TA181839T788105KMZLY6NY",
-    name: "PREMIUM",
-    price: 10.99,
-  },
-  {
-    id: "P-2BA47576SC596340BMZMJJRQ",
-    name: "PLUS",
-    price: 5.99,
-  },
-];
 
 export interface SubscriptionRequest {
   planId: string;

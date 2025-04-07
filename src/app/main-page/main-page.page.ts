@@ -217,8 +217,7 @@ export class MainPageComponent implements OnInit {
   }
 
   async upgradeToPro(): Promise<void> {
-    // Implementar funcionalidade para "Seja PRO"
-    console.log('Upgrade para PRO solicitado.');
+    this.router.navigate(['subscription']);
   }
 
   isLoading(): void {

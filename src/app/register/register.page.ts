@@ -81,7 +81,8 @@ export class RegisterPage implements OnInit {
         this.redirectToLogin();        
       })
       .catch((error) => {
-        this.presentAlert(error.error.message); 
+        const errorMessage = error.error ? error.error : error.error.message;
+        this.presentAlert(errorMessage ? errorMessage : 'Erro ao realizar o cadastro. Tente novamente mais tarde.'); 
       })
       .finally(() => {
         this.isLoading();
