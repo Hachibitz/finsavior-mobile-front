@@ -217,7 +217,7 @@ export class MainPageComponent implements OnInit {
   }
 
   async upgradeToPro(): Promise<void> {
-    this.router.navigate(['subscription']);
+    this.router.navigate(['main-page/subscription']);
   }
 
   isLoading(): void {

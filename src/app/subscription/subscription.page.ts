@@ -73,6 +73,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async subscribe(plan: any) {
+    console.log('subscribe', plan);
     try {  
       if (this.currentPlan.planDs === 'FREE') {
         await this.showLoading();
@@ -233,6 +234,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async openPlanChoiceModal(planGroup: any) {
+    console.log('openPlanChoiceModal', planGroup);
     const buttons = [];
 
     if (planGroup.monthly) {
