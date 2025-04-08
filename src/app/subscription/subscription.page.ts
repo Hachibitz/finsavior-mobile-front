@@ -12,7 +12,7 @@ import { UserService } from '../service/user.service';
 import { PaymentService } from '../service/payment.service';
 import { PLANS } from '../model/plan.model';
 import { Plan } from '../model/payment.model';
-import { AlertController, LoadingController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 import { LoginRequest } from '../model/user.model';
@@ -37,7 +37,7 @@ import { PlanChoiceModalComponent } from '../modal/plan-choice-modal/plan-choice
 })
 export class SubscriptionPage implements OnInit, ViewWillEnter {
 
-  private loadingElement: HTMLIonLoadingElement | null = null;
+  loading: boolean = false;
 
   plans = PLANS;
 
@@ -52,7 +52,6 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     private alertCtrl: AlertController, private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private loadingController: LoadingController,
     private modalCtrl: ModalController,
     private alertController: AlertController
   ) { }
@@ -79,8 +78,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async subscribe(plan: any) {
-    try {  
-      console.log('Current plan:', this.currentPlan);
+    try {
       if (this.currentPlan.planDs === 'FREE') {
         await this.showLoading();
         const checkoutSession = await this.paymentService.createCheckoutSession(plan.type, this.userEmail);
@@ -145,6 +143,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
         {
           text: 'Confirmar',
           handler: async (data) => {
+            await loginAlert.dismiss();
             await this.showLoading();
             const loginRequest: LoginRequest = {
               username: data.username,
@@ -273,23 +272,6 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   
     await alert.onDidDismiss();
     this.router.navigate(['main-page/debits']);
-  }  
-
-  async showLoading(message: string = 'Carregando...') {
-    this.loadingElement = await this.loadingController.create({
-      message,
-      spinner: 'crescent',
-      backdropDismiss: false,
-      cssClass: 'custom-loading'
-    });
-    await this.loadingElement!.present();
-  }
-  
-  async hideLoading() {
-    if (this.loadingElement) {
-      await this.loadingElement.dismiss();
-      this.loadingElement = null;
-    }
   }
 
   async showErrorAlert(header: string, message: string): Promise<void> {
@@ -299,5 +281,13 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  hideLoading() {
+    this.loading = false;
+  }
+
+  showLoading() {
+    this.loading = true;
   }
 }

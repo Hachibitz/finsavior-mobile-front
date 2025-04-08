@@ -3,7 +3,7 @@ export const environment = {
   googleClientId: '770396493441-m20ptqar465dckq4ur9hg597t6tq7v3o.apps.googleusercontent.com'
 };
 
-export const URL_BASE_DEV = 'https://www.finsavior.com.br/api'
+export const URL_BASE_DEV = 'http://localhost:8085/api'
 
 export const USER_SERVICE = "/user";
 export const BILL_SERVICE = "/bill";

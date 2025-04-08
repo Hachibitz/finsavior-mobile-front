@@ -5,6 +5,10 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+
   <div class="profile-header">
     <img [src]="profilePicturePreview || 'assets/default-profile.png'" alt="Foto de Perfil" class="profile-picture">
     <h2>{{ profileDataForm.value.name }}</h2>

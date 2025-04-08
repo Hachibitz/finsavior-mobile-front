@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AlertController, ModalController, LoadingController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { 
   IonContent, IonHeader, IonTitle, 
   IonToolbar, IonButton, IonLabel,
@@ -44,7 +44,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
   profileDataForm: FormGroup;
   profilePicturePreview: string | null = null;
   profilePlan: string = "";
-  private loadingElement: HTMLIonLoadingElement | null = null;
+  loading: boolean = false;
   userEmail: string = '';
 
   constructor(
@@ -55,7 +55,6 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
     private router: Router,
     private paymentService: PaymentService,
     private authService: AuthService,
-    private loadingController: LoadingController
   ) {
     this.passwordForm = this.fb.group({
       username: ['', Validators.required],
@@ -252,6 +251,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
         {
           text: 'Confirmar',
           handler: async (data) => {
+            await loginAlert.dismiss();
             await this.showLoading();
             const loginRequest: LoginRequest = {
               username: data.username,
@@ -308,7 +308,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
   }
 
   async openCustomerPortal() {
-    await this.showLoading("Redirecionando...");
+    await this.showLoading();
     try {
       const email = this.userEmail
       const response = await this.paymentService.createCustomerPortalSession(email);
@@ -324,21 +324,12 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
     this.router.navigate([path]);
   }
 
-  async showLoading(message: string = 'Carregando...') {
-    this.loadingElement = await this.loadingController.create({
-      message,
-      spinner: 'crescent',
-      backdropDismiss: false,
-      cssClass: 'custom-loading'
-    });
-    await this.loadingElement!.present();
+  async showLoading() {
+    this.loading = true;
   }
   
   async hideLoading() {
-    if (this.loadingElement) {
-      await this.loadingElement.dismiss();
-      this.loadingElement = null;
-    }
+    this.loading = false;
   }
 
 }
