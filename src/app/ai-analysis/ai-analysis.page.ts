@@ -150,11 +150,11 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       component: AiAnalysisCreateModalComponent
     });
   
-    modal.onDidDismiss().then((result) => {
+    modal.onDidDismiss().then(async (result) => {
       if (result.role === 'submit' && result.data) {
         const { analysisTypeId, selectedDate, temperature, finishDate } = result.data;
   
-        const haveCoverage = this.validateSelectedAnalisysAndPlan(this.userData, analysisTypeId);
+        const haveCoverage = await this.validateSelectedAnalisysAndPlan(analysisTypeId);
         if (!haveCoverage) {
           this.showUpgradePlanAlert(
             'Aviso',
@@ -169,29 +169,8 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     await modal.present();
   }
 
-  validateSelectedAnalisysAndPlan(userData: UserData, selectedAnalisys: number): boolean {
-    const allCoverages = Object.values(PlanCoverageEnum);
-  
-    for (const planCoverage of allCoverages) {
-      if ('planIdList' in planCoverage) {
-        if (planCoverage.planIdList.includes(userData.plan.planId)) {
-          const chosenAnalysis = planCoverage.coverages.find(
-            coverage => coverage.analysisTypeId === selectedAnalisys
-          );
-          return !!chosenAnalysis;
-        }
-      }
-      else if ('planId' in planCoverage) {
-        if (planCoverage.planId === userData.plan.planId) {
-          const chosenAnalysis = planCoverage.coverages.find(
-            coverage => coverage.analysisTypeId === selectedAnalisys
-          );
-          return !!chosenAnalysis;
-        }
-      }
-    }
-  
-    return false;
+  async validateSelectedAnalisysAndPlan(selectedAnalisys: number): Promise<boolean> {
+    return await this.billService.validateHasCoverage(selectedAnalisys)
   }  
   
   async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date): Promise<void> {

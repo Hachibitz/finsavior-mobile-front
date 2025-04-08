@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-export const URL_BASE_DEV = 'http://localhost:8085/api'
+export const URL_BASE_DEV = 'https://www.finsavior.com.br/api'
 
 /*
  * For easier debugging in development mode, you can import the following file
@@ -48,6 +48,7 @@ export const GENERATE_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/generate-
 export const DELETE_AI_ANALYSIS = URL_BASE_DEV + AI_ADVICE_SERVICE + '/delete-analysis';
 export const GET_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice-and-insights';
 export const GET_AI_ADVICE_BY_ID = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice';
+export const VALIDATE_HAS_COVERAGE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/validate-has-coverage';
 export const CREATE_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/create-subscription';
 export const CREATE_CHECKOUT = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/create-checkout';
 export const CANCEL_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/cancel';

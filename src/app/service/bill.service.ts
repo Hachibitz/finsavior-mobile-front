@@ -11,7 +11,8 @@ import {
          EDIT_ITEM,
          DELETE_ITEM,
          LOAD_ASSETS_TABLE_DATA,
-         GET_AI_ADVICE_BY_ID} from 'src/environments/environment';
+         GET_AI_ADVICE_BY_ID,
+         VALIDATE_HAS_COVERAGE} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
@@ -189,5 +190,18 @@ export class BillService {
             });
         });
         return promessa;
+    }
+
+    validateHasCoverage(analysisId: number): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.http.get<boolean>(`${VALIDATE_HAS_COVERAGE}/${analysisId}`, { responseType: 'json' }).subscribe({
+                next: (result: boolean) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
     }
 }
