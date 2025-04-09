@@ -1,32 +1,23 @@
 import { Injectable } from '@angular/core';
-import { AUTH_SERVICE, GOOGLE_LOGIN, PASSWORD_RESET, PASSWORD_RESET_REQUEST, REFRESH_TOKEN, SERVICE_LOGIN, SIGNUP_SERVICE, VALIDATE_LOGIN, VALIDATE_TOKEN_SERVICE } from 'src/environments/environment';
+import { PASSWORD_RESET, PASSWORD_RESET_REQUEST, REFRESH_TOKEN, SERVICE_LOGIN, SIGNUP_SERVICE, VALIDATE_LOGIN, VALIDATE_TOKEN_SERVICE } from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse
 } from '@angular/common/http';
 import { LoginRequest, SignUpRequest, SignUpResponse } from '../model/user.model';
 import { Storage } from '@ionic/storage-angular';
-import { Platform, isPlatform } from '@ionic/angular';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Observable } from 'rxjs';
-
-declare const google: any;
-declare const gapi: any;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
     private _storage: Storage | null = null;
 
-    constructor(private http: HttpClient, private storage: Storage, private platform: Platform) {
+    constructor(
+        private http: HttpClient, 
+        private storage: Storage
+    ) {
         this.initStorage();
-
-        if(!isPlatform("capacitor")) {
-            GoogleAuth.initialize();
-        }
-        this.platform.ready().then(() => {
-            GoogleAuth.initialize();
-        })
     }
 
     async initStorage() {
@@ -58,66 +49,6 @@ export class AuthService {
               },
             });
           });
-    }      
-
-    async googleSignIn() {
-        return await GoogleAuth.signIn();
-    }
-
-    /*implement when possible
-    async googleSignIn2(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            google.accounts.id.initialize({
-            client_id: environment.googleClientId, // Substitua pelo seu Client ID
-            callback: (response: any) => {
-                if (response && response.credential) {
-                const user = this.decodeJwt(response.credential);
-                resolve(user);
-                } else {
-                reject('Erro ao autenticar com Google');
-                }
-            },
-            });
-
-            google.accounts.id.prompt(); // Exibe o prompt de login do Google
-        });
-    }
-
-    decodeJwt(token: string): any {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(atob(base64));
-    }*/
-
-    async googleLogout(): Promise<void> {
-        await GoogleAuth.signOut(); // Apenas para logout visual (opcional)
-        this.clearStorage();
-    }
-
-    checkGoogleLoggedIn() {
-        GoogleAuth.refresh()
-        .then((data) => {
-            if (data.accessToken) {
-                this.setAccessToken(data.accessToken);
-            }
-        })
-        .catch((error) => {
-            this.refreshToken();
-        });
-    }
-
-    loginWithGoogle(idToken: string): Promise<{ accessToken: string; refreshToken: string }> {
-        return new Promise<{ accessToken: string; refreshToken: string }>((resolve, reject) => {
-            this.http.post<{ accessToken: string; refreshToken: string }>(GOOGLE_LOGIN, idToken).subscribe({
-                next: (result: { accessToken: string; refreshToken: string }) => {
-                    this.setTokens(result.accessToken, result.refreshToken);
-                    resolve(result);
-                },
-                error: (e: HttpErrorResponse) => {
-                    reject(e);
-                },
-            });
-        });
     }
       
 

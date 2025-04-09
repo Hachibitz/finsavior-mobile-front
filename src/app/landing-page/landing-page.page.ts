@@ -7,6 +7,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
+import { GoogleAuthService } from '../service/google-auth.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -21,11 +22,12 @@ import { AuthService } from '../service/auth.service';
 })
 export class LandingPagePage implements OnInit {
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private googleAuthService: GoogleAuthService) { }
 
   async ngOnInit(): Promise<void> {
-    await this.authService.checkGoogleLoggedIn();
-    const isLoggedIn = await this.authService.isAuthenticated();
+    const isLoggedInGoogle = await this.googleAuthService.observeFirebaseAuthState();
+    const isAuthenticated = await this.authService.isAuthenticated();
+    const isLoggedIn = isAuthenticated || isLoggedInGoogle
 
     if(isLoggedIn) {
       this.router.navigate(['/main-page/debits']);

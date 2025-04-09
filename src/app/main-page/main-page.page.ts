@@ -24,6 +24,7 @@ import { addIcons } from 'ionicons';
 import { wallet, cash, statsChart, calendar, barChart, card, personCircleOutline } from 'ionicons/icons';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
+import { GoogleAuthService } from '../service/google-auth.service';
 
 addIcons({
   'wallet': wallet,
@@ -90,6 +91,7 @@ export class MainPageComponent implements OnInit {
     private userService: UserService,
     private commonService: CommonService,
     private authService: AuthService,
+    private googleAuthService: GoogleAuthService,
     private router: Router
   ) {
     this.mainTableForm = this.fb.group({
@@ -212,6 +214,7 @@ export class MainPageComponent implements OnInit {
   }
 
   async logout(): Promise<void> {
+    await this.googleAuthService.logoutFromGoogle();
     await this.authService.logout();
     this.navigateTo('login');
   }

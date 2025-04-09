@@ -12,6 +12,7 @@ import {
   IonCardHeader, IonCardTitle, IonCheckbox,
   IonInput 
 } from '@ionic/angular/standalone';
+import { GoogleAuthService } from '../service/google-auth.service';
 
 @Component({
   selector: 'app-login',
@@ -39,7 +40,12 @@ export class LoginPage implements OnInit {
   loading: boolean = false;
   googleUser: any;
 
-  constructor(private router: Router, private authService: AuthService, private alertController: AlertController) {
+  constructor(
+    private router: Router, 
+    private authService: AuthService, 
+    private alertController: AlertController, 
+    private googleAuthService: GoogleAuthService
+  ) {
 
   }
 
@@ -72,18 +78,13 @@ export class LoginPage implements OnInit {
 
   async googleSignIn() {
     try {
-      const googleUser = await this.authService.googleSignIn();
-      const idToken = googleUser.authentication.idToken;
-
-      this.authService.loginWithGoogle(idToken).then(() => {
-        this.router.navigate(['/main-page/debits']);
-      }).catch((error) => {
-        this.showAlert('Erro', 'Falha ao autenticar com Google');
-      });
+      const idToken = await this.googleAuthService.signIn();
+      await this.googleAuthService.googleRefreshSignIn(idToken.idToken);
+      this.router.navigate(['/main-page/debits']);
     } catch (error) {
-      this.showAlert('Erro', 'Falha no login com Google');
+      this.showAlert('Erro', 'Falha ao autenticar com Google');
     }
-  }
+  }  
 
   clearCredentials() {
     this.userLogin = '';

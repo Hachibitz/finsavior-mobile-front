@@ -3,12 +3,20 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { catchError, from, mergeMap, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
+import { GoogleAuthService } from '../service/google-auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private googleAuthService: GoogleAuthService
+  ) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     return from(this.authService.getToken()).pipe(
       mergeMap(token => {
         if (token) {
@@ -19,33 +27,58 @@ export class TokenInterceptor implements HttpInterceptor {
             },
           });
         }
-  
+    
         return next.handle(request).pipe(
-          catchError(error => {
-            if (error.status === 401) {
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401 || error.status === 403) {
               return from(this.authService.refreshToken()).pipe(
-                mergeMap(newToken => {
+                mergeMap((newToken) => {
                   const clonedRequest = request.clone({
                     setHeaders: {
                       Authorization: `Bearer ${newToken}`,
                       "ngrok-skip-browser-warning": "69420",
                     },
                   });
-  
                   return next.handle(clonedRequest);
                 }),
                 catchError(refreshError => {
-                  this.router.navigate(['login']);
-                  return throwError(() => refreshError);
+                  return from(this.googleAuthService.observeFirebaseAuthState()).pipe(
+                    switchMap(success => {
+                      if (success) {
+                        return from(this.authService.getToken()).pipe(
+                          switchMap(recoveredToken => {
+                            if (recoveredToken) {
+                              const retryRequest = request.clone({
+                                setHeaders: {
+                                  Authorization: `Bearer ${recoveredToken}`,
+                                  "ngrok-skip-browser-warning": "69420",
+                                },
+                              });
+                              return next.handle(retryRequest);
+                            }
+    
+                            this.router.navigate(['/login']);
+                            return throwError(() => refreshError);
+                          })
+                        );
+                      }
+    
+                      this.router.navigate(['/login']);
+                      return throwError(() => refreshError);
+                    }),
+                    catchError(firebaseError => {
+                      this.router.navigate(['/login']);
+                      return throwError(() => firebaseError);
+                    })
+                  );
                 })
               );
             }
-  
+    
             return throwError(() => error);
           })
         );
       })
-    );
+    );    
   }
-  
 }
