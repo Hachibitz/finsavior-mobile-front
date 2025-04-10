@@ -1,0 +1,68 @@
+<ion-header [translucent]="true" style="display: flex; flex-direction: row;">
+  <ion-buttons slot="start">
+    <div class="logo-finsavior">
+      <img [src]="'assets/logo.png'">
+    </div>
+  </ion-buttons>
+  <ion-buttons slot="end">
+    <ion-toolbar>
+      <ion-title>Contato</ion-title>
+    </ion-toolbar>
+  </ion-buttons>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="overlay" *ngIf="loading">
+    <div class="custom-loader"></div>
+  </div>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Fale Conosco</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="submitTicket(form)" #form="ngForm">
+
+        <ion-item>
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input [(ngModel)]="ticket.name" name="name" #name="ngModel" required></ion-input>
+        </ion-item>
+        <ion-text *ngIf="name.invalid && name.touched" color="danger" class="error-msg">
+          Nome é obrigatório
+        </ion-text>
+      
+        <ion-item>
+          <ion-label position="floating">Tipo de contato</ion-label>
+          <ion-select [(ngModel)]="ticket.type" name="type" #type="ngModel" interface="popover" required>
+            <ion-select-option value="SUPPORT">Suporte</ion-select-option>
+            <ion-select-option value="SUGGESTION">Sugestões / Elogios</ion-select-option>
+            <ion-select-option value="CRITICISM">Críticas</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-text *ngIf="type.invalid && type.touched" color="danger" class="error-msg">
+          Selecione o tipo de contato
+        </ion-text>
+      
+        <ion-item>
+          <ion-label position="floating">Mensagem</ion-label>
+          <ion-textarea [(ngModel)]="ticket.message" name="message" #message="ngModel" required></ion-textarea>
+        </ion-item>
+        <ion-text *ngIf="message.invalid && message.touched" color="danger" class="error-msg">
+          Mensagem é obrigatória
+        </ion-text>
+
+        <ion-text color="medium" class="disclaimer-text">
+          Seu email de cadastro será utilizado para eventuais respostas e acompanhamento. Certifique-se de que está correto.
+        </ion-text>
+      
+        <ion-button expand="block" type="submit" [disabled]="form.invalid">
+          Enviar
+        </ion-button>
+      </form>
+    </ion-card-content>
+
+    <div style="display: flex; justify-content: center; align-items: center; max-width: 100px; max-height: 100px; margin: 0 auto;">
+      <img src="assets/logo.png" style="max-width: 100%; max-height: 100%;">
+    </div>
+  </ion-card>
+</ion-content>
