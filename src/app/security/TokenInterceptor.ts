@@ -17,7 +17,14 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    return from(this.authService.getToken()).pipe(
+    const publicRoutes = ['/login', '/register', '/landing-page', '/password-forgotten'];
+    const currentUrl = this.router.url;
+  
+    if (publicRoutes.some(route => currentUrl.startsWith(route))) {
+      return next.handle(request);
+    }
+  
+    return from(this.authService.getToken()).pipe(  
       mergeMap(token => {
         if (token) {
           request = request.clone({
