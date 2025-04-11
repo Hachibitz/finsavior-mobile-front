@@ -82,12 +82,16 @@ export class TicketPage implements ViewWillEnter {
     try {
       await firstValueFrom(this.http.post(TICKET_CONTACT, this.ticket));
       this.showAlert('Sucesso', 'Mensagem enviada com sucesso!');
-      this.router.navigate(['/main-page']);
+      this.redirectToMainPage();
     } catch (error) {
       this.showAlert('Erro', 'Erro ao enviar sua mensagem. Tente novamente.');
     } finally {
       this.hideLoading()
     }
+  }
+
+  redirectToMainPage() {
+    this.router.navigate(['/main-page']);
   }
 
   async showAlert(header: string, message: string): Promise<void> {

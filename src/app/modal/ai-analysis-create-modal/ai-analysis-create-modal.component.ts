@@ -62,9 +62,16 @@ export class AiAnalysisCreateModalComponent {
       date: ['', Validators.required],
       temperature: [this.temperatureSliderValue, Validators.required]
     });
-
+  
+    const currentMonth = new Date();
+    currentMonth.setHours(0, 0, 0, 0);
+    this.form.patchValue({ date: currentMonth });
+    this.form.get('date')?.markAsDirty(); 
+    this.form.get('date')?.updateValueAndValidity();
+  
     this.checkUserPlan();
   }
+  
 
   dismissModal(role: string = 'cancel') {
     this.modalController.dismiss(null, role);

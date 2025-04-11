@@ -77,12 +77,15 @@ export class LoginPage implements OnInit {
   }
 
   async googleSignIn() {
+    this.isLoading();
     try {
       const idToken = await this.googleAuthService.signIn();
       await this.googleAuthService.googleRefreshSignIn(idToken.idToken);
       this.router.navigate(['/main-page/debits']);
     } catch (error) {
       this.showAlert('Erro', 'Falha ao autenticar com Google');
+    } finally {
+      this.isLoading();
     }
   }  
 

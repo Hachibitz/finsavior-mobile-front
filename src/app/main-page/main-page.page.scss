@@ -15,11 +15,6 @@ ion-tab-button {
     margin: auto;
 }
 
-.logo-finsavior {
-    max-width: 50px;
-    max-height: 50px;
-}
-
 .dropdown-menu {
     position: absolute;
     top: 60px;
@@ -51,3 +46,16 @@ ion-tab-button {
     border-radius: 8px;
     z-index: 1000;
 }
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .user-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ion-color-primary);
+  }
+  

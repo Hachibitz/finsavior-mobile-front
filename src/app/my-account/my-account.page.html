@@ -1,6 +1,14 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Minha Conta</ion-title>
+    <ion-buttons slot="start">
+      <div style="display: flex; align-items: center;">
+        <img src="assets/logo.png" class="logo-finsavior">
+        <ion-title style="margin: 0;">Minha conta</ion-title>
+      </div>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="navigateTo('/main-page')">Voltar</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -51,5 +59,4 @@
   </ion-button>  
 
   <ion-button expand="full" color="danger" (click)="openDeleteAccountModal()">Excluir Conta</ion-button>
-  <ion-button expand="full" (click)="navigateTo('/main-page')">Voltar</ion-button>
 </ion-content>

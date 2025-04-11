@@ -101,6 +101,10 @@ export class PasswordForgottenPage implements OnInit {
     );
   }
 
+  redirectToLogin() {
+    this.router.navigate(['/login']);
+  }
+
   isLoading(): void {
     this.loading = !this.loading;
   }

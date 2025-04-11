@@ -7,7 +7,7 @@ import {
   IonToolbar, IonButton, IonLabel,
   IonItem, IonInput, IonChip, 
   IonCard, IonCardContent, IonCardHeader,
-  IonCardTitle, 
+  IonCardTitle, IonButtons
 } from '@ionic/angular/standalone';
 import { UserService } from '../service/user.service';
 import { ProfileEditModalComponent } from '../modal/profile-edit/profile-edit-modal.component';
@@ -33,7 +33,7 @@ import { LoginRequest } from '../model/user.model';
     ReactiveFormsModule, IonButton, IonLabel,
     IonItem, IonInput, IonChip, 
     IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle
+    IonCardTitle, IonButtons
   ]
 })
 export class MyAccountPage implements OnInit, ViewWillEnter {

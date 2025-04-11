@@ -10,8 +10,12 @@
         <ion-icon slot="icon-only" name="calendar"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-avatar class="profile-avatar" slot="end" (click)="toggleDropdown()">
+
+    <ion-buttons slot="end" class="profile-info">
+      <ion-label *ngIf="userData?.firstName" class="user-name">
+        Bem vindo, {{ userData.firstName }}
+      </ion-label>
+      <ion-avatar class="profile-avatar" (click)="toggleDropdown()">
         <ng-container *ngIf="userData?.profilePicture; else fallbackIcon">
           <img [src]="userData.profilePicture" alt="Foto de Perfil">
         </ng-container>
@@ -19,7 +23,7 @@
           <ion-icon name="person-circle-outline" class="fallback-icon"></ion-icon>
         </ng-template>
       </ion-avatar>
-    </ion-buttons>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
@@ -104,17 +108,18 @@
         <ion-toolbar>
           <ion-title>Selecione Mês e Ano</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="closeDatePicker()">Fechar</ion-button>
+            <ion-button (click)="closeDatePicker()">Cancelar</ion-button>
+            <ion-button (click)="confirmDateSelection()">Confirmar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content>
         <ion-datetime
+          #dateTimePicker
           [value]="billDate.toISOString()"
           presentation="month-year"
-          (ionChange)="onDateChange($event)"
-          [min]="1900-05-31"
-          [max]="2199-05-31">
+          [min]="'1900-05-31'"
+          [max]="'2199-05-31'">
         </ion-datetime>
       </ion-content>
     </ng-template>

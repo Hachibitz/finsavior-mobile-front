@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
@@ -54,6 +54,8 @@ addIcons({
   ]
 })
 export class MainPageComponent implements OnInit {
+  @ViewChild('dateTimePicker') dateTimePicker?: IonDatetime;
+
   showDropdown: boolean = false;
 
   mainTableForm: FormGroup;
@@ -169,14 +171,6 @@ export class MainPageComponent implements OnInit {
     }
   }
 
-  onDateChange(event: any) {
-    const selectedDate = new Date(event.detail.value);
-    this.billDate = selectedDate;
-    this.commonService.updateSelectedDate(selectedDate);
-    this.loadData();
-    this.closeDatePicker();
-  }
-
   openDatePicker() {
     this.isDatePickerOpen = true;
   }
@@ -184,6 +178,19 @@ export class MainPageComponent implements OnInit {
   closeDatePicker() {
     if (this.isDatePickerOpen) {
       this.isDatePickerOpen = false;
+    }
+  }
+
+  async confirmDateSelection(): Promise<void> {
+    if (this.dateTimePicker) {
+      const selectedValue = await this.dateTimePicker.value;
+      if (selectedValue) {
+        const selectedDate = new Date(selectedValue.toLocaleString());
+        this.billDate = selectedDate;
+        this.commonService.updateSelectedDate(selectedDate);
+        this.loadData();
+      }
+      this.closeDatePicker();
     }
   }
 

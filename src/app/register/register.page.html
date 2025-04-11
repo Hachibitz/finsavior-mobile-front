@@ -1,6 +1,14 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Cadastro</ion-title>
+    <ion-buttons slot="start">
+      <div style="display: flex; align-items: center;">
+        <img src="assets/logo.png" class="logo-finsavior">
+        <ion-title style="margin: 0;">Cadastro</ion-title>
+      </div>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="redirectToLogin()">Voltar</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

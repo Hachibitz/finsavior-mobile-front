@@ -1,8 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Guia de Contas</ion-title>
+    <ion-buttons slot="start">
+      <div style="display: flex; align-items: center;">
+        <img src="assets/logo.png" class="logo-finsavior">
+        <ion-title style="margin: 0;">Guia de Contas</ion-title>
+      </div>
+    </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button color="primary" expand="block" (click)="navigateTo('main-page')">Voltar</ion-button>
+      <ion-button fill="clear" (click)="navigateTo('main-page')">Voltar</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
