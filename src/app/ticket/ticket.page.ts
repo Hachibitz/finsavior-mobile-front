@@ -16,6 +16,7 @@ import { NgForm } from '@angular/forms';
 import { TICKET_CONTACT } from 'src/environments/environment';
 import { ViewWillEnter, AlertController } from '@ionic/angular';
 import { UserService } from '../service/user.service';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-ticket',
@@ -33,34 +34,67 @@ import { UserService } from '../service/user.service';
   ]
 })
 export class TicketPage implements ViewWillEnter {
-  ticket = {
+  ticket: {
+    name: string;
+    email: string;
+    emailConfirmation: string;
+    type: string;
+    message: string;
+    isAuthenticated: boolean;
+  } = {
     name: '',
     email: '',
+    emailConfirmation: '',
     type: '',
     message: '',
-  };
+    isAuthenticated: false
+  };  
 
   loading = false;
+  emailAndConfirmationEmailFields = false;
+  emailMismatch = false;
 
-  constructor(private router: Router, private http: HttpClient, private userService: UserService, private alertController: AlertController) {}
+  constructor(
+    private router: Router, 
+    private http: HttpClient, 
+    private userService: UserService, 
+    private alertController: AlertController,
+    private authService: AuthService
+  ) {}
   
   async ionViewWillEnter(): Promise<void> {
-    this.showLoading()
-    this.ticket.email = await (await this.userService.getProfileData()).email
-    this.hideLoading()
+    this.showLoading();
+    const isAuthenticated = await this.authService.isAuthenticated();
+    
+    if (!isAuthenticated) {
+      this.emailAndConfirmationEmailFields = true;
+    } else {
+      this.ticket.email = (await this.userService.getProfileData()).email;
+      this.ticket.isAuthenticated = true;
+    }
+    
+    this.hideLoading();
+  }
+
+  validateEmailsMatch(): void {
+    this.emailMismatch = this.ticket.email !== this.ticket.emailConfirmation;
   }
 
   isFormValid(): boolean {
-    const { name, email, type, message } = this.ticket;
+    const { name, email, emailConfirmation, type, message } = this.ticket;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailRegex.test(email);
-  
+    
+    const emailFieldsValid = this.emailAndConfirmationEmailFields 
+      ? isEmailValid && email === emailConfirmation
+      : isEmailValid;
+
     return (
       !!name &&
       !!email &&
       !!type &&
       !!message &&
-      isEmailValid
+      emailFieldsValid
     );
   }
 
@@ -68,25 +102,35 @@ export class TicketPage implements ViewWillEnter {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
+  
+  shouldShowEmailMismatchError(emailConfirmation: any): boolean {
+    if (!emailConfirmation) return false;
+    return (emailConfirmation.invalid && emailConfirmation.touched) ||
+           (this.ticket.email !== this.ticket.emailConfirmation && emailConfirmation.touched);
+  }  
 
   async submitTicket(form: NgForm) {
-    if (form.invalid) {
+    if (form.invalid || this.emailMismatch) {
       Object.values(form.controls).forEach(control => {
         control?.markAsTouched();
       });
       return;
     }
-  
-    this.showLoading()
+
+    const payload = this.emailAndConfirmationEmailFields 
+      ? this.ticket 
+      : { ...this.ticket, emailConfirmation: undefined };
+
+    this.showLoading();
   
     try {
-      await firstValueFrom(this.http.post(TICKET_CONTACT, this.ticket));
+      await firstValueFrom(this.http.post(TICKET_CONTACT, payload));
       this.showAlert('Sucesso', 'Mensagem enviada com sucesso!');
       this.redirectToMainPage();
     } catch (error) {
       this.showAlert('Erro', 'Erro ao enviar sua mensagem. Tente novamente.');
     } finally {
-      this.hideLoading()
+      this.hideLoading();
     }
   }
 

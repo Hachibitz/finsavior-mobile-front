@@ -81,7 +81,6 @@ export const routes: Routes = [
   },
   {
     path: 'ticket',
-    canActivate: [AuthGuard],
     loadComponent: () => import('./ticket/ticket.page').then( m => m.TicketPage)
   },
 

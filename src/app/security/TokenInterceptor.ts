@@ -17,7 +17,7 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const publicRoutes = ['/login', '/register', '/landing-page', '/password-forgotten'];
+    const publicRoutes = ['/login', '/register', '/landing-page', '/password-forgotten', '/ticket'];
     const currentUrl = this.router.url;
   
     if (publicRoutes.some(route => currentUrl.startsWith(route))) {

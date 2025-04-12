@@ -31,7 +31,42 @@
         <ion-text *ngIf="name.invalid && name.touched" color="danger" class="error-msg">
           Nome é obrigatório
         </ion-text>
-      
+
+        <ng-container *ngIf="emailAndConfirmationEmailFields">
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="ticket.email" 
+              name="email" 
+              #email="ngModel" 
+              required
+              (ionBlur)="validateEmailsMatch()">
+            </ion-input>
+          </ion-item>
+          <ion-text *ngIf="email.invalid && email.touched" color="danger" class="error-msg">
+            Email é obrigatório e deve ser válido
+          </ion-text>
+        
+          <ion-item>
+            <ion-label position="floating">Confirme seu Email</ion-label>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="ticket.emailConfirmation" 
+              name="emailConfirmation" 
+              #emailConfirmation="ngModel" 
+              required
+              (ionBlur)="validateEmailsMatch()">
+            </ion-input>
+          </ion-item>
+          <ion-text *ngIf="emailConfirmation.invalid && emailConfirmation.touched" color="danger" class="error-msg">
+            Confirmação de email é obrigatória
+          </ion-text>
+          <ion-text *ngIf="emailMismatch && email.touched && emailConfirmation.touched" color="danger" class="error-msg">
+            Os emails não coincidem
+          </ion-text>
+        </ng-container>
+
         <ion-item>
           <ion-label position="floating">Tipo de contato</ion-label>
           <ion-select [(ngModel)]="ticket.type" name="type" #type="ngModel" interface="popover" required>
