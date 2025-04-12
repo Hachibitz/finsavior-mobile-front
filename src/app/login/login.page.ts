@@ -10,7 +10,7 @@ import {
   IonContent, IonButton, IonText, IonLabel, 
   IonItem, IonIcon, IonCard, IonCardContent, 
   IonCardHeader, IonCardTitle, IonCheckbox,
-  IonInput 
+  IonInput, IonFooter
 } from '@ionic/angular/standalone';
 import { GoogleAuthService } from '../service/google-auth.service';
 
@@ -28,7 +28,7 @@ import { GoogleAuthService } from '../service/google-auth.service';
     IonButton, IonText, IonLabel, 
     IonItem, IonIcon, IonCard, 
     IonCardContent, IonCardHeader, IonCardTitle,
-    IonCheckbox, IonInput
+    IonCheckbox, IonInput, IonFooter
   ]
 })
 export class LoginPage implements OnInit {
@@ -110,6 +110,10 @@ export class LoginPage implements OnInit {
 
   redirectToForgottenPassword() {
     this.router.navigate(['/password-forgotten']);
+  }
+
+  redirectToTicketPage() {
+    this.router.navigate(['/ticket']);
   }
 
   isLoading() {

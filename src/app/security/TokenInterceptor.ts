@@ -17,8 +17,24 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const publicRoutes = ['/login', '/register', '/landing-page', '/password-forgotten', '/ticket'];
+    const publicRoutes = ['/login', '/register', '/landing-page', '/password-forgotten'];
     const currentUrl = this.router.url;
+
+    if (currentUrl.includes('/ticket')) {
+      return from(this.authService.getToken()).pipe(
+        mergeMap(token => {
+          if (token) {
+            request = request.clone({
+              setHeaders: {
+                Authorization: `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "69420",
+              },
+            });
+          }
+          return next.handle(request);
+        })
+      );
+    }
   
     if (publicRoutes.some(route => currentUrl.startsWith(route))) {
       return next.handle(request);
