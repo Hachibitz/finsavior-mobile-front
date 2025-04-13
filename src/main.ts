@@ -6,7 +6,7 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { TokenInterceptor } from './app/security/TokenInterceptor';
-import { IonicStorageModule, Storage } from '@ionic/storage-angular';
+import { Storage } from '@ionic/storage-angular';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,7 +15,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     provideHttpClient(),
-    IonicStorageModule,
     Storage
   ],
 });

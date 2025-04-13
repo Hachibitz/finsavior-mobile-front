@@ -39,6 +39,7 @@ export interface ChangeAccountPasswordRequest {
 }
 
 export interface UserData {
+  id?: number;
   username: string;
   email: string;
   plan: Plan;

@@ -51,11 +51,41 @@ ion-tab-button {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .user-name {
+}
+
+.user-name {
     font-weight: 500;
     font-size: 14px;
     color: var(--ion-color-primary);
-  }
-  
+}
+
+.savi-chat-bubble {
+    position: fixed;
+    bottom: 70px;
+    right: 16px;
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s ease;
+
+    img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    span {
+        font-weight: 500;
+        color: var(--ion-color-primary);
+    }
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}

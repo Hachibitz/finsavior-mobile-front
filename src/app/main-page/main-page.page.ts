@@ -230,6 +230,10 @@ export class MainPageComponent implements OnInit {
     this.router.navigate(['main-page/subscription']);
   }
 
+  goToSaviChat() {
+    this.router.navigateByUrl('/savi-ai-assistant-chat');
+  }
+
   isLoading(): void {
     this.loading = !this.loading;
   }

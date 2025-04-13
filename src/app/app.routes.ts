@@ -83,7 +83,8 @@ export const routes: Routes = [
     path: 'ticket',
     loadComponent: () => import('./ticket/ticket.page').then( m => m.TicketPage)
   },
-
-
-
+  {
+    path: 'savi-ai-assistant-chat',
+    loadComponent: () => import('./chat-ai/chat-ai.page').then( m => m.ChatAiPage)
+  },
 ];

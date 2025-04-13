@@ -5,24 +5,16 @@ import {
     HttpErrorResponse
 } from '@angular/common/http';
 import { LoginRequest, SignUpRequest, SignUpResponse } from '../model/user.model';
-import { Storage } from '@ionic/storage-angular';
 import { Observable } from 'rxjs';
+import { StorageService } from './storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    private _storage: Storage | null = null;
-
     constructor(
-        private http: HttpClient, 
-        private storage: Storage
-    ) {
-        this.initStorage();
-    }
-
-    async initStorage() {
-        this._storage = await this.storage.create();
-    }
+        private http: HttpClient,
+        private storageService: StorageService
+    ) {}
 
     login(loginRequest: LoginRequest): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -71,7 +63,8 @@ export class AuthService {
     }
 
     clearStorage(): void {
-        this.storage.clear();
+        this.storageService.remove("accessToken");
+        this.storageService.remove("refreshToken");
     }
 
     validateToken(token: string): Promise<boolean> {
@@ -122,25 +115,26 @@ export class AuthService {
     }
 
     async setAccessToken(token: string) {
-        await this.storage.set('accessToken', token);
+        await this.storageService.set('accessToken', token);
     }
     
     async getToken(): Promise<string> {
         try {
-            const result = await this.storage.get('accessToken');
-            return result || '';
+          await this.storageService.ready();
+          const result = await this.storageService.get('accessToken');
+          return result || '';
         } catch (error) {
-            return '';
+          return '';
         }
     }
 
     async setTokens(accessToken: string, refreshToken: string): Promise<void> {
         await this.setAccessToken(accessToken);
-        await this.storage.set('refreshToken', refreshToken);
+        await this.storageService.set('refreshToken', refreshToken);
     }
     
     async getRefreshToken(): Promise<string> {
-        return await this.storage.get('refreshToken');
+        return await this.storageService.get('refreshToken');
     }
     
     async refreshToken(): Promise<string> {

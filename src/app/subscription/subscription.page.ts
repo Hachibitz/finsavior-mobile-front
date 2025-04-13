@@ -283,6 +283,19 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     await alert.present();
   }
 
+  shouldShowCancelButton(plan: any): boolean {
+    return this.currentPlan?.planDs !== 'FREE' &&
+           (plan.monthly.type === 'FREE');
+  }
+  
+  handlePlanButtonClick(plan: any) {
+    if (this.shouldShowCancelButton(plan)) {
+      this.router.navigate(['/my-account']);
+    } else {
+      this.openPlanChoiceModal(plan);
+    }
+  }
+
   hideLoading() {
     this.loading = false;
   }

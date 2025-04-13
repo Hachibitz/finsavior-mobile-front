@@ -33,3 +33,18 @@ export interface Analysis {
     finishDate: string;
     temperature: number;
 }
+
+export interface ChatMessage {
+    role: 'user' | 'assistant';
+    content: string;
+}
+
+export interface ChatResponse {
+    answer: string;
+}
+
+export interface ChatRequest {
+    question: string;
+    chatHistory?: string[];
+    date?: string;
+}

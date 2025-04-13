@@ -36,9 +36,15 @@
           type="button"
           expand="block"
           [disabled]="plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs"
-          (click)="openPlanChoiceModal(plan)"
+          (click)="handlePlanButtonClick(plan)"
         >
-          {{ plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs ? 'Plano Atual' : 'Mudar para este plano' }}
+          {{
+            plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs
+              ? 'Plano Atual'
+              : shouldShowCancelButton(plan)
+                ? 'Cancelar plano'
+                : 'Mudar para este plano'
+          }}
         </ion-button>
       </ion-card-content>
     </ion-card>

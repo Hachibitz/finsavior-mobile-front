@@ -21,6 +21,7 @@ export const USER_SERVICE = "/user";
 export const BILL_SERVICE = "/bill";
 export const AUTH_SERVICE = "/auth";
 export const AI_ADVICE_SERVICE = "/ai-advice";
+export const AI_SERVICE = "/ai";
 export const PAYMENT_SERVICE = '/payment';
 export const TERMS_AND_PRIVACY_SERVICE = '/terms-and-privacy';
 
@@ -49,6 +50,9 @@ export const DELETE_AI_ANALYSIS = URL_BASE_DEV + AI_ADVICE_SERVICE + '/delete-an
 export const GET_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice-and-insights';
 export const GET_AI_ADVICE_BY_ID = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice';
 export const VALIDATE_HAS_COVERAGE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/validate-has-coverage';
+export const CHAT_WITH_SAVI = URL_BASE_DEV + AI_SERVICE + '/chat';
+export const CHAT_WITH_SAVI_HISTORY = URL_BASE_DEV + AI_SERVICE + '/history';
+export const CHAT_WITH_SAVI_CLEAR = URL_BASE_DEV + AI_SERVICE + '/delete-chat-history';
 export const CREATE_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/create-subscription';
 export const CREATE_CHECKOUT = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/create-checkout';
 export const CANCEL_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/cancel';

@@ -3,14 +3,23 @@ export const PLANS = [
         name: 'FREE',
         priceMonthly: 'R$ 0,00',
         priceYearly: null,
-        features: ['1 análise para teste'],
+        features: [
+            '1 análise para teste',
+            '2 mensagens com a Savi por mês (assistente financeira de IA)',
+            'Até 4.000 tokens de IA por mês'
+        ],
         type: 'FREE',
     },
     {
         name: 'BASIC MENSAL',
         priceMonthly: 'R$ 9,90',
         priceYearly: 'R$ 99,00',
-        features: ['3 análises mensais, 1 trimestral', 'controle do nível de criatividade/precisão'],
+        features: [
+            '3 análises mensais, 1 trimestral',
+            '15 mensagens com a Savi por mês (assistente financeira de IA)',
+            'Até 30.000 tokens de IA por mês',
+            'Controle do nível de criatividade/precisão'
+        ],
         trial: true,
         type: 'STRIPE_BASIC_MONTHLY',
     },
@@ -18,7 +27,13 @@ export const PLANS = [
         name: 'PLUS MENSAL',
         priceMonthly: 'R$ 19,90',
         priceYearly: 'R$ 199,00',
-        features: ['12 análises mensais', '3 trimestrais', '1 anual', 'Suporte prioritário', 'controle do nível de criatividade/precisão'],
+        features: [
+            '12 análises mensais, 3 trimestrais, 1 anual',
+            '50 mensagens com a Savi por mês (assistente financeira de IA)',
+            'Até 100.000 tokens de IA por mês',
+            'Suporte prioritário',
+            'Controle do nível de criatividade/precisão'
+        ],
         type: 'STRIPE_PLUS_MONTHLY',
         trial: true,
     },
@@ -26,7 +41,13 @@ export const PLANS = [
         name: 'PREMIUM MENSAL',
         priceMonthly: 'R$ 49,90',
         priceYearly: 'R$ 499,00',
-        features: ['Análises ilimitadas', 'Suporte personalizado e prioritário', 'controle do nível de criatividade/precisão'],
+        features: [
+            'Análises ilimitadas',
+            'Mensagens ilimitadas com a Savi (assistente financeira de IA)',
+            'Tokens ilimitados de IA por mês',
+            'Suporte personalizado e prioritário',
+            'Controle do nível de criatividade/precisão'
+        ],
         trial: true,
         type: 'STRIPE_PREMIUM_MONTHLY',
     },
@@ -34,7 +55,12 @@ export const PLANS = [
         name: 'BASIC ANUAL',
         priceMonthly: 'R$ 9,90',
         priceYearly: 'R$ 99,00',
-        features: ['3 análises mensais, 1 trimestral', 'controle do nível de criatividade/precisão'],
+        features: [
+            '3 análises mensais, 1 trimestral',
+            '15 mensagens com a Savi por mês (assistente financeira de IA)',
+            'Até 30.000 tokens de IA por mês',
+            'Controle do nível de criatividade/precisão'
+        ],
         trial: true,
         type: 'STRIPE_BASIC_ANNUAL',
     },
@@ -42,16 +68,27 @@ export const PLANS = [
         name: 'PLUS ANUAL',
         priceMonthly: 'R$ 19,90',
         priceYearly: 'R$ 199,00',
-        features: ['12 análises mensais', '3 trimestrais', '1 anual', 'Suporte prioritário', 'controle do nível de criatividade/precisão'],
+        features: [
+            '12 análises mensais, 3 trimestrais, 1 anual',
+            '50 mensagens com a Savi por mês (assistente financeira de IA)',
+            'Até 100.000 tokens de IA por mês',
+            'Suporte prioritário',
+            'Controle do nível de criatividade/precisão'
+        ],
         type: 'STRIPE_PLUS_ANNUAL',
-        stripeId: 'prod_S4goyrBbOeFrR2',
         trial: true,
     },
     {
         name: 'PREMIUM ANUAL',
         priceMonthly: 'R$ 49,90',
         priceYearly: 'R$ 499,00',
-        features: ['Análises ilimitadas', 'Suporte personalizado e prioritário', 'controle do nível de criatividade/precisão'],
+        features: [
+            'Análises ilimitadas',
+            'Mensagens ilimitadas com a Savi (assistente financeira de IA)',
+            'Tokens ilimitados de IA por mês',
+            'Suporte personalizado e prioritário',
+            'Controle do nível de criatividade/precisão'
+        ],
         trial: true,
         type: 'STRIPE_PREMIUM_ANNUAL',
     },
