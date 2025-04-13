@@ -1,0 +1,155 @@
+.dashboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .date-selector {
+    --background: transparent;
+    margin-bottom: 16px;
+    
+    ion-datetime {
+      width: 100%;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
+  
+  .summary-card {
+    margin-bottom: 24px;
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      text-align: center;
+      
+      .summary-item {
+        padding: 12px;
+        border-radius: 8px;
+        
+        h3 {
+          margin: 0 0 8px 0;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        
+        .amount {
+          margin: 0;
+          font-size: 18px;
+          font-weight: bold;
+        }
+      }
+      
+      .income {
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--ion-color-success);
+      }
+      
+      .expenses {
+        background: rgba(244, 67, 54, 0.1);
+        color: var(--ion-color-danger);
+      }
+      
+      .balance {
+        background: rgba(33, 150, 243, 0.1);
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    transition: opacity 0.3s ease;
+  }
+
+  chart-container canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 300px !important;
+  }
+  
+  ion-card {
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    
+    ion-card-header {
+      padding-bottom: 0;
+      
+      ion-card-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    
+    ion-card-content {
+      padding-top: 8px;
+    }
+  }
+  
+  ion-list {
+    background: transparent;
+    
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --border-color: rgba(0, 0, 0, 0.08);
+      
+      ion-label {
+        h3 {
+          font-weight: 500;
+        }
+        
+        p {
+          color: var(--ion-color-medium);
+          font-size: 14px;
+        }
+      }
+      
+      ion-note {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .hidden-datetime {
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .date-selector {
+    --background: transparent;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    ion-label {
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    
+    ion-button {
+      --padding-start: 0;
+      --padding-end: 0;
+    }
+  }
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.pulsing-text {
+  animation: pulse 2s infinite;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--ion-color-primary);
+}

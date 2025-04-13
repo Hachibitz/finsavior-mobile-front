@@ -196,6 +196,10 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
     this.router.navigate(['main-page/ai-analysis']);
   }
 
+  async navigateToDashboard() {
+    this.router.navigate(['finance-dashboard']);
+  }
+
   isLoading(): void {
     this.loading = !this.loading;
   }

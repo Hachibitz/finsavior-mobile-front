@@ -10,7 +10,7 @@
     <div class="custom-loader"></div>
   </div>
 
-  <div class="plans-container">
+  <div class="plans-container" *ngIf="currentPlan">
     <ion-card
       *ngFor="let plan of groupedPlans"
       class="plan-card"

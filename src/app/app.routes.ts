@@ -85,6 +85,13 @@ export const routes: Routes = [
   },
   {
     path: 'savi-ai-assistant-chat',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./chat-ai/chat-ai.page').then( m => m.ChatAiPage)
   },
+  {
+    path: 'finance-dashboard',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./finance-dashboard/finance-dashboard.page').then( m => m.FinanceDashboardPage)
+  },
+
 ];

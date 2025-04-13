@@ -7,6 +7,7 @@ import { AppComponent } from './app/app.component';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { TokenInterceptor } from './app/security/TokenInterceptor';
 import { Storage } from '@ionic/storage-angular';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,6 +16,17 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     provideHttpClient(),
-    Storage
+    Storage,
+    provideCharts({
+      defaults: {
+        global: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 1000
+          }
+        }
+      }
+    } as any)
   ],
 });
