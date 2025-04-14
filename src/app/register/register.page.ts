@@ -40,13 +40,14 @@ export class RegisterPage implements OnInit {
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
+      emailConfirmation: ['', [Validators.required, Validators.email]],
       username: ['', [Validators.required, Validators.minLength(4)]],
       name: ['', [Validators.required, Validators.minLength(2)]],
       lastname: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', [Validators.required]],
       agreement: [false, [Validators.requiredTrue]]
-    }, { validators: this.passwordMatchValidator });
+    }, { validators: [this.passwordMatchValidator, this.emailMatchValidator] });
   }
 
   async ngOnInit(): Promise<void> {
@@ -65,6 +66,7 @@ export class RegisterPage implements OnInit {
 
     const signUpRequest = {
       email: this.registerForm.get('email')?.value,
+      emailConfirmation: this.registerForm.get('emailConfirmation')?.value,
       username: this.registerForm.get('username')?.value,
       firstName: this.registerForm.get('name')?.value,
       lastName: this.registerForm.get('lastname')?.value,
@@ -81,8 +83,8 @@ export class RegisterPage implements OnInit {
         this.redirectToLogin();        
       })
       .catch((error) => {
-        const errorMessage = error.error ? error.error : error.error.message;
-        this.presentAlert(errorMessage ? errorMessage : 'Erro ao realizar o cadastro. Tente novamente mais tarde.'); 
+        const errorMessage = error.error?.message || 'Erro ao realizar o cadastro. Tente novamente mais tarde.';
+        this.presentAlert(errorMessage);
       })
       .finally(() => {
         this.isLoading();
@@ -102,6 +104,12 @@ export class RegisterPage implements OnInit {
     this.passwordCriteria.lower = /[a-z]/.test(password);
     this.passwordCriteria.number = /[0-9]/.test(password);
     this.passwordCriteria.special = /[@$!%*?&]/.test(password);
+  }
+
+  emailMatchValidator(form: FormGroup) {
+    const email = form.get('email')?.value;
+    const emailConfirmation = form.get('emailConfirmation')?.value;
+    return email === emailConfirmation ? null : { emailMismatch: true };
   }
 
   redirectToLogin() {

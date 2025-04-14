@@ -30,6 +30,20 @@
     </ion-text>
 
     <ion-item>
+      <ion-label position="floating">Confirme seu e-mail</ion-label>
+      <ion-input type="email" formControlName="emailConfirmation"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="registerForm.get('emailConfirmation')?.hasError('required') && registerForm.get('emailConfirmation')?.touched">
+      Email é obrigatório
+    </ion-text>
+    <ion-text color="danger" *ngIf="registerForm.get('emailConfirmation')?.hasError('emailConfirmation') && registerForm.get('emailConfirmation')?.touched">
+      Email inválido
+    </ion-text>
+    <ion-text color="danger" *ngIf="registerForm.hasError('emailMismatch') && registerForm.get('emailConfirmation')?.touched">
+      Os emails não coincidem
+    </ion-text>
+
+    <ion-item>
       <ion-label position="floating">Usuário</ion-label>
       <ion-input type="text" formControlName="username"></ion-input>
     </ion-item>
