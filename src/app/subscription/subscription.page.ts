@@ -37,6 +37,8 @@ import { PlanChoiceModalComponent } from '../modal/plan-choice-modal/plan-choice
 })
 export class SubscriptionPage implements OnInit, ViewWillEnter {
 
+  private alertDisplayed: boolean = false;
+
   loading: boolean = false;
 
   plans = PLANS;
@@ -233,7 +235,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
       } else if (plan.type.includes('ANNUAL')) {
         grouped[baseName].yearly = plan;
       } else {
-        grouped[baseName].monthly = plan; // fallback pra plano FREE ou outros
+        grouped[baseName].monthly = plan;
       }
     });
 
@@ -262,6 +264,12 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   }
 
   async handleSuccessfulCheckout(sessionId: string) {
+    if (this.alertDisplayed) {
+      return;
+    }
+  
+    this.alertDisplayed = true;
+
     const alert = await this.alertCtrl.create({
       header: 'Assinatura concluída!',
       message: 'Seu plano ficará disponível em instantes.',

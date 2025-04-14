@@ -21,9 +21,9 @@
         <ion-card-subtitle>{{ plan.monthly.priceMonthly }}</ion-card-subtitle>
         <small *ngIf="plan.yearly">ou {{ plan.yearly.priceYearly }}/ano</small>
         <ion-chip *ngIf="plan.monthly.trial || plan.yearly?.trial" color="success">
-          Teste gratuito 7 dias
+          Teste gratuito 7 dias*
         </ion-chip>
-        <ion-chip *ngIf="plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs" color="primary">
+        <ion-chip *ngIf="plan.yearly" color="primary">
           Plano atual
         </ion-chip>
       </ion-card-header>
@@ -42,11 +42,12 @@
             plan.monthly.type === currentPlan.planDs || plan.yearly?.type === currentPlan.planDs
               ? 'Plano Atual'
               : shouldShowCancelButton(plan)
-                ? 'Cancelar plano'
+                ? 'Cancelar plano atual'
                 : 'Mudar para este plano'
           }}
         </ion-button>
       </ion-card-content>
     </ion-card>
+    <p class="trial-note">* O período de teste gratuito é concedido apenas para a primeira assinatura.</p>
   </div>
 </ion-content>

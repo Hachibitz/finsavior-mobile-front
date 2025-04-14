@@ -46,7 +46,8 @@ export const PLANS = [
             'Mensagens ilimitadas com a Savi (assistente financeira de IA)',
             'Tokens ilimitados de IA por mês',
             'Suporte personalizado e prioritário',
-            'Controle do nível de criatividade/precisão'
+            'Controle do nível de criatividade/precisão',
+            'Maior desconto no anual!'
         ],
         trial: true,
         type: 'STRIPE_PREMIUM_MONTHLY',
@@ -81,13 +82,14 @@ export const PLANS = [
     {
         name: 'PREMIUM ANUAL',
         priceMonthly: 'R$ 49,90',
-        priceYearly: 'R$ 499,00',
+        priceYearly: 'R$ 350,00',
         features: [
             'Análises ilimitadas',
             'Mensagens ilimitadas com a Savi (assistente financeira de IA)',
             'Tokens ilimitados de IA por mês',
             'Suporte personalizado e prioritário',
-            'Controle do nível de criatividade/precisão'
+            'Controle do nível de criatividade/precisão',
+            'Maior desconto no anual!'
         ],
         trial: true,
         type: 'STRIPE_PREMIUM_ANNUAL',
