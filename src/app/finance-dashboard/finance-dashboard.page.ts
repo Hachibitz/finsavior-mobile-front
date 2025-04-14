@@ -354,7 +354,8 @@ export class FinanceDashboardPage implements OnInit {
     [...this.mainTableData, ...this.cardTableData]
       .filter(item => item.billType === 'Passivo')
       .forEach(item => {
-        categories[item.billCategory] = (categories[item.billCategory] || 0) + item.billValue;
+        const category = item.billCategory || 'Não categorizado';
+        categories[category] = (categories[category] || 0) + item.billValue;
       });
     return categories;
   }

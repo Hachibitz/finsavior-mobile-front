@@ -45,7 +45,7 @@ import { CommonService } from '../../service/common.service';
         </ion-item>
         <ion-item *ngIf="showCategorySelect">
           <ion-label>Categoria</ion-label>
-          <ion-select formControlName="category" interface="action-sheet">
+          <ion-select formControlName="billCategory" interface="action-sheet">
             <ion-select-option *ngFor="let category of categories" [value]="category.value">
               {{ category.label }}
             </ion-select-option>
@@ -163,7 +163,7 @@ export class AddRegisterModalComponent {
       billDescription: [''],
       billType: [''],
       isRecurrent: [false],
-      category: ['Outras'],
+      billCategory: ['Outras'],
     });
   }
 
@@ -228,9 +228,7 @@ export class AddRegisterModalComponent {
       isRecurrent: this.billRegisterForm.value.isRecurrent
     };
 
-    if(this.tableType != tableTypes.ASSETS) {
-      billRegisterRequest.billType = 'Passivo';
-    }
+    this.setBillType(billRegisterRequest);
 
     this.isLoading();
     try {
@@ -240,6 +238,16 @@ export class AddRegisterModalComponent {
     } catch (error) {
       console.error('Erro ao adicionar registro:', error);
       this.isLoading()
+    }
+  }
+
+  setBillType(billRegisterRequest: BillRegisterRequest) {
+    if(this.tableType != tableTypes.ASSETS && this.tableType != tableTypes.PAYMENT_CARD) {
+      billRegisterRequest.billType = 'Passivo';
+    }
+
+    if(this.tableType == tableTypes.PAYMENT_CARD) {
+      billRegisterRequest.billType = 'Payment';
     }
   }
 
