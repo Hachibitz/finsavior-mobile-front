@@ -17,6 +17,14 @@
       <ion-label position="stacked">Descrição</ion-label>
       <ion-input formControlName="billDescription" type="text"></ion-input>
     </ion-item>
+    <ion-item *ngIf="showCategorySelect">
+      <ion-label position="stacked">Categoria</ion-label>
+      <ion-select formControlName="billCategory" interface="action-sheet">
+        <ion-select-option *ngFor="let category of categories" [value]="category.value">
+          {{ category.label }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-item>
       <ion-label position="stacked">Valor</ion-label>
       <ion-input formControlName="billValue" type="number"></ion-input>

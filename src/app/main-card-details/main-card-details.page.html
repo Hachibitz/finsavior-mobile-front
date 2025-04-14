@@ -1,4 +1,4 @@
-<ion-header  [translucent]="true">
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Cartão</ion-title>
     <ion-label slot="end" style="margin-right: 20px;">Total: {{ creditCardTotal.toFixed(2) }}</ion-label>
@@ -10,28 +10,61 @@
     <div class="custom-loader"></div>
   </div>
 
-  <div class="buttons-credit-card-tab">
-    <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
-    <ion-button expand="block" (click)="cardPaymentRegisterModal()">Adicionar Pagamento</ion-button>
+  <ion-segment [(ngModel)]="selectedSegment">
+    <ion-segment-button value="registers">
+      <ion-label>Registros</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="payments">
+      <ion-label>Pagamentos</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="selectedSegment === 'registers'">
+    <div class="buttons-credit-card-tab">
+      <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
+      <ion-button expand="block" (click)="cardPaymentRegisterModal()">Adicionar Pagamento</ion-button>
+    </div>
+
+    <ion-list *ngIf="!loading && cardRows.length > 0">
+      <ion-item *ngFor="let item of cardRows">
+        <ion-label>
+          <h2>{{ item.billName }}</h2>
+          <p>Valor: {{ item.billValue }}</p>
+          <p>Descrição: {{ item.billDescription }}</p>
+        </ion-label>
+        <ion-buttons>
+          <ion-button color="primary" (click)="openEditModal(item)">
+            <ion-icon name="create"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="deleteItem(item)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-list>
+
+    <p *ngIf="!loading && cardRows.length === 0" class="ion-text-center">Nenhum registro de cartão encontrado.</p>
   </div>
 
-  <ion-list *ngIf="!loading && cardRows.length > 0">
-    <ion-item *ngFor="let item of cardRows">
-      <ion-label>
-        <h2>{{ item.billName }}</h2>
-        <p>Valor: {{ item.billValue }}</p>
-        <p>Descrição: {{ item.billDescription }}</p>
-      </ion-label>
-      <ion-buttons>
-        <ion-button color="primary" (click)="openEditModal(item)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button color="danger" (click)="deleteItem(item)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+  <div *ngIf="selectedSegment === 'payments'">
+    <ion-list *ngIf="!loading && paymentRows.length > 0">
+      <ion-item *ngFor="let payment of paymentRows">
+        <ion-label>
+          <h2>{{ payment.billName }}</h2>
+          <p>Valor: {{ payment.billValue }}</p>
+          <p>Descrição: {{ payment.billDescription }}</p>
+        </ion-label>
+        <ion-buttons>
+          <ion-button color="primary" (click)="openEditModal(payment)">
+            <ion-icon name="create"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="deleteItem(payment)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-list>
 
-  <p *ngIf="!loading && cardRows.length === 0" class="ion-text-center">Nenhum registro de cartão encontrado.</p>
+    <p *ngIf="!loading && paymentRows.length === 0" class="ion-text-center">Nenhum pagamento registrado encontrado.</p>
+  </div>
 </ion-content>

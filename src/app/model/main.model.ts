@@ -23,6 +23,7 @@ export interface BillRegisterRequest {
     billValue: number;
     billDescription: string;
     billTable: string;
+    billCategory: string;
     isRecurrent: boolean;
     paid: boolean;
 }

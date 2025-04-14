@@ -56,7 +56,7 @@ export class FinanceDashboardPage implements OnInit {
   isDatePickerOpen = false;
   selectedMonthYear = '';
 
-  viewMode: 'monthly' | 'category' | 'category-ai' = 'monthly';
+  viewMode: 'monthly' | 'category' = 'monthly';
   billDate: Date = new Date();
   loading = false;
 
@@ -354,7 +354,7 @@ export class FinanceDashboardPage implements OnInit {
     [...this.mainTableData, ...this.cardTableData]
       .filter(item => item.billType === 'Passivo')
       .forEach(item => {
-        categories[item.billName] = (categories[item.billName] || 0) + item.billValue;
+        categories[item.billCategory] = (categories[item.billCategory] || 0) + item.billValue;
       });
     return categories;
   }

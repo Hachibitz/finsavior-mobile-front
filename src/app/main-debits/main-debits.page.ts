@@ -100,7 +100,6 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
   }
 
   async openEditModal(item: any) {
-    item.billTable = tableTypes.MAIN;
     const modal = await this.modalController.create({
       component: EditRegisterModalComponent,
       componentProps: { registerData: item },
@@ -189,6 +188,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
       billDate: this.commonService.formatDate(this.billDate),
       paid: updatedStatus,
       billTable: tableTypes.MAIN,
+      billCategory: item.billCategory,
       isRecurrent: item.isRecurrent
     };
   

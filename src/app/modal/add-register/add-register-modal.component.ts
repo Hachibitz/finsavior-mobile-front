@@ -43,6 +43,14 @@ import { CommonService } from '../../service/common.service';
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
+        <ion-item *ngIf="showCategorySelect">
+          <ion-label>Categoria</ion-label>
+          <ion-select formControlName="category" interface="action-sheet">
+            <ion-select-option *ngFor="let category of categories" [value]="category.value">
+              {{ category.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
         <div *ngIf="isAssets">
           <ion-item>
             <ion-label>Tipo</ion-label>
@@ -75,13 +83,16 @@ export class AddRegisterModalComponent {
 
   isAssets: boolean = false;
   showRecurrentCheckbox: boolean = false;
+  showCategorySelect: boolean = false;
 
   private _tableType: string = '';
   @Input() set tableType(value: string) {
     this._tableType = value;
-    this.isAssets = this.tableType == tableTypes.ASSETS ? true : false;
+    this.isAssets = this.tableType == tableTypes.ASSETS;
     this.showRecurrentCheckbox = this.tableType !== tableTypes.PAYMENT_CARD;
+    this.showCategorySelect = this.tableType !== tableTypes.PAYMENT_CARD;
     this.setValidationRules();
+    this.updateCategories();
   }
   
   get tableType(): string {
@@ -106,6 +117,39 @@ export class AddRegisterModalComponent {
 
   loading: boolean =  false;
 
+  expenseCategories: { label: string; value: string }[] = [
+    { label: 'Alimentação', value: 'Alimentação' },
+    { label: 'Moradia', value: 'Moradia' },
+    { label: 'Energia', value: 'Energia' },
+    { label: 'Água', value: 'Água' },
+    { label: 'Internet', value: 'Internet' },
+    { label: 'Transporte', value: 'Transporte' },
+    { label: 'Saúde', value: 'Saúde' },
+    { label: 'Educação', value: 'Educação' },
+    { label: 'Cuidados Pessoais', value: 'Cuidados Pessoais' },
+    { label: 'Lazer', value: 'Lazer' },
+    { label: 'Seguro', value: 'Seguro' },
+    { label: 'Pets', value: 'Pets' },
+    { label: 'Assinaturas', value: 'Assinaturas' },
+    { label: 'Compras', value: 'Compras' },
+    { label: 'Outras', value: 'Outras' },
+  ];
+
+  incomeCategories: { label: string; value: string }[] = [
+    { label: 'Salário', value: 'Salário' },
+    { label: 'Freelance', value: 'Freelance' },
+    { label: 'Projetos', value: 'Projetos' },
+    { label: 'Aposentadoria', value: 'Aposentadoria' },
+    { label: 'Bolsas', value: 'Bolsas' },
+    { label: 'Bonificações', value: 'Bonificações' },
+    { label: 'Vendas', value: 'Vendas' },
+    { label: 'Investimentos', value: 'Investimentos' },
+    { label: 'Poupança', value: 'Poupança' },
+    { label: 'Outras', value: 'Outras' },
+  ];
+
+  categories: { label: string; value: string }[] = [];
+
   constructor(
     private modalController: ModalController,
     private alertController: AlertController,
@@ -118,7 +162,8 @@ export class AddRegisterModalComponent {
       billValue: ['', [Validators.required, Validators.min(1)]],
       billDescription: [''],
       billType: [''],
-      isRecurrent: [false]
+      isRecurrent: [false],
+      category: ['Outras'],
     });
   }
 
@@ -130,6 +175,16 @@ export class AddRegisterModalComponent {
     }
   
     this.billRegisterForm.get('billType')?.updateValueAndValidity();
+  }
+
+  updateCategories() {
+    if (this.tableType === tableTypes.MAIN || this.tableType === tableTypes.CREDIT_CARD) {
+      this.categories = [...this.expenseCategories];
+    } else if (this.tableType === tableTypes.ASSETS) {
+      this.categories = [...this.incomeCategories];
+    } else {
+      this.categories = [];
+    }
   }
 
   onRecurrentChange(event: any) {

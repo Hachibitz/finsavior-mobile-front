@@ -92,7 +92,6 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
   }
 
   async openEditModal(item: any) {
-    item.billTable = tableTypes.ASSETS;
     const modal = await this.modalController.create({
       component: EditRegisterModalComponent,
       componentProps: { registerData: item },

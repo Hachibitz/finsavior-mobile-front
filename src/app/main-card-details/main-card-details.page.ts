@@ -6,7 +6,8 @@ import {
   AlertController, IonHeader, IonToolbar, 
   IonTitle, IonContent, IonButton, 
   IonItem, IonLabel, IonList , 
-  IonIcon, IonButtons
+  IonIcon, IonButtons, IonSegment,
+  IonSegmentButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trash, create } from 'ionicons/icons';
@@ -15,6 +16,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { TableDataResponse, tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
+import { FormsModule } from '@angular/forms';
 
 addIcons({ 'trash': trash });
 
@@ -28,14 +30,17 @@ addIcons({ 'trash': trash });
     CommonModule, IonHeader, IonToolbar, 
     IonTitle, IonContent, IonLabel, 
     IonItem, IonButton, IonList,
-    IonIcon, IonButtons
+    IonIcon, IonButtons, IonSegment,
+    IonSegmentButton, FormsModule
   ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   cardRows: any[] = [];
+  paymentRows: any[] = [];
   loading: boolean = false;
   billDate: Date = new Date();
   creditCardTotal: number = 0;
+  selectedSegment: string = 'registers';
 
   constructor(
     private billService: BillService,
@@ -56,6 +61,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     this.commonService.selectedDate$.subscribe(date => {
       this.billDate = date;
       this.loadCardTableData();
+      this.loadPaymentData();
     });
   }
 
@@ -72,6 +78,20 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     } finally {
       this.isLoading();
       this.cdRef.detectChanges();
+    }
+  }
+
+  async loadPaymentData() {
+    this.isLoading();
+    this.paymentRows = [];
+
+    try {
+      const data = await this.billService.loadPaymentCardTableData(this.commonService.formatDate(this.billDate));
+      this.paymentRows = data.filter((item: any) => item.billTable === 'PAYMENT_CARD');
+    } catch (error) {
+      console.error('Erro ao carregar pagamentos de fatura:', error);
+    } finally {
+      this.isLoading();
     }
   }
 
@@ -112,7 +132,6 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   }
 
   async openEditModal(item: any) {
-    item.billTable = tableTypes.CREDIT_CARD;
     const modal = await this.modalController.create({
       component: EditRegisterModalComponent,
       componentProps: { registerData: item },
