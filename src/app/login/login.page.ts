@@ -69,7 +69,8 @@ export class LoginPage implements OnInit {
       this.showAlert('Sucesso', 'Login realizado com sucesso!');
       this.router.navigate(['/main-page/debits']);
     }).catch((error) => {
-      this.showAlert('Erro', error.error);
+      const errorMessage = error.error || 'Erro ao realizar o login. Verifique as informações.';
+      this.showAlert('Erro', errorMessage);
     }).finally(() => {
       this.clearCredentials();
       this.isLoading();
