@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package br.com.finsavior;
 
 import com.getcapacitor.BridgeActivity;
 import android.os.Bundle;
