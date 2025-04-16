@@ -154,7 +154,9 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       if (result.role === 'submit' && result.data) {
         const { analysisTypeId, selectedDate, temperature, finishDate } = result.data;
   
+        this.isLoading();
         const haveCoverage = await this.validateSelectedAnalisysAndPlan(analysisTypeId);
+        this.isLoading();
         if (!haveCoverage) {
           this.showUpgradePlanAlert(
             'Aviso',
@@ -198,6 +200,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     } catch (error: any) {
       this.showAlert('Erro', error.error.message || 'Erro ao gerar conselho de IA');
     } finally {
+      this.loadAnalysis();
       this.isLoading();
     }
   }

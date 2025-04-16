@@ -13,6 +13,7 @@ import {
 import { UserService } from 'src/app/service/user.service';
 import { PlanCoverageEnum } from 'src/app/model/payment.model';
 import { AnalysisTypeEnum } from 'src/app/model/ai-advice.model';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'app-ai-analysis-create-modal',
@@ -55,7 +56,8 @@ export class AiAnalysisCreateModalComponent {
   constructor(
     private modalController: ModalController,
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private commonService: CommonService
   ) {
     this.form = this.fb.group({
       analysisType: ['', Validators.required],
@@ -63,9 +65,10 @@ export class AiAnalysisCreateModalComponent {
       temperature: [this.temperatureSliderValue, Validators.required]
     });
   
-    const currentMonth = new Date();
-    currentMonth.setHours(0, 0, 0, 0);
-    this.form.patchValue({ date: currentMonth });
+    this.commonService.selectedDate$.subscribe(date => {
+      const formattedDate = date.toISOString().slice(0, 7);
+      this.form.patchValue({ date: formattedDate });
+    });
     this.form.get('date')?.markAsDirty(); 
     this.form.get('date')?.updateValueAndValidity();
   
