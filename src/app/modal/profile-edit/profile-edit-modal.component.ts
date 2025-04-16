@@ -73,10 +73,12 @@ export class ProfileEditModalComponent implements OnInit {
 
     const firstName = this.form.get('firstName')?.value;
     const lastName = this.form.get('lastName')?.value;
+    const username = this.form.get('username')?.value;
     const profilePicture = this.form.get('profilePicture')?.value;
 
     if (firstName) formData.append('firstName', firstName);
     if (lastName) formData.append('lastName', lastName);
+    if (username) formData.append('username', username);
     if (profilePicture) formData.append('profilePicture', profilePicture);
 
     try {
@@ -98,9 +100,10 @@ export class ProfileEditModalComponent implements OnInit {
     return (control: AbstractControl): ValidationErrors | null => {
       const firstName = control.get('firstName')?.value;
       const lastName = control.get('lastName')?.value;
+      const username = control.get('username')?.value;
       const profilePicture = control.get('profilePicture')?.value;
 
-      if (firstName || lastName || profilePicture) {
+      if (firstName || lastName || profilePicture || username) {
         return null;
       }
 

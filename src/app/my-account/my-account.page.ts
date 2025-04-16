@@ -71,6 +71,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
     this.profileDataForm = this.fb.group({
       firstName: ['', null],
       lastName: ['', null],
+      username: ['', null],
       profilePicture: [null],
       name: ['', null],
     });
@@ -103,6 +104,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
       this.profileDataForm.patchValue({
         firstName: profile.firstName,
         lastName: profile.lastName,
+        username: profile.username,
         profilePicture: profilePictureBase64,
         name: profile.name
       });

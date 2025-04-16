@@ -40,6 +40,7 @@
   </div>
 
   <ion-button expand="full" (click)="openChangePasswordModal()">Alterar Senha</ion-button>
+  <ion-button expand="full" color="light" (click)="navigateTo('/password-forgotten')">Redefinição de senha</ion-button>
   <ion-button expand="full" (click)="openProfileEditModal()">Editar Perfil</ion-button>
 
   <ion-button *ngIf="profilePlan === 'FREE'" expand="full" color="success" (click)="navigateTo('/main-page/subscription')">

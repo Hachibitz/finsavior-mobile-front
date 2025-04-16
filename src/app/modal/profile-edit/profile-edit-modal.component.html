@@ -18,6 +18,10 @@
             <ion-input formControlName="lastName" type="text"></ion-input>
         </ion-item>
         <ion-item>
+            <ion-label position="floating">Username</ion-label>
+            <ion-input formControlName="username" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
           <ion-label>Foto de Perfil</ion-label>
           <app-file-input formControlName="profilePicture" (change)="onFileSelected($event)"></app-file-input>
         </ion-item>

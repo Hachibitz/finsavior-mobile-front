@@ -119,9 +119,27 @@ export class GoogleAuthService {
     });
   }
 
+  async getGoogleProfile(): Promise<{ name: string; email: string }> {
+    const user = this.firebaseAuth.currentUser;
+    console.log(user)
+  
+    if (!user) {
+      throw new Error('Usuário não está logado no Firebase.');
+    }
+  
+    const name = user.displayName ?? 'Usuário';
+    const email = user.email ?? '';
+  
+    return { name, email };
+  }  
+
   async logoutFromGoogle(): Promise<void> {
     try {
       await signOut(this.firebaseAuth);
+
+      if (!this.isWeb) {
+        await GoogleAuth.signOut();
+      }
     } catch (error) {
       console.error('Erro ao deslogar do Firebase/Google:', error);
     }
