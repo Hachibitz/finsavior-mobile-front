@@ -170,6 +170,8 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
       componentProps: { form: this.profileDataForm }
     });
     await modal.present();
+    await modal.onDidDismiss();
+    await this.loadUserProfile();
   }
 
   async openChangePasswordModal() {

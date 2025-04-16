@@ -34,6 +34,7 @@ import {
   Filler
 } from 'chart.js';
 import { Router } from '@angular/router';
+import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-finance-dashboard',
@@ -51,7 +52,7 @@ import { Router } from '@angular/router';
     IonDatetime, IonDatetimeButton, IonModal
   ]
 })
-export class FinanceDashboardPage implements OnInit {
+export class FinanceDashboardPage implements OnInit, ViewWillEnter {
   @ViewChild('dateTimePicker') dateTimePicker?: IonDatetime;
   isDatePickerOpen = false;
   selectedMonthYear = '';
@@ -135,12 +136,16 @@ export class FinanceDashboardPage implements OnInit {
     );
   }
 
-  async ngOnInit() {
+  async ionViewWillEnter(): Promise<void> {
     this.commonService.selectedDate$.subscribe(date => {
       this.billDate = date;
       this.selectedMonthYear = this.commonService.formatDate(this.billDate);
     });
     await this.loadData();
+  }
+
+  async ngOnInit() {
+    
   }
 
   openDatePicker() {
