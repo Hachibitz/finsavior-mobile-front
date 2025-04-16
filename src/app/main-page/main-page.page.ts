@@ -25,6 +25,7 @@ import { wallet, cash, statsChart, calendar, barChart, card, personCircleOutline
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../service/google-auth.service';
+import { ViewWillEnter } from '@ionic/angular';
 
 addIcons({
   'wallet': wallet,
@@ -53,7 +54,7 @@ addIcons({
     IonList, IonAvatar, IonMenuButton
   ]
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements OnInit, ViewWillEnter {
   @ViewChild('dateTimePicker') dateTimePicker?: IonDatetime;
 
   showDropdown: boolean = false;
@@ -85,6 +86,7 @@ export class MainPageComponent implements OnInit {
   password: string = '';
   rememberMe: boolean = false;
   isAuthenticated: boolean = false;
+  isProfileReady: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -110,8 +112,11 @@ export class MainPageComponent implements OnInit {
     });
   }
 
-  async ngOnInit(): Promise<void> {
+  ionViewWillEnter(): void {
     this.loadData();
+  }
+
+  async ngOnInit(): Promise<void> {
     this.selectedMonthYear = this.commonService.formatDate(this.billDate);
     this.isAuthenticated = await this.authService.isAuthenticated();
   }
@@ -125,6 +130,8 @@ export class MainPageComponent implements OnInit {
   }
 
   async setUserData(): Promise<void> {
+    this.isProfileReady = false;
+    this.userData = null;
     this.isLoading();
     try {
       const userProfile = await this.userService.getProfileData();
@@ -139,6 +146,7 @@ export class MainPageComponent implements OnInit {
       await this.showAlert('Erro', 'Erro ao carregar dados do usuário');
     } finally {
       this.isLoading();
+      this.isProfileReady = true;
     }
   }
 

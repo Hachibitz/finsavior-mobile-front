@@ -15,7 +15,7 @@
       <ion-label *ngIf="userData?.firstName" class="user-name">
         Bem vindo, {{ userData.firstName }}
       </ion-label>
-      <ion-avatar class="profile-avatar" (click)="toggleDropdown()">
+      <ion-avatar class="profile-avatar" (click)="toggleDropdown()" *ngIf="isProfileReady">
         <ng-container *ngIf="userData?.profilePicture; else fallbackIcon">
           <img [src]="userData.profilePicture" alt="Foto de Perfil">
         </ng-container>

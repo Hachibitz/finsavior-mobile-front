@@ -83,6 +83,7 @@ export class LoginPage implements OnInit {
     }).finally(() => {
       this.clearCredentials();
       this.isLoading();
+      window.location.reload();
     })
   }
 
@@ -126,6 +127,7 @@ export class LoginPage implements OnInit {
       this.showAlert('Erro', 'Falha ao autenticar com Google');
     } finally {
       this.isLoading();
+      window.location.reload();
     }
   }
 
