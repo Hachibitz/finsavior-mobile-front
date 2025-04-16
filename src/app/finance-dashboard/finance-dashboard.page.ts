@@ -136,7 +136,10 @@ export class FinanceDashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.selectedMonthYear = this.commonService.formatDate(this.billDate);
+    this.commonService.selectedDate$.subscribe(date => {
+      this.billDate = date;
+      this.selectedMonthYear = this.commonService.formatDate(this.billDate);
+    });
     await this.loadData();
   }
 
