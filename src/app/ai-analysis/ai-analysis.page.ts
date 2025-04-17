@@ -235,9 +235,12 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       const currentMonth = this.addMonths(startingDate, i);
   
       const cardTableData = await this.billService.loadCardTableData(this.commonService.formatDate(currentMonth));
+      const paymentCardTableData = await this.billService.loadPaymentCardTableData(this.commonService.formatDate(currentMonth));
       combinedString += `\n--- Mês: ${this.commonService.formatDate(currentMonth)} ---\n`;
       combinedString += '### Cartões de Crédito (Card Table):\n';
       combinedString += this.generateFormattedTable(cardTableData);
+      combinedString += '\n### Pagamentos de Cartão (Payment Card Table):\n';
+      combinedString += this.generateFormattedTable(paymentCardTableData);
     }
   
     return combinedString;

@@ -37,6 +37,7 @@ export const DELETE_AI_ANALYSIS = URL_BASE_DEV + AI_ADVICE_SERVICE + '/delete-an
 export const GET_AI_ADVICE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice-and-insights';
 export const GET_AI_ADVICE_BY_ID = URL_BASE_DEV + AI_ADVICE_SERVICE + '/get-ai-advice';
 export const CHAT_WITH_SAVI = URL_BASE_DEV + AI_SERVICE + '/chat';
+export const CHAT_WITH_SAVI_STREAM = URL_BASE_DEV + AI_SERVICE + '/chat-stream';
 export const CHAT_WITH_SAVI_HISTORY = URL_BASE_DEV + AI_SERVICE + '/history';
 export const CHAT_WITH_SAVI_CLEAR = URL_BASE_DEV + AI_SERVICE + '/delete-chat-history';
 export const VALIDATE_HAS_COVERAGE = URL_BASE_DEV + AI_ADVICE_SERVICE + '/validate-has-coverage';

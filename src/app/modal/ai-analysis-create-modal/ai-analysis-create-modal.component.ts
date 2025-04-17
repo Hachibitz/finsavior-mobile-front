@@ -82,7 +82,8 @@ export class AiAnalysisCreateModalComponent {
 
   onSave() {
     if (this.form.valid) {
-      const selectedDate = new Date(this.form.value.date);
+      const [year, month] = this.form.value.date.split('-').map(Number);
+      const selectedDate = new Date(year, month - 1, 1);
       const analysisType = this.analysisTypes.filter(analysisType => analysisType.analysisTypeId == this.form.value.analysisType)[0];
       
       const finishDate = new Date(selectedDate);
