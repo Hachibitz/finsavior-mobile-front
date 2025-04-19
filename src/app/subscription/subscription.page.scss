@@ -35,3 +35,9 @@ ion-chip {
         transform: translateY(0);
     }
 }
+
+.checkout-header {
+    display: flex;
+    justify-content: flex-start;
+    padding: 16px;
+}

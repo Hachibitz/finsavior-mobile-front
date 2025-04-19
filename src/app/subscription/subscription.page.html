@@ -10,7 +10,7 @@
     <div class="custom-loader"></div>
   </div>
 
-  <div class="plans-container" *ngIf="currentPlan">
+  <div class="plans-container" *ngIf="currentPlan && !checkout">
     <ion-card
       *ngFor="let plan of groupedPlans"
       class="plan-card"
@@ -50,4 +50,9 @@
     </ion-card>
     <p class="trial-note">* O período de teste gratuito é concedido apenas para a primeira assinatura.</p>
   </div>
+  <ion-button fill="clear" (click)="cancelCheckout()" *ngIf="checkout">
+    <ion-icon slot="start" name="arrow-back"></ion-icon>
+    Voltar
+  </ion-button>
+  <div id="checkout"></div>
 </ion-content>

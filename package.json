@@ -34,6 +34,7 @@
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@ionic/angular": "^8.3.3",
     "@ionic/storage-angular": "^4.0.0",
+    "@stripe/stripe-js": "^7.1.0",
     "chart.js": "^4.4.8",
     "cordova-plugin-cookies": "^0.0.2",
     "firebase": "^11.0.2",

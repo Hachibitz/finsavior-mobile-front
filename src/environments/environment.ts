@@ -67,3 +67,5 @@ export const CLIENT_SECRET = 'EL4A37GecMI5wji0sOuJ1MT8lQGR9PJzjZozSCxkBup3p1bih2
 
 export const GET_TERMS = URL_BASE_DEV + TERMS_AND_PRIVACY_SERVICE + '/get-terms';
 export const GET_PRIVACY_POLICY = URL_BASE_DEV + TERMS_AND_PRIVACY_SERVICE + '/get-privacy-policy';
+
+export const STRIPE_PUBLIC_KEY = 'pk_test_51RAXKQP3WXaQ8eNCSd62SrLxgo6vXm9v0iPZHLkZY7nKKlJcALGyybHh7JynrX4icimDQlRAxtktx9qAcQV4VAgz00ATgXomAT';

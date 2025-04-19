@@ -100,4 +100,5 @@ export interface CheckoutSessionDTO {
     planType: string;
     url: string;
     email: string;
+    clientSecret: string;
 }

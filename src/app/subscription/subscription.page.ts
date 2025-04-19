@@ -18,6 +18,8 @@ import { ViewWillEnter } from '@ionic/angular';
 import { LoginRequest } from '../model/user.model';
 import { AuthService } from '../service/auth.service';
 import { PlanChoiceModalComponent } from '../modal/plan-choice-modal/plan-choice-modal.component';
+import { loadStripe, Stripe, StripeEmbeddedCheckout } from '@stripe/stripe-js';
+import { STRIPE_PUBLIC_KEY } from 'src/environments/environment';
 
 @Component({
   selector: 'app-subscription',
@@ -44,6 +46,9 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
   plans = PLANS;
 
   groupedPlans: any[] = [];
+
+  stripe: Stripe | undefined;
+  checkout: StripeEmbeddedCheckout | undefined;
 
   currentPlan!: Plan;
   userEmail: string = '';
@@ -84,8 +89,22 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
       if (this.currentPlan.planDs === 'FREE') {
         await this.showLoading();
         const checkoutSession = await this.paymentService.createCheckoutSession(plan.type, this.userEmail);
-        await this.hideLoading();
-        window.location.href = checkoutSession.url;
+
+        if (checkoutSession.clientSecret) {
+          const stripeInstance = await loadStripe(STRIPE_PUBLIC_KEY);
+          if (!stripeInstance) {
+            throw new Error('Failed to initialize Stripe.');
+          }
+          this.stripe = stripeInstance;
+
+          this.checkout = await this.stripe.initEmbeddedCheckout({
+            clientSecret: checkoutSession.clientSecret
+          });
+
+          this.checkout.mount('#checkout');
+        } else {
+          window.location.href = checkoutSession.url; // fallback pra modo clássico se necessário
+        }
       } else {
         const isUpgrade = this.comparePlans(plan.type, this.currentPlan.planDs) > 0;
         const isDowngrade = this.comparePlans(plan.type, this.currentPlan.planDs) < 0;
@@ -117,7 +136,14 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
       console.error('Erro ao preparar alteração de plano:', error);
       this.showErrorAlert('Erro ao preparar alteração de plano', error.message 
         || 'Erro ao processar a solicitação. Tente novamente mais tarde.');
+    } finally {
+      await this.hideLoading();
     }
+  }
+
+  cancelCheckout() {
+    this.checkout?.destroy();
+    this.checkout = undefined;
   }
   
   private async promptReLoginForPlanChange(plan: any) {
