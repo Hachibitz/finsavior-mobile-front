@@ -158,8 +158,8 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
               await this.authService.logout();
               await this.googleAuthService.logoutFromGoogle();
               await this.showAlert('Sucesso', 'Sua conta será excluída em breve!');
-            } catch (error) {
-              await this.showAlert('Erro', 'Falha ao excluir conta. Tente novamente mais tarde.');
+            } catch (error: any) {
+              await this.showAlert('Erro', error);
             } finally {
               this.hideLoading();
             }
