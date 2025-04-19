@@ -22,7 +22,7 @@
   <div *ngIf="selectedSegment === 'registers'">
     <div class="buttons-credit-card-tab">
       <ion-button expand="block" (click)="openAddRegisterModal()">Adicionar Registro</ion-button>
-      <ion-button expand="block" (click)="cardPaymentRegisterModal()">Adicionar Pagamento de fatura</ion-button>
+      <ion-button expand="block" (click)="cardPaymentRegisterModal()">Pagamento de fatura</ion-button>
     </div>
 
     <ion-list *ngIf="!loading && cardRows.length > 0">

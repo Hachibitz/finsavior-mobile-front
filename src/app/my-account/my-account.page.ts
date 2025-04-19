@@ -18,6 +18,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { PaymentService } from '../service/payment.service';
 import { AuthService } from '../service/auth.service';
 import { LoginRequest } from '../model/user.model';
+import { GoogleAuthService } from '../service/google-auth.service';
 
 @Component({
   selector: 'app-my-account',
@@ -55,6 +56,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
     private router: Router,
     private paymentService: PaymentService,
     private authService: AuthService,
+    private googleAuthService: GoogleAuthService
   ) {
     this.passwordForm = this.fb.group({
       username: ['', Validators.required],
@@ -151,10 +153,15 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
           text: 'Confirmar',
           handler: async () => {
             try {
+              this.showLoading();
               await this.userService.deleteAccountAndData({ ...data, confirmation: true });
+              await this.authService.logout();
+              await this.googleAuthService.logoutFromGoogle();
               await this.showAlert('Sucesso', 'Sua conta será excluída em breve!');
             } catch (error) {
               await this.showAlert('Erro', 'Falha ao excluir conta. Tente novamente mais tarde.');
+            } finally {
+              this.hideLoading();
             }
           }
         }
@@ -171,7 +178,9 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
     });
     await modal.present();
     await modal.onDidDismiss();
+    this.showLoading();
     await this.loadUserProfile();
+    this.hideLoading();
   }
 
   async openChangePasswordModal() {

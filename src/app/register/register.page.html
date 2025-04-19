@@ -77,6 +77,10 @@
     <ion-text color="danger" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
       A senha deve ter pelo menos 8 caracteres
     </ion-text>
+    <ion-item>
+      <ion-label position="floating">Confirme a senha</ion-label>
+      <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
+    </ion-item>
 
     <div class="password-requirements">
       <p [ngStyle]="{'color': passwordCriteria.length ? 'blue' : 'red'}">Pelo menos 8 caracteres</p>
@@ -85,11 +89,7 @@
       <p [ngStyle]="{'color': passwordCriteria.number ? 'blue' : 'red'}">Pelo menos 1 número</p>
       <p [ngStyle]="{'color': passwordCriteria.special ? 'blue' : 'red'}">Pelo menos 1 caractere especial</p>
     </div>
-
-    <ion-item>
-      <ion-label position="floating">Confirme a senha</ion-label>
-      <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
-    </ion-item>
+    
     <ion-text color="danger" *ngIf="registerForm.get('passwordConfirmation')?.hasError('required') && registerForm.get('passwordConfirmation')?.touched">
       Confirmação de senha é obrigatória
     </ion-text>

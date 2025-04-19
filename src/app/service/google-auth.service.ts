@@ -121,7 +121,6 @@ export class GoogleAuthService {
 
   async getGoogleProfile(): Promise<{ name: string; email: string }> {
     const user = this.firebaseAuth.currentUser;
-    console.log(user)
   
     if (!user) {
       throw new Error('Usuário não está logado no Firebase.');

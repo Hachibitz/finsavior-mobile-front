@@ -65,9 +65,9 @@ export class RegisterPage implements OnInit {
     }
 
     const signUpRequest = {
-      email: this.registerForm.get('email')?.value,
-      emailConfirmation: this.registerForm.get('emailConfirmation')?.value,
-      username: this.registerForm.get('username')?.value,
+      email: this.registerForm.get('email')?.value.trim(),
+      emailConfirmation: this.registerForm.get('emailConfirmation')?.value.trim(),
+      username: this.registerForm.get('username')?.value.trim(),
       firstName: this.registerForm.get('name')?.value,
       lastName: this.registerForm.get('lastname')?.value,
       password: this.registerForm.get('password')?.value,

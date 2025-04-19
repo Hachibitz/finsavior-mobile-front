@@ -116,7 +116,21 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.loadData();
   }
 
+  clearAllDataBeforeLoading() {
+    this.mainTableForm.reset();
+    this.cardTableForm.reset();
+    this.rows = [];
+    this.incomeRows = [];
+    this.cardRows = [];
+    this.selectedType = 'expense';
+    this.isDatePickerOpen = false;
+    this.showDropdown = false;
+    this.isProfileReady = false;
+    this.userData = null;
+  }
+
   async ngOnInit(): Promise<void> {
+    this.clearAllDataBeforeLoading();
     this.selectedMonthYear = this.commonService.formatDate(this.billDate);
     this.isAuthenticated = await this.authService.isAuthenticated();
   }

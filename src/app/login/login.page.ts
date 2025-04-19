@@ -17,6 +17,7 @@ import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/ter
 import { ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { helpCircleOutline } from 'ionicons/icons';
+import { extractFirstName, extractLastName, generateStrongPassword, generateUsernameFromEmail } from '../utils/common-authentication-utils';
 
 addIcons({
   'help-circle-outline': helpCircleOutline
@@ -68,7 +69,7 @@ export class LoginPage implements OnInit {
 
   onLogin() {
     this.loginRequest = {
-      username: this.userLogin,
+      username: this.userLogin.trim(),
       password: this.password,
       rememberMe: this.rememberMe
     }
@@ -83,7 +84,6 @@ export class LoginPage implements OnInit {
     }).finally(() => {
       this.clearCredentials();
       this.isLoading();
-      window.location.reload();
     })
   }
 
@@ -103,14 +103,14 @@ export class LoginPage implements OnInit {
           const accepted = await this.confirmTerms();
           if (!accepted) return;
   
-          const autoPassword = this.generateStrongPassword();
+          const autoPassword = generateStrongPassword();
   
           const signUpRequest = {
             email: googleProfile.email,
             emailConfirmation: googleProfile.email,
-            username: this.generateUsernameFromEmail(googleProfile.email),
-            firstName: this.extractFirstName(googleProfile.name),
-            lastName: this.extractLastName(googleProfile.name),
+            username: generateUsernameFromEmail(googleProfile.email),
+            firstName: extractFirstName(googleProfile.name),
+            lastName: extractLastName(googleProfile.name),
             password: autoPassword,
             passwordConfirmation: autoPassword,
             agreement: true
@@ -127,7 +127,6 @@ export class LoginPage implements OnInit {
       this.showAlert('Erro', 'Falha ao autenticar com Google');
     } finally {
       this.isLoading();
-      window.location.reload();
     }
   }
 
@@ -183,39 +182,6 @@ export class LoginPage implements OnInit {
     });
   }  
   
-  generateUsernameFromEmail(email: string): string {
-    return email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '') + Date.now();
-  }
-  
-  extractFirstName(fullName: string): string {
-    return fullName.split(' ')[0];
-  }
-  
-  extractLastName(fullName: string): string {
-    const parts = fullName.split(' ');
-    return parts.length > 1 ? parts.slice(1).join(' ') : 'Sobrenome';
-  }
-  
-  generateStrongPassword(): string {
-    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const lower = 'abcdefghijklmnopqrstuvwxyz';
-    const nums = '0123456789';
-    const special = '@$!%*?&';
-    const all = upper + lower + nums + special;
-  
-    let password = 
-      upper[Math.floor(Math.random() * upper.length)] +
-      lower[Math.floor(Math.random() * lower.length)] +
-      nums[Math.floor(Math.random() * nums.length)] +
-      special[Math.floor(Math.random() * special.length)];
-  
-    while (password.length < 12) {
-      password += all[Math.floor(Math.random() * all.length)];
-    }
-  
-    return password.split('').sort(() => Math.random() - 0.5).join('');
-  }
-
   async openTermsDialog() {
     const modal = await this.modalController.create({
       component: TermsAndPrivacyDialogPage,
