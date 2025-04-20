@@ -1,6 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Login</ion-title>
+    <ion-buttons slot="start">
+      <div style="display: flex; align-items: center;">
+        <img src="assets/logo.png" class="logo-finsavior">
+        <ion-title style="margin: 0;">Login</ion-title>
+      </div>
+    </ion-buttons>
+    <ion-buttons slot="end" style="margin-bottom: auto; margin-top: -9px;">
+      <ion-button fill="clear" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -40,8 +50,8 @@
       </form>
 
       <div class="ion-text-center">
-        <ion-text>Não tem uma conta? <a (click)="redirectToRegistration()">Cadastre-se</a></ion-text><br>
-        <a (click)="redirectToForgottenPassword()">Esqueci minha senha</a>
+        <ion-text>Não tem uma conta? <a (click)="navigateTo('register')">Cadastre-se</a></ion-text><br>
+        <a (click)="navigateTo('password-forgotten')">Esqueci minha senha</a>
       </div>
     </ion-card-content>
     <div style="display: flex; justify-content: center; align-items: center; max-width: 100px; max-height: 100px; margin: 0 auto;">
@@ -52,7 +62,7 @@
 <ion-footer class="footer-container">
   <div class="footer-content">
     <ion-text>Precisa de ajuda?</ion-text>
-    <ion-button expand="full" (click)="redirectToTicketPage()" class="ticket-button">
+    <ion-button expand="full" (click)="navigateTo('ticket')" class="ticket-button">
       <ion-icon slot="start" name="help-circle-outline"></ion-icon>
       Abra um ticket aqui
     </ion-button>

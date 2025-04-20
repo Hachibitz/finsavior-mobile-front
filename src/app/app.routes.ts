@@ -92,6 +92,14 @@ export const routes: Routes = [
     path: 'finance-dashboard',
     canActivate: [AuthGuard],
     loadComponent: () => import('./finance-dashboard/finance-dashboard.page').then( m => m.FinanceDashboardPage)
+  },  {
+    path: 'about-dev',
+    loadComponent: () => import('./about-dev/about-dev.page').then( m => m.AboutDevPage)
   },
+  {
+    path: 'about-app',
+    loadComponent: () => import('./about-app/about-app.page').then( m => m.AboutAppPage)
+  },
+
 
 ];

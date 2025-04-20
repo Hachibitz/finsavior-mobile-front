@@ -158,12 +158,8 @@ export class LandingPagePage implements OnInit {
     await alert.present();
   }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
-  }
-
-  redirectToRegistration() {
-    this.router.navigate(['/register']);
+  navigateTo(path: string) {
+    this.router.navigate([path]);
   }
 
   isLoading() {

@@ -8,12 +8,14 @@
   <img src="assets/logo.png" alt="FinSavior Logo" class="app-logo"/>
   <h1>Bem-vindo ao FinSavior!</h1>
   <p>Transforme suas finanças com a ajuda da tecnologia e IA.</p>
-  <ion-button expand="block" color="primary" (click)="redirectToLogin()">Entrar</ion-button>
-  <ion-button expand="block" color="secondary" (click)="redirectToRegistration()">Cadastre-se</ion-button>
+  <ion-button expand="block" color="primary" (click)="navigateTo('login')">Entrar</ion-button>
+  <ion-button expand="block" color="secondary" (click)="navigateTo('register')">Cadastre-se</ion-button>
   <div style="margin-bottom: 20px;">
     <ion-button color="light" expand="block" (click)="googleSignUp()">
       <ion-icon src="assets/google.svg"></ion-icon>
       <ion-text style="margin-left: 10px; text-align: center;">Continue with Google</ion-text>
     </ion-button>
   </div>
+  <ion-button expand="block" color="secondary" (click)="navigateTo('about-app')">Sobre o FinSavior</ion-button>
+  <ion-button expand="block" color="secondary" (click)="navigateTo('about-dev')">Sobre o Desenvolvedor</ion-button>
 </ion-content>

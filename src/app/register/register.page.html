@@ -7,7 +7,9 @@
       </div>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="redirectToLogin()">Voltar</ion-button>
+      <ion-button fill="clear" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -112,7 +114,7 @@
     <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">Cadastrar</ion-button>
 
     <div class="ion-text-center">
-      <p>Já tem uma conta? <a href="#" (click)="redirectToLogin()">Login</a></p>
+      <p>Já tem uma conta? <a class="link-like" (click)="navigateTo('login')">Login</a></p>
     </div>
   </form>
 </ion-content>

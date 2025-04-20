@@ -10,13 +10,13 @@ import {
   IonContent, IonButton, IonText, IonLabel, 
   IonItem, IonIcon, IonCard, IonCardContent, 
   IonCardHeader, IonCardTitle, IonCheckbox,
-  IonInput, IonFooter
+  IonInput, IonFooter, IonButtons
 } from '@ionic/angular/standalone';
 import { GoogleAuthService } from '../service/google-auth.service';
 import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page';
 import { ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { helpCircleOutline } from 'ionicons/icons';
+import { helpCircleOutline, arrowBackOutline } from 'ionicons/icons';
 import { extractFirstName, extractLastName, generateStrongPassword, generateUsernameFromEmail } from '../utils/common-authentication-utils';
 
 addIcons({
@@ -37,7 +37,8 @@ addIcons({
     IonButton, IonText, IonLabel, 
     IonItem, IonIcon, IonCard, 
     IonCardContent, IonCardHeader, IonCardTitle,
-    IonCheckbox, IonInput, IonFooter
+    IonCheckbox, IonInput, IonFooter,
+    IonButtons
   ]
 })
 export class LoginPage implements OnInit {
@@ -56,6 +57,7 @@ export class LoginPage implements OnInit {
     private googleAuthService: GoogleAuthService,
     private modalController: ModalController
   ) {
+      addIcons({arrowBackOutline,helpCircleOutline});
 
   }
 
@@ -213,16 +215,12 @@ export class LoginPage implements OnInit {
     await alert.present();
   }
 
-  redirectToRegistration() {
-    this.router.navigate(['/register']);
+  navigateTo(path: string) {
+    this.router.navigate([path]);
   }
 
-  redirectToForgottenPassword() {
-    this.router.navigate(['/password-forgotten']);
-  }
-
-  redirectToTicketPage() {
-    this.router.navigate(['/ticket']);
+  goBack() {
+    window.history.back();
   }
 
   isLoading() {

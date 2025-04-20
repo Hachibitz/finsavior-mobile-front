@@ -275,6 +275,14 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.router.navigateByUrl('/savi-ai-assistant-chat');
   }
 
+  goToAboutApp() {
+    this.router.navigateByUrl('/about-app');
+  }
+
+  goToAboutDev() {
+    this.router.navigateByUrl('/about-dev');
+  }
+
   startDrag(event: MouseEvent | TouchEvent) {
     event.preventDefault();
     event.stopPropagation();

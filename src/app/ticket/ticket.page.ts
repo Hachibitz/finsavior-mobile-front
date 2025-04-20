@@ -7,7 +7,7 @@ import {
   IonCardContent, IonCardTitle, IonSelect,
   IonSelectOption, IonButton, IonLabel,
   IonItem, IonInput, IonTextarea,
-  IonText, IonButtons
+  IonText, IonButtons, IonIcon
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -17,6 +17,12 @@ import { TICKET_CONTACT } from 'src/environments/environment';
 import { ViewWillEnter, AlertController } from '@ionic/angular';
 import { UserService } from '../service/user.service';
 import { AuthService } from '../service/auth.service';
+import { arrowBackOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
+addIcons({
+  'arrow-back-outline': arrowBackOutline,
+});
 
 @Component({
   selector: 'app-ticket',
@@ -30,7 +36,7 @@ import { AuthService } from '../service/auth.service';
     IonCardContent, IonCardTitle, IonSelect,
     IonSelectOption, IonButton, IonLabel,
     ReactiveFormsModule, IonInput, IonTextarea,
-    IonText, IonButtons
+    IonText, IonButtons, IonIcon
   ]
 })
 export class TicketPage implements ViewWillEnter {
@@ -136,6 +142,10 @@ export class TicketPage implements ViewWillEnter {
 
   redirectToMainPage() {
     this.router.navigate(['/main-page']);
+  }
+
+  goBack() {
+    window.history.back();
   }
 
   async showAlert(header: string, message: string): Promise<void> {

@@ -167,8 +167,8 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     this.isPopoverOpen = false;
   }
 
-  redirectToMainPage() {
-    this.router.navigate(['main-page/debits']);
+  goBack() {
+    window.history.back();
   }
 
   async presentLimitAlert() {

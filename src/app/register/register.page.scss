@@ -3,3 +3,15 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.link-like {
+    color: var(--ion-color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s;
+  
+    &:hover {
+      color: var(--ion-color-primary-shade);
+    }
+}

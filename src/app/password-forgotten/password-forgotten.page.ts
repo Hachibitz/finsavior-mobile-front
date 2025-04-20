@@ -5,6 +5,12 @@ import { IonicModule, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { arrowBackOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
+addIcons({
+  'arrow-back-outline': arrowBackOutline,
+});
 
 @Component({
   selector: 'app-password-forgotten',
@@ -101,8 +107,8 @@ export class PasswordForgottenPage implements OnInit {
     );
   }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
+  goBack() {
+    window.history.back();
   }
 
   isLoading(): void {

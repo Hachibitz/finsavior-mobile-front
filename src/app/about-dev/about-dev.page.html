@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Sobre o Desenvolvedor</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Fundo animado -->
+  <div class="background-wrapper">
+    <div class="bubble bubble1"></div>
+    <div class="bubble bubble2"></div>
+    <div class="bubble bubble3"></div>
+    <div class="bubble bubble4"></div>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div #animContainer class="dev-container animate__animated animate__fadeInUp">
+    <img src="assets/dev-avatar.JPG" alt="Dev Avatar" class="dev-avatar" />
+    <h2>Prazer, sou o Felipe 👋</h2>
+    <p>
+      Desenvolvedor solo deste app (sim, tudo mesmo: front, back, UI/UX, segurança, testes... e café ☕).
+      O FinSavior nasceu como uma planilha no Excel (não julga 😅) e foi crescendo até virar o que você vê hoje.
+    </p>
+    <p>
+      Com o boom da IA, pensei: "E se eu unisse isso com o controle financeiro?" — e boom 💥, Savi nasceu!
+    </p>
+    <p>
+      Quero que todo mundo tenha acesso a um assistente financeiro pessoal de verdade, sem complicações.
+    </p>
+
+    <ion-button expand="block" fill="outline" (click)="openGitHub()">
+      <ion-icon slot="start" name="logo-github"></ion-icon>
+      Ver projetos no GitHub
+    </ion-button>
+    
+    <ion-button expand="block" fill="outline" color="tertiary" (click)="openLinkedIn()">
+      <ion-icon slot="start" name="logo-linkedin"></ion-icon>
+      Conecte-se comigo no LinkedIn
+    </ion-button>
+
+    <div class="footer">
+      <small>Sobre o app: Home > Menu > Sobre o FinSavior</small>
+    </div>
+  </div>
+</ion-content>

@@ -6,6 +6,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
 import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page';
 import { ModalController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
+
+addIcons({
+  'arrow-back-outline': arrowBackOutline,
+});
 
 @Component({
   selector: 'app-register',
@@ -80,7 +86,7 @@ export class RegisterPage implements OnInit {
       .signUp(signUpRequest)
       .then((result) => {
         this.presentAlert('Cadastro realizado com sucesso!');
-        this.redirectToLogin();        
+        this.navigateTo('login');        
       })
       .catch((error) => {
         const errorMessage = error.error?.message || 'Erro ao realizar o cadastro. Tente novamente mais tarde.';
@@ -112,8 +118,12 @@ export class RegisterPage implements OnInit {
     return email === emailConfirmation ? null : { emailMismatch: true };
   }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
+  navigateTo(path: string) {
+    this.router.navigate([path]);
+  }
+
+  goBack() {
+    window.history.back();
   }
 
   async presentAlert(message: string) {

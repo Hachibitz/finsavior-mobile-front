@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Sobre o FinSavior</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Fundo animado -->
+  <div class="background-wrapper">
+    <div class="bubble bubble1"></div>
+    <div class="bubble bubble2"></div>
+    <div class="bubble bubble3"></div>
+    <div class="bubble bubble4"></div>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="app-container animate__animated animate__fadeInUp">
+    <img src="assets/logo.png" alt="Logo FinSavior" class="app-logo" />
+    <h2>FinSavior: seu guia financeiro com IA 💡</h2>
+    <p>
+      O FinSavior nasceu pra te ajudar a entender suas finanças de forma simples, bonita e inteligente.
+      Ele organiza seus gastos, receitas, metas e ainda te dá dicas com a Savi — uma IA pra lá de gente fina 🤖✨
+    </p>
+    <p>
+      Totalmente gratuito, com recursos extras pros mais entusiastas. Começou como planilha, virou app e agora... tá só começando 🚀
+    </p>
+    <p>
+      Quer falar com o criador ou sugerir algo? Manda ver:
+    </p>
+
+    <ion-button expand="block" fill="solid" color="secondary" href="mailto:contato@finsavior.com.br">
+      <ion-icon slot="start" name="mail-outline"></ion-icon>
+      contato&#64;finsavior.com.br
+    </ion-button>
+
+    <div class="footer">
+      <small>App 100% independente e com muito carinho 💙</small>
+    </div>
+
+    <div class="footer">
+      <small>Sobre o app: Home > Menu > Sobre o Desenvolvedor</small>
+    </div>
+  </div>
+</ion-content>

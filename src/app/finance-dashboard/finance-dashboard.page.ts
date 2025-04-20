@@ -381,7 +381,7 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
     return colors;
   }
 
-  redirectToSummaryPage() {
-    this.router.navigate(['main-page/summary']);
+  goBack() {
+    window.history.back();
   }
 }
