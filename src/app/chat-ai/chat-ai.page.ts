@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -10,7 +10,7 @@ import {
   IonFab
 } from '@ionic/angular/standalone';
 import { ChatMessage, ChatRequest } from '../model/ai-advice.model';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ViewWillEnter } from '@ionic/angular';
 import { AiAssistantService } from '../service/ai-assistant.service';
 import { addIcons } from 'ionicons';
 import { 
@@ -35,12 +35,14 @@ import { Router } from '@angular/router';
     IonText, IonFabButton, IonFab
   ]
 })
-export class ChatAiPage implements OnInit {
+export class ChatAiPage implements OnInit, ViewWillEnter {
   userMessage: string | null | undefined = '';
   chatHistory: ChatMessage[] = [];
   isTyping: boolean = false;
   isPopoverOpen = false;
   popoverEvent: any;
+
+  @ViewChild(IonContent, { static: false }) content!: IonContent;
 
   showScrollToBottomButton = false;
 
@@ -64,9 +66,13 @@ export class ChatAiPage implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ionViewWillEnter(): Promise<void> {
     await this.loadMoreMessages();
-    this.scrollToBottom();
+    setTimeout(() => this.scrollToBottom(), 500);
+  }
+
+  async ngOnInit() {
+    
   }
 
   async loadMoreMessages() {
@@ -92,6 +98,12 @@ export class ChatAiPage implements OnInit {
   
     if (scrollTop < 50) {
       this.loadMoreMessages();
+    }
+  }
+
+  scrollToBottom() {
+    if (this.content) {
+      this.content.scrollToBottom(300);
     }
   }
 
@@ -138,13 +150,6 @@ export class ChatAiPage implements OnInit {
       this.isTyping = false;
       this.scrollToBottom();
     }
-  }
-
-  scrollToBottom() {
-    setTimeout(() => {
-      const content = document.querySelector('ion-content');
-      if (content) (content as any).scrollToBottom(300);
-    }, 100);
   }
 
   openPopover(ev: any) {
