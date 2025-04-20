@@ -74,11 +74,17 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     
   }
 
-  ionViewWillEnter() {
-    this.commonService.selectedDate$.subscribe(date => {
+  async ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(async date => {
       this.billDate = date;
-      this.loadTableData();
+      await this.clearAllDataBeforeLoading();
+      await this.loadTableData();
     });
+  }
+
+  async clearAllDataBeforeLoading() {
+    this.rows = [];
+    this.totalDebit = 0;
   }
 
   async openAddRegisterModal() {

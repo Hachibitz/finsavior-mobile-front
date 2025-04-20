@@ -60,11 +60,27 @@ export class MainSummaryPage implements OnInit, ViewWillEnter {
 
   }
 
-  ionViewWillEnter() {
-    this.commonService.selectedDate$.subscribe(date => {
+  async ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(async date => {
       this.billDate = date;
-      this.loadData();
+      await this.clearAllDataBeforeLoading();
+      await this.loadData();
     });
+  }
+
+  async clearAllDataBeforeLoading() {
+    this.cards = [];
+    this.currentlyAvailableIncome = 0;
+    this.currentStatus = 0;
+    this.liquidAndRightsStatus = 0;
+    this.foreseenBalance = 0;
+    this.situation = '';
+    this.situationColor = '';
+    this.situationDescription = '';
+    this.totalDebit = 0;
+    this.totalLeft = 0;
+    this.totalPaid = 0;
+    this.cardPaymentTotal = 0;
   }
 
   async loadData() {

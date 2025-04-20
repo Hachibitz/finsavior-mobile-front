@@ -66,11 +66,16 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     this.loadIncomeData();
   }
 
-  ionViewWillEnter() {
-    this.commonService.selectedDate$.subscribe(date => {
+  async ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(async date => {
       this.billDate = date;
+      await this.clearAllDataBeforeLoading();
       this.loadIncomeData();
     });
+  }
+
+  async clearAllDataBeforeLoading() {
+    this.incomeRows = [];
   }
 
   async openAddRegisterModal() {

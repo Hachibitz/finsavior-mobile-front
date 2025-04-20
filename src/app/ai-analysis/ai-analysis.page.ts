@@ -65,11 +65,19 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       addIcons({trash});}
 
   ngOnInit(): void {
-    this.setUserData();
+    
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    await this.clearAllDataBeforeLoading();
+    this.setUserData();
     this.loadAnalysis();
+  }
+
+  async clearAllDataBeforeLoading() {
+    this.analyses = [];
+    this.filteredAnalyses = [];
+    this.userData = {} as UserData;
   }
 
   async loadAnalysis(): Promise<void> {

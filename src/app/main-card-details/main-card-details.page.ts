@@ -57,12 +57,19 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
 
   }
 
-  ionViewWillEnter() {
-    this.commonService.selectedDate$.subscribe(date => {
+  async ionViewWillEnter() {
+    this.commonService.selectedDate$.subscribe(async date => {
       this.billDate = date;
+      await this.clearAllDataBeforeLoading();
       this.loadCardTableData();
       this.loadPaymentData();
     });
+  }
+
+  async clearAllDataBeforeLoading() {
+    this.cardRows = [];
+    this.paymentRows = [];
+    this.creditCardTotal = 0;
   }
 
   async loadCardTableData() {

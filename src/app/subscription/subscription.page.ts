@@ -72,12 +72,19 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     });
   }
 
-  ionViewWillEnter(): void {
-    this.getCurrentUserPlan();
+  async ionViewWillEnter(): Promise<void> {
+    await this.clearAllDataBeforeLoading();
+    this.getCurrentUserPlanData();
     this.groupPlans();
   }
 
-  async getCurrentUserPlan() {
+  async clearAllDataBeforeLoading() {
+    this.currentPlan = undefined!;
+    this.userEmail = '';
+    this.username = '';
+  }
+
+  async getCurrentUserPlanData() {
     const profileData = await this.userService.getProfileData()
     this.currentPlan = profileData.plan;
     this.userEmail = profileData.email;
@@ -198,7 +205,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
                 });
                 await alert.present();
                 await alert.onDidDismiss();
-                this.getCurrentUserPlan();
+                this.getCurrentUserPlanData();
               }
             } catch (e) {
               await this.hideLoading();
