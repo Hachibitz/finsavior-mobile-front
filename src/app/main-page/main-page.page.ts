@@ -88,6 +88,12 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   isAuthenticated: boolean = false;
   isProfileReady: boolean = false;
 
+  isDragging = false;
+  showDragHint = true;
+  pressTimeout: any;
+  position = { x: 0, y: 0 };
+  offset = { x: 0, y: 0 };
+
   constructor(
     private fb: FormBuilder,
     private billService: BillService,
@@ -113,6 +119,7 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   }
 
   ionViewWillEnter(): void {
+    this.position = { x: window.innerWidth - 180, y: window.innerHeight - 180 };
     this.loadData();
   }
 
@@ -133,6 +140,9 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.clearAllDataBeforeLoading();
     this.selectedMonthYear = this.commonService.formatDate(this.billDate);
     this.isAuthenticated = await this.authService.isAuthenticated();
+    setTimeout(() => {
+      this.showDragHint = false;
+    }, 4000);
   }
 
   async loadData(): Promise<void> {
@@ -253,7 +263,68 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   }
 
   goToSaviChat() {
+    if (this.isDragging) {
+      return;
+    }
     this.router.navigateByUrl('/savi-ai-assistant-chat');
+  }
+
+  startDrag(event: MouseEvent | TouchEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const target = event.currentTarget as HTMLElement;
+    target.classList.add('holding');
+    if(event instanceof TouchEvent) {
+      target.classList.add('active');
+    }
+  
+    this.pressTimeout = setTimeout(() => {
+      this.isDragging = true;
+      target.classList.remove('holding');
+      const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+      const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+      this.offset = {
+        x: clientX - this.position.x,
+        y: clientY - this.position.y
+      };
+    }, 1000);
+  }
+  
+  drag(event: MouseEvent | TouchEvent) {
+    if (!this.isDragging) return;
+  
+    event.preventDefault();
+    event.stopPropagation();
+  
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+    this.position = {
+      x: clientX - this.offset.x,
+      y: clientY - this.offset.y
+    };
+  }
+  
+  endDrag(event: MouseEvent | TouchEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+
+    if(event instanceof TouchEvent) {
+      const target = event.currentTarget as HTMLElement;
+      target.classList.remove('active');
+      target.classList.remove('holding');
+    }
+  
+    clearTimeout(this.pressTimeout);
+  
+    if (!this.isDragging) {
+      this.goToSaviChat();
+    }
+  
+    setTimeout(() => this.isDragging = false, 100);
   }
 
   isLoading(): void {

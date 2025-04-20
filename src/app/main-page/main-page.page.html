@@ -124,8 +124,26 @@
       </ion-content>
     </ng-template>
   </ion-modal>
-  <div class="savi-chat-bubble" (click)="goToSaviChat()">
-    <img src="assets/savi-avatar.png" alt="Savi" />
-    <span>Posso te ajudar!</span>
-  </div>  
+  <div 
+    class="savi-chat-bubble" 
+    (mousedown)="startDrag($event)" 
+    (mousemove)="drag($event)" 
+    (mouseup)="endDrag($event)"
+    (touchstart)="startDrag($event)" 
+    (touchmove)="drag($event)" 
+    (touchend)="endDrag($event)"
+    (click)="goToSaviChat()"
+    [style.left.px]="position.x"
+    [style.top.px]="position.y"
+    >
+    <svg class="progress-circle" viewBox="0 0 36 36">
+      <circle class="progress-circle-bg" cx="18" cy="18" r="16"></circle>
+      <circle class="progress-circle-fill" cx="18" cy="18" r="16"></circle>
+    </svg>
+    <img src="assets/savi-avatar.png" alt="Savi" style="pointer-events: none;" />
+    <span style="pointer-events: none;">Posso te ajudar!</span>
+    <div *ngIf="showDragHint" class="drag-hint">
+      Segure 1s e arraste para mover
+    </div>
+  </div>
 </ion-content>
