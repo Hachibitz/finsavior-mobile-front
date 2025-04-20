@@ -12,7 +12,7 @@
     <div class="custom-loader"></div>
   </div>
   
-  <ion-list *ngIf="!loading">
+  <ion-list *ngIf="!loading && filteredAnalyses.length > 0">
     <ion-item *ngFor="let analysis of filteredAnalyses" (click)="viewAnalysis(analysis)">
       <ion-label>
         <h2>Tipo da Análise: {{ analysis.analysisType }}</h2>
@@ -27,4 +27,9 @@
       </ion-buttons>
     </ion-item>
   </ion-list>
+
+  <div *ngIf="!loading && filteredAnalyses.length === 0" class="no-analyses-message">
+    <p>Nenhuma análise encontrada. Você pode gerar uma agora mesmo!</p>
+    <ion-button expand="block" (click)="openAiAnalysisDialog()">Nova Análise</ion-button>
+  </div>
 </ion-content>
