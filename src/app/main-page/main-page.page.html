@@ -1,9 +1,6 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <div class="logo-finsavior">
-        <img [src]="'assets/logo.png'">
-      </div>
       <ion-menu-button menu="main-menu"></ion-menu-button>
       <ion-label>{{ selectedMonthYear }}</ion-label>
       <ion-button (click)="openDatePicker()">
@@ -12,19 +9,41 @@
     </ion-buttons>
 
     <ion-buttons slot="end" class="profile-info">
-      <ion-label *ngIf="userData?.firstName" class="user-name">
-        Bem vindo, {{ userData.firstName }}
-      </ion-label>
-      <ion-avatar class="profile-avatar" (click)="toggleDropdown()" *ngIf="isProfileReady">
-        <ng-container *ngIf="userData?.profilePicture; else fallbackIcon">
-          <img [src]="userData.profilePicture" alt="Foto de Perfil">
-        </ng-container>
-        <ng-template #fallbackIcon>
-          <img [src]="'assets/default-profile.png'" alt="Foto de Perfil">
-        </ng-template>
-      </ion-avatar>
-    </ion-buttons>    
+      <ion-button id="avatar-button" fill="clear">
+        <ion-label *ngIf="userData?.firstName" class="user-name">
+          Bem vindo, {{ userData.firstName }}
+        </ion-label>
+        <ion-avatar class="profile-avatar" *ngIf="isProfileReady">
+          <ng-container *ngIf="userData?.profilePicture; else fallbackIcon">
+            <img [src]="userData.profilePicture" alt="Foto de Perfil">
+          </ng-container>
+          <ng-template #fallbackIcon>
+            <img src="assets/default-profile.png" alt="Foto de Perfil">
+          </ng-template>
+        </ion-avatar>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
+
+  <ion-popover
+    trigger="avatar-button"
+    dismissOnSelect="true"
+    mode="ios"
+    side="bottom"
+    alignment="end">
+    <ng-template>
+      <ion-list lines="none">
+        <ion-item button (click)="navigateTo('my-account')">
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+          <ion-label>Minha Conta</ion-label>
+        </ion-item>
+        <ion-item button (click)="logout()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Sair</ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </ion-popover>
 </ion-header>
 
 <div *ngIf="showDropdown" class="dropdown-menu">

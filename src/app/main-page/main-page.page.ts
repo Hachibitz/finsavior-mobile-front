@@ -18,10 +18,14 @@ import {
   IonIcon, IonDatetime, IonModal,
   IonDatetimeButton, IonButtons, IonButton,
   IonItem, IonMenu, IonList,
-  IonAvatar, IonMenuButton
+  IonAvatar, IonMenuButton, IonPopover
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { wallet, cash, statsChart, calendar, barChart, card, personCircleOutline } from 'ionicons/icons';
+import { 
+  wallet, cash, statsChart, 
+  calendar, barChart, card, 
+  personCircleOutline, logOutOutline 
+} from 'ionicons/icons';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../service/google-auth.service';
@@ -34,7 +38,8 @@ addIcons({
   'calendar': calendar,
   'bar-chart': barChart,
   'card': card,
-  'person-circle-outline': personCircleOutline
+  'person-circle-outline': personCircleOutline,
+  'log-out-outline': logOutOutline,
 });
 
 @Component({
@@ -51,7 +56,8 @@ addIcons({
     IonIcon, IonDatetime, IonModal,
     IonDatetimeButton, IonButtons, IonButton,
     MainCardDetailsPage, IonItem, IonMenu,
-    IonList, IonAvatar, IonMenuButton
+    IonList, IonAvatar, IonMenuButton,
+    IonPopover
   ]
 })
 export class MainPageComponent implements OnInit, ViewWillEnter {

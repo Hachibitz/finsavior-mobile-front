@@ -57,6 +57,9 @@ ion-tab-button {
     font-weight: 500;
     font-size: 14px;
     color: var(--ion-color-primary);
+    text-transform: none;
+    margin-right: 5px;
+    white-space: nowrap;
 }
 
 @keyframes pulse {
@@ -187,4 +190,14 @@ ion-tab-button {
     100% {
         opacity: 0;
     }
+}
+
+ion-popover {
+    --width: 200px;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+ion-popover::part(content) {
+    padding: 0;
 }
