@@ -66,7 +66,8 @@ export class TicketPage implements ViewWillEnter {
     private userService: UserService, 
     private alertController: AlertController,
     private authService: AuthService
-  ) {}
+  ) {
+      addIcons({arrowBackOutline});}
   
   async ionViewWillEnter(): Promise<void> {
     this.showLoading();

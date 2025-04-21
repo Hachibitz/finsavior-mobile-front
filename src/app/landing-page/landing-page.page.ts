@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { 
   IonContent, IonHeader, IonTitle, 
   IonToolbar, IonButton, IonText,
-  IonIcon 
+  IonIcon, IonFooter 
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
@@ -17,6 +17,12 @@ import {
 } from '../utils/common-authentication-utils';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/terms-and-privacy-dialog.page';
+import { addIcons } from 'ionicons';
+import { helpCircleOutline } from 'ionicons/icons';
+
+addIcons({
+  'help-circle-outline': helpCircleOutline,
+});
 
 @Component({
   selector: 'app-landing-page',
@@ -29,7 +35,8 @@ import { TermsAndPrivacyDialogPage } from '../modal/terms-and-privacy-dialog/ter
   imports: [
     IonContent, IonHeader, IonTitle, 
     IonToolbar, CommonModule, FormsModule,
-    IonButton, IonText, IonIcon
+    IonButton, IonText, IonIcon,
+    IonFooter
   ]
 })
 export class LandingPagePage implements OnInit {
@@ -42,7 +49,8 @@ export class LandingPagePage implements OnInit {
     private googleAuthService: GoogleAuthService,
     private alertController: AlertController,
     private modalController: ModalController
-  ) { }
+  ) {
+      addIcons({helpCircleOutline}); }
 
   async ngOnInit(): Promise<void> {
     const isLoggedInGoogle = await this.googleAuthService.observeFirebaseAuthState();

@@ -26,3 +26,13 @@
   <ion-button expand="block" color="secondary" (click)="navigateTo('about-app')">Sobre o FinSavior</ion-button>
   <ion-button expand="block" color="secondary" (click)="navigateTo('about-dev')">Sobre o Desenvolvedor</ion-button>
 </ion-content>
+
+<ion-footer class="footer-container">
+  <div class="footer-content">
+    <ion-text>Precisa de ajuda?</ion-text>
+    <ion-button expand="full" (click)="navigateTo('ticket')" class="ticket-button">
+      <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+      Abra um ticket aqui
+    </ion-button>
+  </div>
+</ion-footer>
