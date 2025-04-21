@@ -102,3 +102,81 @@
     max-width: 50px;
     max-height: 50px;
 }
+
+.animated-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: float 20s infinite ease-in-out;
+  filter: blur(20px);
+}
+
+.bubble1 {
+  width: 200px;
+  height: 200px;
+  background: #82d9ff;
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.bubble2 {
+  width: 150px;
+  height: 150px;
+  background: #ffffff;
+  top: 50%;
+  left: 60%;
+  animation-delay: 5s;
+}
+
+.bubble3 {
+  width: 180px;
+  height: 180px;
+  background: #ffcccb;
+  bottom: 10%;
+  left: 30%;
+  animation-delay: 10s;
+}
+
+.bubble4 {
+  width: 120px;
+  height: 120px;
+  background: #6c5ce7;
+  top: 70%;
+  right: 20%;
+  animation-delay: 15s;
+}
+
+.bubble5 {
+  width: 100px;
+  height: 100px;
+  background: #a8876d;
+  bottom: 5%;
+  right: 10%;
+  animation-delay: 20s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-40px) rotate(180deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+}
