@@ -43,7 +43,10 @@
     <ion-item *ngFor="let msg of chatHistory" [class.user-msg]="msg.role === 'user'" [class.savi-msg]="msg.role === 'assistant'">    
       <ion-label>
         <p *ngIf="msg.role === 'user'"><strong>Você:</strong> {{ msg.content }}</p>
-        <p *ngIf="msg.role === 'assistant'"><strong>Savi:</strong> {{ msg.content }}</p>
+        <p *ngIf="msg.role === 'assistant'">
+          <strong>Savi:</strong>
+          <span [innerHTML]="formatMarkdown(msg.content)"></span>
+        </p>
       </ion-label>
     </ion-item>
     <ion-item *ngIf="isTyping" class="savi-msg">

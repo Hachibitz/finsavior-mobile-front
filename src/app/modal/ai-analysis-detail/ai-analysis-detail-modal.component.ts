@@ -9,6 +9,8 @@ import {
     IonLabel, IonCardSubtitle, IonButtons
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MarkdownUtils } from 'src/app/utils/markdown-utils';
 
 @Component({
   selector: 'app-ai-analysis-detail-modal.component',
@@ -28,7 +30,8 @@ export class AiAnalysisDetailModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private billService: BillService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +78,10 @@ export class AiAnalysisDetailModalComponent implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  formatMarkdown(content: string): SafeHtml {
+      return MarkdownUtils.formatMarkdown(content, this.sanitizer);
   }
 
   isLoading(): void {

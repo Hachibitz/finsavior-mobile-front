@@ -40,6 +40,7 @@
     "cordova-plugin-cookies": "^0.0.2",
     "firebase": "^11.0.2",
     "ionicons": "^7.4.0",
+    "marked": "^15.0.8",
     "ng2-charts": "^7.0.0",
     "ngx-cookie-service": "^18.0.0",
     "rxjs": "~7.8.0",

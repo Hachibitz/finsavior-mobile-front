@@ -10,6 +10,7 @@ import {
   IonFab
 } from '@ionic/angular/standalone';
 import { ChatMessage, ChatRequest } from '../model/ai-advice.model';
+import { MarkdownUtils } from '../utils/markdown-utils';
 import { AlertController, ViewWillEnter } from '@ionic/angular';
 import { AiAssistantService } from '../service/ai-assistant.service';
 import { addIcons } from 'ionicons';
@@ -20,6 +21,7 @@ import {
   arrowDownOutline
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-ai',
@@ -56,7 +58,8 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
   constructor(
     private aiAssistantService: AiAssistantService,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private sanitizer: DomSanitizer
   ) {
     addIcons({
       'arrow-back-outline': arrowBackOutline,
@@ -190,7 +193,11 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     });
   
     await alert.present();
-  }  
+  }
+
+  formatMarkdown(content: string): SafeHtml {
+    return MarkdownUtils.formatMarkdown(content, this.sanitizer);
+  }
 
   showLoading() {
     this.loading = true;

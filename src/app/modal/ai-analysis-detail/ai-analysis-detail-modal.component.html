@@ -19,7 +19,9 @@
                 <ion-card-subtitle>Período: {{ analysis.startDate }} - {{ analysis.finishDate }}</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
-                <p>{{ analysis.resultAnalysis }}</p>
+                <p>
+                  <span [innerHTML]="formatMarkdown(analysis.resultAnalysis)"></span>
+                </p>
             </ion-card-content>
         </ion-card>
         <ion-button expand="block" color="danger" (click)="confirmDeleteAnalysis()">Excluir Análise</ion-button>
