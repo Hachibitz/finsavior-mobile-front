@@ -29,7 +29,8 @@ export class PasswordForgottenPage implements OnInit {
   passwordRecoveryForm: FormGroup;
   resetPasswordForm: FormGroup;
   loading: boolean = false;
-  step: number = 1;
+  step: number = 2;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -44,8 +45,9 @@ export class PasswordForgottenPage implements OnInit {
 
     this.resetPasswordForm = this.fb.group({
       token: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]]
-    });
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required]
+    }, { validator: this.passwordsMatchValidator });
   }
 
   ngOnInit(): void {
@@ -56,6 +58,13 @@ export class PasswordForgottenPage implements OnInit {
         this.resetPasswordForm.patchValue({ token });
       }
     });
+  }
+
+  passwordsMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('newPassword')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
+
+    return password === confirmPassword ? null : { passwordsMismatch: true };
   }
 
   async sendRecoveryEmail() {
@@ -82,8 +91,13 @@ export class PasswordForgottenPage implements OnInit {
   }
 
   async resetPassword() {
+    this.errorMessage = null;
     if (this.resetPasswordForm.invalid) {
-      await this.presentAlert('Erro', 'Por favor, preencha todos os campos.');
+      if (this.resetPasswordForm.hasError('passwordsMismatch')) {
+        this.errorMessage = 'As senhas não coincidem.';
+      } else {
+        this.errorMessage = 'Por favor, preencha todos os campos.';
+      }
       return;
     }
 
