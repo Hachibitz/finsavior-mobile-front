@@ -124,7 +124,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   }
 
   async deleteAnalysis(analysisId: number, event: Event): Promise<void> {
-    event.stopPropagation();  // Evita abrir o modal ao deletar
+    event.stopPropagation();
 
     const alert = await this.alertController.create({
       header: 'Confirmação',
@@ -183,16 +183,8 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     return await this.billService.validateHasCoverage(selectedAnalisys)
   }  
   
-  async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date): Promise<void> {
-    const [mainAndIncomeTable, cardTable] = await Promise.all([
-      this.getFormattedMainAndIncomeTables(analysisTypeId, startingDate),
-      this.getFormattedCardTable(analysisTypeId, startingDate),
-    ]);
-  
+  async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date): Promise<void> {  
     const aiAdviceRequest = {
-      mainAndIncomeTable,
-      cardTable,
-      date: this.toLocalISOString(new Date()),
       analysisTypeId,
       temperature,
       startDate: this.toLocalISOString(startingDate),
@@ -213,70 +205,10 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     }
   }
   
-  async getFormattedMainAndIncomeTables(analysisTypeId: number, startingDate: Date): Promise<string> {
-    const analysisType = this.analysisTypes.find(type => type.analysisTypeId === analysisTypeId)!;
-    let combinedString = '';
-  
-    for (let i = 0; i < analysisType.period; i++) {
-      const currentMonth = this.addMonths(startingDate, i);
-  
-      const mainTableData = await this.billService.loadMainTableData(this.commonService.formatDate(currentMonth));
-      const assetsTableData = await this.billService.loadAssetsTableData(this.commonService.formatDate(currentMonth));
-      const incomeData = assetsTableData;
-  
-      combinedString += `\n--- Mês: ${this.commonService.formatDate(currentMonth)} ---\n`;
-      combinedString += '### Dados Gerais (Main Table):\n';
-      combinedString += this.generateFormattedTable(mainTableData);
-  
-      combinedString += '\n### Rendas (Income Table):\n';
-      combinedString += this.generateFormattedTable(incomeData);
-    }
-  
-    return combinedString;
-  }
-  
-  async getFormattedCardTable(analysisTypeId: number, startingDate: Date): Promise<string> {
-    const analysisType = this.analysisTypes.find(type => type.analysisTypeId === analysisTypeId)!;
-    let combinedString = '';
-  
-    for (let i = 0; i < analysisType.period; i++) {
-      const currentMonth = this.addMonths(startingDate, i);
-  
-      const cardTableData = await this.billService.loadCardTableData(this.commonService.formatDate(currentMonth));
-      const paymentCardTableData = await this.billService.loadPaymentCardTableData(this.commonService.formatDate(currentMonth));
-      combinedString += `\n--- Mês: ${this.commonService.formatDate(currentMonth)} ---\n`;
-      combinedString += '### Cartões de Crédito (Card Table):\n';
-      combinedString += this.generateFormattedTable(cardTableData);
-      combinedString += '\n### Pagamentos de Cartão (Payment Card Table):\n';
-      combinedString += this.generateFormattedTable(paymentCardTableData);
-    }
-  
-    return combinedString;
-  }
-  
-  generateFormattedTable(data: any[]): string {
-    if (!data || data.length === 0) {
-      return 'Nenhum dado disponível.\n';
-    }
-  
-    const headers = Object.keys(data[0]);
-    const headerLine = headers.join(' | ');
-    const separatorLine = headers.map(() => '---').join(' | ');
-    const rows = data.map(item => headers.map(header => item[header] ?? '').join(' | ')).join('\n');
-  
-    return `${headerLine}\n${separatorLine}\n${rows}\n`;
-  }
-  
   toLocalISOString(date: Date): string {
     const offset = date.getTimezoneOffset();
     const adjustedDate = new Date(date.getTime() - offset * 60000);
     return adjustedDate.toISOString().slice(0, -1);
-  }
-
-  addMonths(date: Date, months: number): Date {
-    const result = new Date(date);
-    result.setMonth(result.getMonth() + months);
-    return result;
   }
 
   formatDateStringForScreen(date: string): string {

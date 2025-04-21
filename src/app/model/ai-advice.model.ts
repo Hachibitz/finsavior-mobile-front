@@ -11,9 +11,6 @@ export const AnalysisTypeEnum = {
 };
 
 export interface AiAdviceRequest {
-    mainAndIncomeTable: String;
-    cardTable: String;
-    date: string;
     analysisTypeId: number;
     temperature: number;
     startDate: string;
