@@ -78,7 +78,7 @@
     <div *ngIf="viewMode === 'monthly'">
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Receitas vs Despesas (Cartão incluso)</ion-card-title>
+          <ion-card-title>Receitas vs Despesas</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <div class="chart-container">
@@ -101,6 +101,21 @@
               [data]="monthlyTrendChart.data"
               [type]="monthlyTrendChart.type"
               [options]="monthlyTrendChart.options">
+            </canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Pagamentos de Faturas</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="paymentChart.data"
+              [type]="paymentChart.type"
+              [options]="paymentChart.options">
             </canvas>
           </div>
         </ion-card-content>

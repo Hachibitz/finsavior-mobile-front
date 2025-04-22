@@ -64,12 +64,15 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
   monthlyLabels: string[] = [];
   monthlyIncomes: number[] = [];
   monthlyExpenses: number[] = [];
+  monthlyCardExpenses: number[] = [];
+  monthlyCardPayments: number[] = [];
 
   mainTableData: any[] = [];
   cardTableData: any[] = [];
   assetsTableData: any[] = [];
+  paymentTableData: any[] = [];
 
-  getChartOptions(type: 'pie' | 'doughnut' | 'line'): ChartConfiguration['options'] {
+  getChartOptions(type: 'pie' | 'doughnut' | 'line' | 'bar'): ChartConfiguration['options'] {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -188,10 +191,14 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
   
       const incomePromises = monthKeys.map(date => this.billService.loadAssetsTableData(date));
       const expensePromises = monthKeys.map(date => this.billService.loadMainTableData(date));
-  
-      const [incomeResults, expenseResults] = await Promise.all([
+      const cardExpensesPromises = monthKeys.map(date => this.billService.loadCardTableData(date));
+      const paymentPromises = monthKeys.map(date => this.billService.loadPaymentCardTableData(date));
+
+      const [incomeResults, expenseResults, cardExpenseResults, paymentResults] = await Promise.all([
         Promise.all(incomePromises),
-        Promise.all(expensePromises)
+        Promise.all(expensePromises),
+        Promise.all(cardExpensesPromises),
+        Promise.all(paymentPromises)
       ]);
   
       this.monthlyIncomes = incomeResults.map(data =>
@@ -205,19 +212,28 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
           .filter(item => item.billType === 'Passivo')
           .reduce((sum, item) => sum + item.billValue, 0)
       );
+
+      this.monthlyCardExpenses = cardExpenseResults.map(data =>
+        data.reduce((sum, item) => sum + item.billValue, 0)
+      );
+  
+      this.monthlyCardPayments = paymentResults.map(data =>
+        data.reduce((sum, item) => sum + item.billValue, 0)
+      );
   
       // Dados do mês atual para os outros gráficos
       const currentDate = this.commonService.formatDate(this.billDate);
-      const [mainData, cardData, assetsData] = await Promise.all([
+      const [mainData, cardData, assetsData, paymentData] = await Promise.all([
         this.billService.loadMainTableData(currentDate),
         this.billService.loadCardTableData(currentDate),
-        this.billService.loadAssetsTableData(currentDate)
+        this.billService.loadAssetsTableData(currentDate),
+        this.billService.loadPaymentCardTableData(currentDate)
       ]);
   
       this.mainTableData = [...mainData];
       this.cardTableData = [...cardData];
       this.assetsTableData = [...assetsData];
-  
+      this.paymentTableData = [...paymentData];
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
     } finally {
@@ -287,7 +303,7 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
     };
   }
 
-  // Gráfico de Evolução Mensal
+    // Gráfico de Evolução Mensal
   get monthlyTrendChart(): ChartConfiguration {
     return {
       type: 'line' as ChartType,
@@ -303,6 +319,25 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
               const gradient = ctx.createLinearGradient(0, 0, 0, 200);
               gradient.addColorStop(0, 'rgba(76, 175, 80, 0.3)');
               gradient.addColorStop(1, 'rgba(76, 175, 80, 0)');
+                return gradient;
+              },
+              fill: 'start',
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6
+              },
+              {
+              label: 'Despesas',
+              data: this.monthlyExpenses.map((expense, index) => 
+                expense + (this.monthlyCardExpenses[index] || 0)
+              ),
+              borderColor: '#F44336',
+              backgroundColor: (context: { chart: { ctx: any } }) => {
+              const ctx = context.chart.ctx;
+              const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+              gradient.addColorStop(0, 'rgba(244, 67, 54, 0.3)');
+              gradient.addColorStop(1, 'rgba(244, 67, 54, 0)');
               return gradient;
             },
             fill: 'start',
@@ -312,14 +347,36 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
             pointHoverRadius: 6
           },
           {
-            label: 'Despesas',
-            data: this.monthlyExpenses,
-            borderColor: '#F44336',
+            label: 'Poupança',
+            data: this.monthlyIncomes.map((income, index) => {
+              const savings = this.assetsTableData
+                .filter(item => item.billType === 'Poupança' && this.monthlyLabels[index] === this.commonService.formatDate(new Date(item.billDate)))
+                .reduce((sum, item) => sum + item.billValue, 0);
+              return savings;
+            }),
+            borderColor: '#2196F3',
             backgroundColor: (context: { chart: { ctx: any } }) => {
               const ctx = context.chart.ctx;
               const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-              gradient.addColorStop(0, 'rgba(244, 67, 54, 0.3)');
-              gradient.addColorStop(1, 'rgba(244, 67, 54, 0)');
+              gradient.addColorStop(0, 'rgba(33, 150, 243, 0.3)');
+              gradient.addColorStop(1, 'rgba(33, 150, 243, 0)');
+              return gradient;
+            },
+            fill: 'start',
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: 'Total de Cartão',
+            data: this.monthlyCardExpenses,
+            borderColor: '#FF9800',
+            backgroundColor: (context: { chart: { ctx: any } }) => {
+              const ctx = context.chart.ctx;
+              const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+              gradient.addColorStop(0, 'rgba(255, 152, 0, 0.3)');
+              gradient.addColorStop(1, 'rgba(255, 152, 0, 0)');
               return gradient;
             },
             fill: 'start',
@@ -343,7 +400,25 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
         }
       }
     };
-  }  
+  }
+
+  get paymentChart(): ChartConfiguration {
+    return {
+      type: 'bar' as ChartType,
+      data: {
+        labels: this.monthlyLabels,
+        datasets: [
+          {
+            label: 'Pagamentos de Faturas',
+            data: this.monthlyCardPayments,
+            backgroundColor: '#FF9800',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: this.getChartOptions('bar')
+    };
+  }
 
   private getLastSixMonths(): string[] {
     const result: string[] = [];
