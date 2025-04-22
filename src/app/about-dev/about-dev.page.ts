@@ -8,6 +8,7 @@ import {
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowBack, logoGithub, logoLinkedin } from 'ionicons/icons';
+import { Browser } from '@capacitor/browser';
 
 addIcons({
   'logo-github': logoGithub,
@@ -36,12 +37,12 @@ export class AboutDevPage implements OnInit {
   ngOnInit() {
   }
 
-  openGitHub() {
-    window.open(this.githubUrl, '_blank');
+  async openGitHub() {
+    await Browser.open({ url: this.githubUrl })
   }
 
-  openLinkedIn() {
-    window.open(this.linkedinUrl, '_blank');
+  async openLinkedIn() {
+    await Browser.open({ url: this.linkedinUrl })
   }
 
   goBack() {
