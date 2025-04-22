@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { BillRegisterRequest, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { AnalysisType, AnalysisTypeEnum } from '../model/ai-advice.model';
@@ -30,6 +30,7 @@ import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../service/google-auth.service';
 import { ViewWillEnter } from '@ionic/angular';
+import { ThemeSelectorComponent } from '../modal/theme-selector/theme-selector.component';
 
 addIcons({
   'wallet': wallet,
@@ -58,6 +59,9 @@ addIcons({
     MainCardDetailsPage, IonItem, IonMenu,
     IonList, IonAvatar, IonMenuButton,
     IonPopover
+  ],
+  providers: [
+    ModalController
   ]
 })
 export class MainPageComponent implements OnInit, ViewWillEnter {
@@ -108,7 +112,8 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     private commonService: CommonService,
     private authService: AuthService,
     private googleAuthService: GoogleAuthService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', [Validators.required]],
@@ -339,6 +344,13 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     }
   
     setTimeout(() => this.isDragging = false, 100);
+  }
+
+  async openThemeModal() {
+    const modal = await this.modalController.create({
+      component: ThemeSelectorComponent,
+    });
+    return await modal.present();
   }
 
   isLoading(): void {

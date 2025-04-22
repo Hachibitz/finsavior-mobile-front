@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Selecione o Tema</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Fechar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-radio-group [(ngModel)]="selectedTheme" (ionChange)="changeTheme()">
+      <ion-list-header>
+        <ion-label>Escolha o Tema</ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label>Claro</ion-label>
+        <ion-radio slot="start" value="light"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Escuro</ion-label>
+        <ion-radio slot="start" value="dark"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Padrão do Sistema</ion-label>
+        <ion-radio slot="start" value="system"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</ion-content>

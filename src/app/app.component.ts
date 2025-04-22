@@ -13,6 +13,7 @@ import { PaymentService } from './service/payment.service';
 import { GoogleAuthService } from './service/google-auth.service';
 import { StorageService } from './service/storage.service';
 import { AiAssistantService } from './service/ai-assistant.service';
+import { ThemeService } from './service/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +32,7 @@ import { AiAssistantService } from './service/ai-assistant.service';
     PaymentService,
     GoogleAuthService,
     AiAssistantService,
+    ThemeService,
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: TokenInterceptor, 
@@ -40,7 +42,7 @@ import { AiAssistantService } from './service/ai-assistant.service';
   imports: [HttpClientModule, IonApp, IonRouterOutlet, IonicStorageModule],
 })
 export class AppComponent {
-  constructor(private storageService: StorageService) {
+  constructor(private storageService: StorageService, private themeService: ThemeService) {
     this.initApp();
   }
   
