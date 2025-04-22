@@ -1,0 +1,7 @@
+<div class="toast-container">
+  <div *ngFor="let toast of toastQueue" class="toast" [class.fade-out]="toast.fadeOut">
+    <div class="toast-content" [ngClass]="toast.color">
+      {{ toast.message }}
+    </div>
+  </div>
+</div>

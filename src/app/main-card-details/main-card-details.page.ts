@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BillService } from '../service/bill.service';
 import { ModalController } from '@ionic/angular';
@@ -17,6 +17,7 @@ import { AddRegisterModalComponent } from '../modal/add-register/add-register-mo
 import { TableDataResponse, tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 import { FormsModule } from '@angular/forms';
+import { ToastComponent } from '../components/toast/toast.component';
 
 addIcons({ 'trash': trash });
 
@@ -31,10 +32,13 @@ addIcons({ 'trash': trash });
     IonTitle, IonContent, IonLabel, 
     IonItem, IonButton, IonList,
     IonIcon, IonButtons, IonSegment,
-    IonSegmentButton, FormsModule
+    IonSegmentButton, FormsModule, 
+    ToastComponent
   ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {
+  @ViewChild(ToastComponent) toastComponent!: ToastComponent;
+
   cardRows: any[] = [];
   paymentRows: any[] = [];
   loading: boolean = false;
@@ -148,15 +152,18 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     modal.onDidDismiss().then(async (result) => {
       if (result.role === 'saved') {
         const updatedItem = result.data;
-        this.isLoading();
         try {
           await this.billService.editItem(updatedItem);
-          await this.loadCardTableData();
-          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+          const targetList = item.billTable === tableTypes.CREDIT_CARD ? this.cardRows : this.paymentRows;
+          const index = targetList.findIndex((row) => row.id === updatedItem.id);
+          if (index !== -1) {
+            targetList[index] = { ...targetList[index], ...updatedItem };
+          }
+          await this.toastComponent.showToast('Registro atualizado com sucesso.', 'success');
         } catch (error) {
-          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+          await this.toastComponent.showToast('Erro ao atualizar o registro.', 'danger');
         } finally {
-          this.isLoading();
+          this.cdRef.detectChanges();
         }
       }
     });
@@ -177,15 +184,17 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
           text: 'Excluir',
           role: 'destructive',
           handler: async () => {
-            this.isLoading();
             try {
               await this.billService.deleteItem(item.id);
-              this.cardRows = this.cardRows.filter(row => row.id !== item.id);
-              await this.showAlert('Sucesso', 'Item de cartão excluído com sucesso');
+              if (item.billTable === tableTypes.CREDIT_CARD) {
+                this.cardRows = this.cardRows.filter((row) => row.id !== item.id);
+              } else if (item.billTable === tableTypes.PAYMENT_CARD) {
+                this.paymentRows = this.paymentRows.filter((row) => row.id !== item.id);
+              }
+              await this.toastComponent.showToast('Item excluído com sucesso.', 'success');
             } catch (error) {
-              await this.showAlert('Erro', 'Erro ao excluir item');
+              await this.toastComponent.showToast('Erro ao excluir item.', 'danger');
             } finally {
-              this.isLoading();
               this.cdRef.detectChanges();
             }
           },

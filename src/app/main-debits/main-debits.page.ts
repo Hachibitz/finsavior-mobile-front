@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
@@ -11,12 +11,13 @@ import {
   IonContent, IonButton, IonText, 
   IonLabel, IonItem, IonInput, IonList,
   IonButtons, IonSelectOption, IonSelect,
-  IonIcon, IonCheckbox
+  IonIcon, IonCheckbox, IonToast
 } from '@ionic/angular/standalone';
 import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
+import { ToastComponent } from '../components/toast/toast.component';
 
 addIcons({
   'trash': trash,
@@ -38,10 +39,12 @@ addIcons({
     IonItem, IonInput, IonButton,
     IonText, IonList, IonButtons,
     IonSelectOption, IonSelect, IonIcon,
-    IonCheckbox
+    IonCheckbox, IonToast, ToastComponent
   ]
 })
 export class MainDebitsPage implements OnInit, ViewWillEnter {
+  @ViewChild(ToastComponent) toastComponent!: ToastComponent;
+
   mainTableForm: FormGroup;
   rows: any[] = [];
   loading: boolean = false;
@@ -53,6 +56,16 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     { label: 'Poupança', value: 'Poupança' }
   ];
   totalDebit: number = 0;
+
+  toast = {
+    isOpen: false,
+    message: '',
+    color: '',
+    duration: 3000, // Duração em milissegundos
+    position: 'top' as 'top' | 'bottom' | 'middle' // Posição do toast
+  };
+
+  toastQueue: { message: string; color: 'success' | 'danger'; fadeOut: boolean }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -114,15 +127,18 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     modal.onDidDismiss().then(async (result) => {
       if (result.role === 'saved') {
         const updatedItem = result.data;
-        this.isLoading();
         try {
           await this.billService.editItem(updatedItem);
-          await this.loadTableData();
-          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+          const index = this.rows.findIndex((row) => row.id === updatedItem.id);
+          if (index !== -1) {
+            this.rows[index] = { ...this.rows[index], ...updatedItem };
+          }
+          await this.toastComponent.showToast(`Item atualizado com sucesso.`, 'success');
         } catch (error) {
-          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+          await this.toastComponent.showToast('Erro ao atualizar item.', 'danger');
+          this.loadTableData();
         } finally {
-          this.isLoading();
+          this.cdRef.detectChanges();
         }
       }
     });
@@ -151,7 +167,7 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
     this.cdRef.detectChanges();
   }
 
-    async deleteItem(item: any) {
+  async deleteItem(item: any) {
     const alert = await this.alertController.create({
       header: 'Confirmação',
       message: 'Deseja realmente excluir este item?',
@@ -164,15 +180,13 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
           text: 'Excluir',
           role: 'destructive',
           handler: async () => {
-            this.isLoading();
             try {
               await this.billService.deleteItem(item.id);
               this.rows = this.rows.filter(row => row.id !== item.id);
-              await this.showAlert('Sucesso', 'Item deletado com sucesso');
+              await this.toastComponent.showToast('Item deletado com sucesso.', 'success');
             } catch (error) {
-              await this.showAlert('Erro', 'Erro ao deletar item');
+              await this.toastComponent.showToast('Erro ao deletar item.', 'danger');
             } finally {
-              this.isLoading();
               this.cdRef.detectChanges();
             }
           },
@@ -184,7 +198,9 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
   }
 
   async togglePaid(item: any) {
-    const updatedStatus = !item.paid;
+    const originalStatus = !item.paid;
+    const updatedStatus = item.paid;
+  
     const billUpdate: BillRegisterRequest = {
       id: item.id,
       billName: item.billName,
@@ -198,17 +214,29 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
       isRecurrent: item.isRecurrent
     };
   
-    this.isLoading();
     try {
       await this.billService.editItem(billUpdate);
-      await this.loadTableData();
-      await this.showAlert('Sucesso', `Item marcado como ${updatedStatus ? 'pago' : 'não pago'}.`);
+      const statusMessage = updatedStatus ? 'pago' : 'não pago';
+      await this.toastComponent.showToast(`Item marcado como ${statusMessage}.`, 'success');
     } catch (error) {
-      await this.showAlert('Erro', 'Não foi possível atualizar o estado do item.');
+      item.paid = originalStatus;
+      await this.toastComponent.showToast('Não foi possível atualizar o estado do item.', 'danger');
     } finally {
-      this.isLoading();
       this.cdRef.detectChanges();
     }
+  }
+
+  showToast(message: string, color: 'success' | 'danger') {
+    const toast = { message, color, fadeOut: false };
+    this.toastQueue.push(toast);
+  
+    setTimeout(() => {
+      toast.fadeOut = true;
+      setTimeout(() => {
+        this.toastQueue.shift();
+        this.cdRef.detectChanges();
+      }, 300);
+    }, 3000);
   }
 
   async showAlert(header: string, message: string): Promise<void> {

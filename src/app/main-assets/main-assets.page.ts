@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
@@ -17,6 +17,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { AddRegisterModalComponent } from '../modal/add-register/add-register-modal.component';
 import { tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
+import { ToastComponent } from '../components/toast/toast.component';
 
 addIcons({
   'trash': trash
@@ -44,10 +45,12 @@ export interface IncomeRow {
     MainPageComponent, IonHeader, IonToolbar, 
     IonTitle, IonContent, IonButton,
     IonLabel, IonItem, IonList,
-    IonIcon, IonButtons
+    IonIcon, IonButtons, ToastComponent
   ]
 })
 export class MainAssetsPage implements OnInit, ViewWillEnter {
+  @ViewChild(ToastComponent) toastComponent!: ToastComponent;
+
   incomeRows: any[] = [];
   loading: boolean = false;
 
@@ -105,15 +108,17 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
     modal.onDidDismiss().then(async (result) => {
       if (result.role === 'saved') {
         const updatedItem = result.data;
-        this.isLoading();
         try {
           await this.billService.editItem(updatedItem);
-          await this.loadIncomeData();
-          await this.showAlert('Sucesso', 'Registro atualizado com sucesso!');
+          const index = this.incomeRows.findIndex((row) => row.id === updatedItem.id);
+          if (index !== -1) {
+            this.incomeRows[index] = { ...this.incomeRows[index], ...updatedItem };
+          }
+          await this.toastComponent.showToast('Registro atualizado com sucesso.', 'success');
         } catch (error) {
-          await this.showAlert('Erro', 'Erro ao atualizar o registro.');
+          await this.toastComponent.showToast('Erro ao atualizar o registro.', 'danger');
         } finally {
-          this.isLoading();
+          this.cdRef.detectChanges();
         }
       }
     });
@@ -146,15 +151,13 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
           text: 'Excluir',
           role: 'destructive',
           handler: async () => {
-            this.isLoading();
             try {
               await this.billService.deleteItem(item.id);
-              this.incomeRows = this.incomeRows.filter(row => row.id !== item.id);
-              await this.showAlert('Sucesso', 'Item deletado com sucesso');
+              this.incomeRows = this.incomeRows.filter((row) => row.id !== item.id);
+              await this.toastComponent.showToast('Item deletado com sucesso.', 'success');
             } catch (error) {
-              await this.showAlert('Erro', 'Erro ao deletar item');
+              await this.toastComponent.showToast('Erro ao deletar item.', 'danger');
             } finally {
-              this.isLoading();
               this.cdRef.detectChanges();
             }
           },
