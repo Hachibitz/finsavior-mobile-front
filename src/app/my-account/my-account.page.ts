@@ -223,7 +223,7 @@ export class MyAccountPage implements OnInit, ViewWillEnter {
       buttons: [
         {
           text: 'Cancelar sua cobrança recorrente',
-          handler: () => this.promptReLogin(true)
+          handler: () => this.promptReLogin(false)
         },
         {
           text: 'Cancelar agora',
