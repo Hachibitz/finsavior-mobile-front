@@ -41,3 +41,8 @@ ion-chip {
     justify-content: flex-start;
     padding: 16px;
 }
+
+#checkout {
+    z-index: 9999; 
+    position: relative;
+}
