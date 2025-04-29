@@ -29,7 +29,7 @@ export class PasswordForgottenPage implements OnInit {
   passwordRecoveryForm: FormGroup;
   resetPasswordForm: FormGroup;
   loading: boolean = false;
-  step: number = 2;
+  step: number = 1;
   errorMessage: string | null = null;
 
   constructor(
