@@ -105,7 +105,13 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
           this.stripe = stripeInstance;
 
           this.checkout = await this.stripe.initEmbeddedCheckout({
-            clientSecret: checkoutSession.clientSecret
+            clientSecret: checkoutSession.clientSecret,
+            onComplete: () => {
+              this.handleSuccessfulCheckout("");
+              setTimeout(() => {
+                this.closeCheckout();
+              }, 500);
+            }
           });
 
           this.checkout.mount('#checkout');
@@ -148,7 +154,7 @@ export class SubscriptionPage implements OnInit, ViewWillEnter {
     }
   }
 
-  cancelCheckout() {
+  closeCheckout() {
     this.checkout?.destroy();
     this.checkout = undefined;
   }
