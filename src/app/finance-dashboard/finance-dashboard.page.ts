@@ -63,6 +63,7 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
 
   monthlyLabels: string[] = [];
   monthlyIncomes: number[] = [];
+  monthlySavings: number[] = [];
   monthlyExpenses: number[] = [];
   monthlyCardExpenses: number[] = [];
   monthlyCardPayments: number[] = [];
@@ -206,6 +207,12 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
           .filter(item => ['Caixa', 'Ativo'].includes(item.billType))
           .reduce((sum, item) => sum + item.billValue, 0)
       );
+
+      this.monthlySavings = incomeResults.map(data =>
+        data
+          .filter(item => ['Poupança'].includes(item.billType))
+          .reduce((sum, item) => sum + item.billValue, 0)
+      );
   
       this.monthlyExpenses = expenseResults.map(data =>
         data
@@ -303,7 +310,7 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
     };
   }
 
-    // Gráfico de Evolução Mensal
+  // Gráfico de Evolução Mensal
   get monthlyTrendChart(): ChartConfiguration {
     return {
       type: 'line' as ChartType,
@@ -319,21 +326,21 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
               const gradient = ctx.createLinearGradient(0, 0, 0, 200);
               gradient.addColorStop(0, 'rgba(76, 175, 80, 0.3)');
               gradient.addColorStop(1, 'rgba(76, 175, 80, 0)');
-                return gradient;
-              },
-              fill: 'start',
-              tension: 0.4,
-              borderWidth: 2,
-              pointRadius: 4,
-              pointHoverRadius: 6
-              },
-              {
-              label: 'Despesas',
-              data: this.monthlyExpenses.map((expense, index) => 
-                expense + (this.monthlyCardExpenses[index] || 0)
-              ),
-              borderColor: '#F44336',
-              backgroundColor: (context: { chart: { ctx: any } }) => {
+              return gradient;
+            },
+            fill: 'start',
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: 'Despesas',
+            data: this.monthlyExpenses.map((expense, index) =>
+              expense + (this.monthlyCardExpenses[index] || 0)
+            ),
+            borderColor: '#F44336',
+            backgroundColor: (context: { chart: { ctx: any } }) => {
               const ctx = context.chart.ctx;
               const gradient = ctx.createLinearGradient(0, 0, 0, 200);
               gradient.addColorStop(0, 'rgba(244, 67, 54, 0.3)');
@@ -348,12 +355,7 @@ export class FinanceDashboardPage implements OnInit, ViewWillEnter {
           },
           {
             label: 'Poupança',
-            data: this.monthlyIncomes.map((income, index) => {
-              const savings = this.assetsTableData
-                .filter(item => item.billType === 'Poupança' && this.monthlyLabels[index] === this.commonService.formatDate(new Date(item.billDate)))
-                .reduce((sum, item) => sum + item.billValue, 0);
-              return savings;
-            }),
+            data: this.monthlySavings,
             borderColor: '#2196F3',
             backgroundColor: (context: { chart: { ctx: any } }) => {
               const ctx = context.chart.ctx;
