@@ -12,13 +12,17 @@ import {
 import { FsCoinService } from './fs-coin-service';
 import { UserService } from './user.service';
 import { PlanCoverageEnum } from '../model/payment.model';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({ providedIn: 'root' })
 export class AdmobService {
 
   rewardUnitId = 'ca-app-pub-8908695655155734/3818568263';
   rewardUnitIdTesting = 'ca-app-pub-3940256099942544/5224354917'; // ID de teste do AdMob
-  rewardUnitInterstitialId = 'ca-app-pub-8908695655155734/9208595934';
+  rewardInterstitialId = 'ca-app-pub-8908695655155734/9208595934';
+  interstitialUnitId = 'ca-app-pub-8908695655155734/8402231989';
+
+  isWeb = Capacitor.getPlatform() === 'web';
 
   constructor(
     private fsCoinService: FsCoinService,
@@ -43,6 +47,15 @@ export class AdmobService {
   }
 
   async showRewardedInterstitial(): Promise<AdMobRewardItem | null> {
+    if(this.isWeb) {
+      return null;
+    }
+
+    if(await this.checkUserPlan()) {
+      console.log('Usuário com plano pago, não exibindo anúncio');
+      return null;
+    }
+
     return new Promise(async (resolve, reject) => {
       // Listener: Anúncio carregado
       AdMob.addListener(RewardAdPluginEvents.Loaded, () => {
@@ -70,7 +83,7 @@ export class AdmobService {
 
       // Prepara e exibe o anúncio
       const options: RewardInterstitialAdOptions = {
-        adId: this.rewardUnitInterstitialId,
+        adId: this.rewardInterstitialId,
         isTesting: false
       };
 
@@ -85,11 +98,10 @@ export class AdmobService {
   }
 
   async showRewardedAd(): Promise<AdMobRewardItem | null> {
-    if(await this.checkUserPlan()) {
-      console.log('Usuário com plano pago, não exibindo anúncio');
+    if(this.isWeb) {
       return null;
     }
-    
+
     return new Promise(async (resolve, reject) => {
       AdMob.addListener(RewardAdPluginEvents.Loaded, () => {
         console.log('Rewarded ad loaded');
@@ -117,6 +129,32 @@ export class AdmobService {
 
       await AdMob.prepareRewardVideoAd(options);
       await AdMob.showRewardVideoAd();
+    });
+  }
+
+  async showSimpleInterstitial(): Promise<void> {
+    if(this.isWeb) {
+      return;
+    }
+
+    if(await this.checkUserPlan()) {
+      console.log('Usuário com plano pago, não exibindo anúncio');
+      return;
+    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const options: AdOptions = {
+          adId: this.interstitialUnitId, // Defina no seu serviço o ID correto
+          isTesting: false
+        };
+
+        await AdMob.prepareInterstitial(options);
+        await AdMob.showInterstitial();
+      } catch (err) {
+        console.error('Erro ao exibir interstitial comum', err);
+        reject(err);
+      }
     });
   }
 

@@ -93,7 +93,7 @@ export class ChatAiPage implements OnInit, ViewWillEnter, ViewWillLeave {
   }
 
   async ionViewWillLeave(): Promise<void> {
-    await this.admobService.showRewardedInterstitial()
+    await this.admobService.showSimpleInterstitial()
   }
 
   async ngOnInit() {

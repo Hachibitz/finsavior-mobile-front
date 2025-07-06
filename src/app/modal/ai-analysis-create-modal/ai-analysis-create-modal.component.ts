@@ -96,7 +96,7 @@ export class AiAnalysisCreateModalComponent implements ViewWillLeave {
   }
 
   async ionViewWillLeave(): Promise<void> {
-    await this.admobService.showRewardedInterstitial()
+    await this.admobService.showSimpleInterstitial()
   }
   
   dismissModal(role: string = 'cancel') {
