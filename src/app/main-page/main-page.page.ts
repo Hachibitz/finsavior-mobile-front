@@ -18,19 +18,22 @@ import {
   IonIcon, IonDatetime, IonModal,
   IonDatetimeButton, IonButtons, IonButton,
   IonItem, IonMenu, IonList,
-  IonAvatar, IonMenuButton, IonPopover
+  IonAvatar, IonMenuButton, IonPopover,
+  IonText
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
   wallet, cash, statsChart, 
   calendar, barChart, card, 
-  personCircleOutline, logOutOutline 
-} from 'ionicons/icons';
+  personCircleOutline, logOutOutline, 
+  cashOutline, addCircleOutline } from 'ionicons/icons';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../service/google-auth.service';
 import { ViewWillEnter } from '@ionic/angular';
 import { ThemeSelectorComponent } from '../modal/theme-selector/theme-selector.component';
+import { FsCoinService } from '../service/fs-coin-service';
+import { AdmobService } from '../service/admob.service';
 
 addIcons({
   'wallet': wallet,
@@ -41,6 +44,8 @@ addIcons({
   'card': card,
   'person-circle-outline': personCircleOutline,
   'log-out-outline': logOutOutline,
+  'cash-outline': cashOutline,
+  'add-circle-outline': addCircleOutline
 });
 
 @Component({
@@ -58,7 +63,7 @@ addIcons({
     IonDatetimeButton, IonButtons, IonButton,
     MainCardDetailsPage, IonItem, IonMenu,
     IonList, IonAvatar, IonMenuButton,
-    IonPopover
+    IonPopover, IonText
   ],
   providers: [
     ModalController
@@ -104,6 +109,8 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   position = { x: 0, y: 0 };
   offset = { x: 0, y: 0 };
 
+  fsCoins: number = 0;
+
   constructor(
     private fb: FormBuilder,
     private billService: BillService,
@@ -113,7 +120,9 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     private authService: AuthService,
     private googleAuthService: GoogleAuthService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private fsCoinService: FsCoinService,
+    private admobService: AdmobService
   ) {
     this.mainTableForm = this.fb.group({
       billName: ['', [Validators.required]],
@@ -145,6 +154,7 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.showDropdown = false;
     this.isProfileReady = false;
     this.userData = null;
+    this.fsCoins = 0;
   }
 
   async ngOnInit(): Promise<void> {
@@ -167,9 +177,10 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   async setUserData(): Promise<void> {
     this.isProfileReady = false;
     this.userData = null;
-    this.isLoading();
+    this.showLoading();
     try {
       const userProfile = await this.userService.getProfileData();
+      this.fsCoins = await this.fsCoinService.getBalance();
       if(userProfile.profilePicture) {
         const base64Image = `data:image/png;base64,${userProfile.profilePicture}`;
         this.userData = {
@@ -180,8 +191,8 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     } catch (error) {
       await this.showAlert('Erro', 'Erro ao carregar dados do usuário');
     } finally {
-      this.isLoading();
       this.isProfileReady = true;
+      this.hideLoading();
     }
   }
 
@@ -353,7 +364,53 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     return await modal.present();
   }
 
-  isLoading(): void {
-    this.loading = !this.loading;
+  async earnCoins() {
+    const alert = await this.alertController.create({
+      header: 'Ganhar 10 moedas',
+      message: 'Assistir anúncio para receber 10 FScoins?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'OK',
+          handler: () => {
+            // Fechar o alerta manualmente e depois executar o restante fora
+            alert.dismiss().then(() => {
+              this.processRewardFlow();
+            });
+            return false; // impedir fechamento automático
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async processRewardFlow() {
+    this.showLoading();
+    try {
+      const reward = await this.admobService.showRewardedAd();
+      if (reward?.amount) {
+        const earned = await this.fsCoinService.earnCoins();
+        this.fsCoins += earned;
+      }
+    } catch (e) {
+      console.error('Erro ao carregar anúncio', e);
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  async getCoinsBalance() {
+    this.fsCoinService.getBalance()
+      .then(bal => this.fsCoins = bal)
+      .catch(err => console.error(err));
+  }
+
+  showLoading() {
+    this.loading = true;
+  }
+
+  hideLoading() {
+    this.loading = false;
   }
 }

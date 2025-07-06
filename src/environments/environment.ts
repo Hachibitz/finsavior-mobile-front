@@ -61,6 +61,9 @@ export const CANCEL_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscripti
 export const UPDATE_SUBSCRIPTION = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/update';
 export const CUSTOMER_PORTAL = URL_BASE_DEV + PAYMENT_SERVICE + '/subscription/customer-portal';
 export const TICKET_CONTACT = URL_BASE_DEV + '/contact';
+export const FS_COIN_SERVICE = URL_BASE_DEV + '/fscoin';
+export const FS_COIN_BALANCE = FS_COIN_SERVICE + '/balance';
+export const FS_COIN_EARN = FS_COIN_SERVICE + '/earn';
 
 export const CLIENT_ID = 'ARBQ9WR2ziMtCYL7jaVFixfJqueUZFrFx1W_tlWdqTCjJf8wSoST6DZrRq9JQb3tqvOVDHmJ9drge69f';
 export const CLIENT_SECRET = 'EL4A37GecMI5wji0sOuJ1MT8lQGR9PJzjZozSCxkBup3p1bih2A5irWjZWNSkFYaQURk5ZHbejWxdQPr';

@@ -82,6 +82,53 @@ ion-button {
   }
 }
 
+.fscoin-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fscoin-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  img {
+    width: 36px;
+    height: 36px;
+    transition: transform 0.2s ease;
+  }
+
+  &.selected {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.2);
+  }
+
+  &.animate img {
+    transform: scale(1.2);
+    animation: fscoin-bounce 0.3s ease;
+  }
+}
+
+@keyframes fscoin-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  60% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);

@@ -44,4 +44,5 @@ export interface ChatRequest {
     question: string;
     chatHistory?: string[];
     date?: string;
+    isUsingCoins?: boolean;
 }

@@ -7,7 +7,7 @@ import {
   IonItem, IonFooter, IonLabel,
   IonList, IonInput, IonButtons,
   IonPopover, IonText, IonFabButton,
-  IonFab
+  IonFab, IonCheckbox
 } from '@ionic/angular/standalone';
 import { ChatMessage, ChatRequest } from '../model/ai-advice.model';
 import { MarkdownUtils } from '../utils/markdown-utils';
@@ -18,10 +18,15 @@ import {
   arrowBackOutline, 
   ellipsisVerticalOutline,
   sendOutline,
-  arrowDownOutline
+  arrowDownOutline,
+  cashOutline
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FsCoinService } from '../service/fs-coin-service';
+import { CommonService } from '../service/common.service';
+import { AdmobService } from '../service/admob.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat-ai',
@@ -34,7 +39,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     IonIcon, IonButton, IonItem,
     IonFooter, IonLabel, IonList,
     IonInput, IonButtons, IonPopover,
-    IonText, IonFabButton, IonFab
+    IonText, IonFabButton, IonFab,
+    IonCheckbox
   ]
 })
 export class ChatAiPage implements OnInit, ViewWillEnter {
@@ -54,23 +60,33 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
   allHistoryLoaded = false;
 
   loading = false;
+  userFsCoins = 0;
+  earnAmount = 10; // Amount of coins to earn per ad view
+  coinsForChatCost = 100; // Cost in coins to continue the chat
+  isUsingFsCoins: boolean = false;
+  animate = false;
 
   constructor(
     private aiAssistantService: AiAssistantService,
     private router: Router,
     private alertController: AlertController,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private fsCoinService: FsCoinService,
+    private commonService: CommonService,
+    private admobService: AdmobService
   ) {
     addIcons({
       'arrow-back-outline': arrowBackOutline,
       'ellipsis-vertical-outline': ellipsisVerticalOutline,
       'send-outline': sendOutline,
-      'arrow-down-outline': arrowDownOutline
+      'arrow-down-outline': arrowDownOutline,
+      'cash-outline': cashOutline
     });
   }
 
   async ionViewWillEnter(): Promise<void> {
     await this.loadMoreMessages();
+    await this.getCoinsBalance();
     setTimeout(() => this.scrollToBottom(), 500);
   }
 
@@ -128,21 +144,22 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
       const message: ChatRequest = {
         question: trimmed,
         chatHistory: limitedHistory.map(m => `${m.role}: ${m.content}`),
+        isUsingCoins: this.isUsingFsCoins
       };
       const res = await this.aiAssistantService.chatWithSavi(message);
 
       this.chatHistory.pop();
       this.chatHistory.push({ role: 'assistant', content: res!.answer });
-    } catch (err: any) {
+    } catch (err: HttpErrorResponse | any) {
       console.error(err);
-      this.chatHistory.pop();
+      const refusedUserMessage = trimmed;
     
       const errorMessage = typeof err?.error === 'string'
         ? err.error
         : err?.error?.message || err?.message || '';
     
-      if (errorMessage.includes('Limite de mensagens') || errorMessage.includes('Limite de tokens')) {
-        await this.presentLimitAlert();
+      if (err.status === 412 || err.status === 400) {
+        await this.presentLimitAlert(refusedUserMessage, errorMessage);
       } else {
         this.chatHistory.push({
           role: 'assistant',
@@ -174,10 +191,10 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     window.history.back();
   }
 
-  async presentLimitAlert() {
+  async presentLimitAlert(refusedUserMessage: string, errorMessage: string) {
     const alert = await this.alertController.create({
       header: 'Limite atingido',
-      message: 'Você atingiu o limite do seu plano atual. Para continuar usando a Savi, é necessário fazer um upgrade ou aguardar o próximo mês.',
+      message: `${errorMessage} Para continuar usando a Savi, é necessário fazer um upgrade, aguardar o próximo mês ou usar FSCoins.`,
       buttons: [
         {
           text: 'Ok',
@@ -188,6 +205,30 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
           handler: () => {
             this.router.navigate(['/main-page/subscription']);
           }
+        },
+        {
+          text: `Usar ${this.coinsForChatCost} FSCoins`,
+          handler: () => {
+            if(this.userFsCoins >= this.coinsForChatCost) {
+              this.userMessage = refusedUserMessage;
+              this.isUsingFsCoins = true;
+              this.sendMessage();
+            } else {
+              this.alertController.create({
+                header: 'Saldo insuficiente',
+                message: 'Você não possui moedas suficientes para continuar usando a Savi.',
+                buttons: [
+                  'OK',
+                  {
+                    text: 'Ganhar moedas',
+                    handler: () => {
+                      this.earnCoins();
+                    }
+                  }
+                ]
+              }).then(alert => alert.present());
+            }
+          }
         }
       ]
     });
@@ -197,6 +238,73 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
 
   formatMarkdown(content: string): SafeHtml {
     return MarkdownUtils.formatMarkdown(content, this.sanitizer);
+  }
+
+  async getCoinsBalance() {
+    this.fsCoinService.getBalance()
+      .then(bal => this.userFsCoins = bal)
+      .catch(err => console.error(err));
+  }
+
+  async earnCoins() {
+    const alert = await this.alertController.create({
+      header: `Ganhar ${this.earnAmount} moedas`,
+      message: `Assistir anúncio para receber ${this.earnAmount} FScoins?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'OK',
+          handler: () => {
+            alert.dismiss().then(() => {
+              this.processRewardFlow();
+            });
+            return false;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async processRewardFlow() {
+    this.showLoading();
+    try {
+      const reward = await this.admobService.showRewardedAd();
+      if (reward?.amount) {
+        const earned = await this.fsCoinService.earnCoins();
+        this.userFsCoins += earned;
+      }
+    } catch (e) {
+      console.error('Erro ao carregar anúncio', e);
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  toggleFsCoinsUsage() {
+    if(this.userFsCoins < this.coinsForChatCost) {
+      this.alertController.create({
+        header: 'Saldo insuficiente',
+        message: 'Você não possui moedas suficientes para usar a Savi com FSCoins.',
+        buttons: [
+          'OK',
+          {
+            text: 'Ganhar moedas',
+            handler: () => {
+              this.earnCoins();
+            }
+          }
+        ]
+      }).then(alert => alert.present());
+      return;
+    }
+
+    this.isUsingFsCoins = !this.isUsingFsCoins;
+
+    this.animate = true;
+    setTimeout(() => {
+      this.animate = false;
+    }, 300);
   }
 
   showLoading() {

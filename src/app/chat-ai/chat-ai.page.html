@@ -4,10 +4,17 @@
       <ion-button (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
+      <ion-title>
+        Converse com a <strong>Savi</strong> 🤖
+      </ion-title>
     </ion-buttons>
-    <ion-title>
-      Converse com a <strong>Savi</strong> 🤖
-    </ion-title>
+    <ion-buttons slot="end" class="fscoin-info">
+      <ion-button fill="clear" (click)="earnCoins()" style="margin-left: -1.2vh; margin-right: -1.2vh;">
+        <img src="assets/fscoin-icon.png" class="fscoin-icon" alt="FSCoin" />
+        <ion-label>{{ userFsCoins }}</ion-label>
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="openPopover($event)">
         <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -72,8 +79,15 @@
       inputmode="text"
       color="dark"
     ></ion-input>
+
+    <div class="fscoin-toggle" (click)="toggleFsCoinsUsage()">
+      <div class="fscoin-label" [class.selected]="isUsingFsCoins" [class.animate]="animate">
+        <img src="assets/fscoin-icon.png" class="fscoin-icon" alt="FSCoin"/>
+      </div>
+    </div>
+
     <ion-button slot="end" (click)="sendMessage()">
       <ion-icon name="send-outline"></ion-icon>
-    </ion-button>  
+    </ion-button>
   </ion-item>
 </ion-footer>

@@ -14,6 +14,8 @@ import { GoogleAuthService } from './service/google-auth.service';
 import { StorageService } from './service/storage.service';
 import { AiAssistantService } from './service/ai-assistant.service';
 import { ThemeService } from './service/theme.service';
+import { FsCoinService } from './service/fs-coin-service';
+import { AdmobService } from './service/admob.service';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +35,8 @@ import { ThemeService } from './service/theme.service';
     GoogleAuthService,
     AiAssistantService,
     ThemeService,
+    FsCoinService,
+    AdmobService,
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: TokenInterceptor, 
@@ -42,11 +46,12 @@ import { ThemeService } from './service/theme.service';
   imports: [HttpClientModule, IonApp, IonRouterOutlet, IonicStorageModule],
 })
 export class AppComponent {
-  constructor(private storageService: StorageService, private themeService: ThemeService) {
+  constructor(private storageService: StorageService, private themeService: ThemeService, private admobService: AdmobService) {
     this.initApp();
   }
   
   async initApp() {
     await this.storageService.init();
+    await this.admobService.initialize();
   }
 }
