@@ -26,7 +26,7 @@ import {
   wallet, cash, statsChart, 
   calendar, barChart, card, 
   personCircleOutline, logOutOutline, 
-  cashOutline, addCircleOutline } from 'ionicons/icons';
+  cashOutline, addCircleOutline, helpCircle } from 'ionicons/icons';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../service/google-auth.service';
@@ -34,6 +34,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { ThemeSelectorComponent } from '../modal/theme-selector/theme-selector.component';
 import { FsCoinService } from '../service/fs-coin-service';
 import { AdmobService } from '../service/admob.service';
+import { Capacitor } from '@capacitor/core';
 
 addIcons({
   'wallet': wallet,
@@ -45,7 +46,8 @@ addIcons({
   'person-circle-outline': personCircleOutline,
   'log-out-outline': logOutOutline,
   'cash-outline': cashOutline,
-  'add-circle-outline': addCircleOutline
+  'add-circle-outline': addCircleOutline,
+  'help-circle': helpCircle
 });
 
 @Component({
@@ -109,7 +111,8 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   position = { x: 0, y: 0 };
   offset = { x: 0, y: 0 };
 
-  fsCoins: number = 0;
+  userFsCoins: number = 0;
+  isWeb = Capacitor.getPlatform() === 'web';
 
   constructor(
     private fb: FormBuilder,
@@ -154,7 +157,7 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.showDropdown = false;
     this.isProfileReady = false;
     this.userData = null;
-    this.fsCoins = 0;
+    this.userFsCoins = 0;
   }
 
   async ngOnInit(): Promise<void> {
@@ -180,7 +183,7 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     this.showLoading();
     try {
       const userProfile = await this.userService.getProfileData();
-      this.fsCoins = await this.fsCoinService.getBalance();
+      this.userFsCoins = await this.fsCoinService.getBalance();
       if(userProfile.profilePicture) {
         const base64Image = `data:image/png;base64,${userProfile.profilePicture}`;
         this.userData = {
@@ -386,12 +389,20 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
   }
 
   async processRewardFlow() {
+    if(this.isWeb) {
+      this.alertController.create({
+        header: 'Atenção',
+        message: 'Baixe o app na Play Store para usar essa funcionalidade.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return
+    }
     this.showLoading();
     try {
       const reward = await this.admobService.showRewardedAd();
       if (reward?.amount) {
         const earned = await this.fsCoinService.earnCoins();
-        this.fsCoins += earned;
+        this.userFsCoins += earned;
       }
     } catch (e) {
       console.error('Erro ao carregar anúncio', e);
@@ -402,7 +413,7 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
 
   async getCoinsBalance() {
     this.fsCoinService.getBalance()
-      .then(bal => this.fsCoins = bal)
+      .then(bal => this.userFsCoins = bal)
       .catch(err => console.error(err));
   }
 

@@ -8,12 +8,19 @@ import {
   IonHeader, IonToolbar, IonTitle, 
   IonButtons, IonButton, IonContent,
   IonItem, IonLabel, IonInput, IonDatetime,
-  IonDatetimeButton, IonSelect, IonSelectOption
+  IonDatetimeButton, IonSelect, IonSelectOption,
+  IonIcon
 } from '@ionic/angular/standalone';
 import { UserService } from 'src/app/service/user.service';
 import { PlanCoverageEnum } from 'src/app/model/payment.model';
 import { AnalysisTypeEnum } from 'src/app/model/ai-advice.model';
 import { CommonService } from 'src/app/service/common.service';
+import { FsCoinService } from 'src/app/service/fs-coin-service';
+import { AlertController, ViewWillLeave } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { AdmobService } from 'src/app/service/admob.service';
+import { helpCircle } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-ai-analysis-create-modal',
@@ -26,10 +33,10 @@ import { CommonService } from 'src/app/service/common.service';
     IonButtons, IonButton, IonContent,
     IonItem, IonLabel, IonInput, IonDatetime,
     IonDatetimeButton, IonSelect, IonSelectOption,
-    FormsModule, NgxSliderModule
+    FormsModule, NgxSliderModule, IonIcon
   ]
 })
-export class AiAnalysisCreateModalComponent {
+export class AiAnalysisCreateModalComponent implements ViewWillLeave {
   form: FormGroup;
   temperatureSliderValue: number = 0;
   sliderOptions: Options = {
@@ -52,12 +59,22 @@ export class AiAnalysisCreateModalComponent {
   userHasNeededPlan = false;
 
   analysisTypes = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
+  isUsingFsCoins = false;
+  userFsCoins: number = 0;
+  coinsCostForAnalysis: number = 25;
+  animate = false;
+  isWeb = Capacitor.getPlatform() === 'web';
+  earnAmount: number = 10;
+  loading: boolean = false;
 
   constructor(
     private modalController: ModalController,
     private fb: FormBuilder,
     private userService: UserService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private fsCoinService: FsCoinService,
+    private alertController: AlertController,
+    private admobService: AdmobService
   ) {
     this.form = this.fb.group({
       analysisType: ['', Validators.required],
@@ -71,11 +88,17 @@ export class AiAnalysisCreateModalComponent {
     });
     this.form.get('date')?.markAsDirty(); 
     this.form.get('date')?.updateValueAndValidity();
+
+    addIcons({helpCircle});
   
     this.checkUserPlan();
+    this.getCoinsBalance();
+  }
+
+  async ionViewWillLeave(): Promise<void> {
+    await this.admobService.showRewardedInterstitial()
   }
   
-
   dismissModal(role: string = 'cancel') {
     this.modalController.dismiss(null, role);
   }
@@ -96,7 +119,8 @@ export class AiAnalysisCreateModalComponent {
         analysisTypeId: this.form.value.analysisType,
         selectedDate: selectedDate,
         temperature: this.temperatureSliderValue,
-        finishDate: finishDate
+        finishDate: finishDate,
+        isUsingCoins: this.isUsingFsCoins
       };
       this.modalController.dismiss(formData, 'submit');
     } else {
@@ -114,7 +138,128 @@ export class AiAnalysisCreateModalComponent {
     });
   }
 
+  onAnalysisTypeSelected() {
+    if(this.checkCoinCostForChosenAnalysisType()) {
+      this.form.patchValue({ analysisType: AnalysisTypeEnum.FREE.analysisTypeId });
+      this.alertController.create({
+        header: 'Saldo insuficiente',
+        message: 'Você não possui moedas suficientes para usar a Savi com FSCoins.',
+        buttons: [
+          'OK',
+          {
+            text: 'Ganhar moedas',
+            handler: () => {
+              this.earnCoins();
+            }
+          }
+        ]
+      }).then(alert => alert.present());
+      return;
+    }
+  }
+
+  async getCoinsBalance() {
+    this.fsCoinService.getBalance()
+      .then(bal => this.userFsCoins = bal)
+      .catch(err => console.error(err));
+  }
+
   updateSliderState() {
     this.sliderOptions = Object.assign({}, this.sliderOptions, {disabled: !this.userHasNeededPlan});
+  }
+
+  toggleFsCoinsUsage() {
+    if(this.isUsingFsCoins) {
+      this.isUsingFsCoins = false;
+      return;
+    }
+    if(this.checkCoinCostForChosenAnalysisType()) {
+      this.alertController.create({
+        header: 'Saldo insuficiente',
+        message: 'Você não possui moedas suficientes para usar a Savi com FSCoins.',
+        buttons: [
+          'OK',
+          {
+            text: 'Ganhar moedas',
+            handler: () => {
+              this.earnCoins();
+            }
+          }
+        ]
+      }).then(alert => alert.present());
+      return;
+    }
+
+    this.isUsingFsCoins = !this.isUsingFsCoins;
+
+    this.animate = true;
+    setTimeout(() => {
+      this.animate = false;
+    }, 300);
+  }
+
+  private checkCoinCostForChosenAnalysisType(): boolean {
+    const currentChosenAnalysisId = this.form.value.analysisType ? this.form.value.analysisType : AnalysisTypeEnum.FREE.analysisTypeId;
+    const costForCurrentChosenAnalysis = this.analysisTypes.find(type => type.analysisTypeId === currentChosenAnalysisId)!!.coinCostForAnalysis;
+    return costForCurrentChosenAnalysis > this.userFsCoins;
+  }
+
+  async earnCoins() {
+    const alert = await this.alertController.create({
+      header: `Ganhar ${this.earnAmount} moedas`,
+      message: `Assistir anúncio para receber ${this.earnAmount} FScoins?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'OK',
+          handler: () => {
+            alert.dismiss().then(() => {
+              this.processRewardFlow();
+            });
+            return false;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async processRewardFlow() {
+    if(this.isWeb) {
+      this.alertController.create({
+        header: 'Atenção',
+        message: 'Baixe o app na Play Store para usar essa funcionalidade.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return
+    }
+    this.showLoading();
+    try {
+      const reward = await this.admobService.showRewardedAd();
+      if (reward?.amount) {
+        const earned = await this.fsCoinService.earnCoins();
+        this.userFsCoins += earned;
+      }
+    } catch (e) {
+      console.error('Erro ao carregar anúncio', e);
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  showFsCoinsHelp() {
+    this.alertController.create({
+      header: 'O que são FSCoins?',
+      message: 'FSCoins são a moeda virtual do FinSavior. Você pode usá-las para pagar por análises de IA e outras funcionalidades premium. Você pode ganhar FSCoins assistindo a anúncios ou realizando tarefas dentro do aplicativo. Custos: Chat com Savi: 25 FSCoins, Análise de IA Mensal: 25 FSCoins, Análise de IA Trimestral: 60 FSCoins, Análise de IA Anual: 120 FSCoins.',
+      buttons: ['OK']
+    }).then(alert => alert.present());
+  }
+
+  showLoading() {
+    this.loading = true;
+  }
+
+  hideLoading() {
+    this.loading = false;
   }
 }

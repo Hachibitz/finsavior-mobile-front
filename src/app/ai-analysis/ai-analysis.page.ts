@@ -19,6 +19,10 @@ import { CommonService } from '../service/common.service';
 import { Router } from '@angular/router';
 import { Plan, PlanCoverageEnum, PlanEnum } from '../model/payment.model';
 import { ViewWillEnter } from '@ionic/angular';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Capacitor } from '@capacitor/core';
+import { FsCoinService } from '../service/fs-coin-service';
+import { AdmobService } from '../service/admob.service';
 
 addIcons({
   'trash': trash
@@ -44,6 +48,9 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   filteredAnalyses: Analysis[] = [];
   loading: boolean = false;
 
+  isWeb = Capacitor.getPlatform() === 'web';
+  earnAmount: number = 10;
+
   analysisTypeListLabels = [
     {id: '1', label: 'Mensal'},
     {id: '2', label: 'Trimestral'},
@@ -53,14 +60,16 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   analysisTypes: AnalysisType[] = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
 
   userData!: UserData;
+  userFsCoins: number = 0;
 
   constructor(
     private billService: BillService,
     private modalController: ModalController,
     private alertController: AlertController,
     private userService: UserService,
-    private commonService: CommonService,
-    private router: Router
+    private router: Router,
+    private fsCoinService: FsCoinService,
+    private admobService: AdmobService
   ) {
       addIcons({trash});}
 
@@ -72,6 +81,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     await this.clearAllDataBeforeLoading();
     this.setUserData();
     this.loadAnalysis();
+    this.getCoinsBalance();
   }
 
   async clearAllDataBeforeLoading() {
@@ -160,7 +170,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
   
     modal.onDidDismiss().then(async (result) => {
       if (result.role === 'submit' && result.data) {
-        const { analysisTypeId, selectedDate, temperature, finishDate } = result.data;
+        const { analysisTypeId, selectedDate, temperature, finishDate, isUsingCoins } = result.data;
   
         this.isLoading();
         const haveCoverage = await this.validateSelectedAnalisysAndPlan(analysisTypeId);
@@ -171,7 +181,7 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
             'Seu plano não cobre a análise selecionada. Faça o upgrade agora mesmo!'
           );
         } else {
-          this.generateAiAdvice(analysisTypeId, selectedDate, temperature, finishDate);
+          this.generateAiAdvice(analysisTypeId, selectedDate, temperature, finishDate, isUsingCoins);
         }
       }
     });
@@ -183,12 +193,13 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     return await this.billService.validateHasCoverage(selectedAnalisys)
   }  
   
-  async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date): Promise<void> {  
+  async generateAiAdvice(analysisTypeId: number, startingDate: Date, temperature: number, finishDate: Date, isUsingCoins: boolean = false): Promise<void> {  
     const aiAdviceRequest = {
       analysisTypeId,
       temperature,
       startDate: this.toLocalISOString(startingDate),
       finishDate: this.toLocalISOString(finishDate),
+      isUsingCoins: isUsingCoins
     };
   
     try {
@@ -197,10 +208,59 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
       const analysis: Analysis = await this.billService.getAiAdviceById(result.id);
       analysis.analysisType = this.analysisTypeListLabels.filter(type => type.id == analysis.analysisType)[0].label;
       await this.viewAnalysis(analysis);
-    } catch (error: any) {
-      this.showAlert('Erro', error.error.message || 'Erro ao gerar conselho de IA');
+    } catch (err: HttpErrorResponse | any) {
+      const errorMessage = typeof err?.error === 'string'
+        ? err.error
+        : err?.error?.message || err?.message || '';
+      if(err.status === 412) {
+        this.showAlert('Alerta', errorMessage || 'Saldo insuficiente para gerar análise de IA');
+      }
+      this.showAlert('Erro', errorMessage || 'Erro ao gerar conselho de IA');
     } finally {
       this.loadAnalysis();
+      this.isLoading();
+    }
+  }
+
+  async earnCoins() {
+    const alert = await this.alertController.create({
+      header: `Ganhar ${this.earnAmount} moedas`,
+      message: `Assistir anúncio para receber ${this.earnAmount} FScoins?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'OK',
+          handler: () => {
+            alert.dismiss().then(() => {
+              this.processRewardFlow();
+            });
+            return false;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async processRewardFlow() {
+    if(this.isWeb) {
+      this.alertController.create({
+        header: 'Atenção',
+        message: 'Baixe o app na Play Store para usar essa funcionalidade.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return
+    }
+    this.isLoading();
+    try {
+      const reward = await this.admobService.showRewardedAd();
+      if (reward?.amount) {
+        const earned = await this.fsCoinService.earnCoins();
+        this.userFsCoins += earned;
+      }
+    } catch (e) {
+      console.error('Erro ao carregar anúncio', e);
+    } finally {
       this.isLoading();
     }
   }
@@ -219,7 +279,15 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
     const alert = await this.alertController.create({
       header,
       message,
-      buttons: ['OK']
+      buttons: [
+        'OK',
+        {
+          text: 'Ganhar moedas',
+          handler: () => {
+            this.earnCoins();
+          }
+        }
+      ]
     });
     await alert.present();
   }
@@ -247,5 +315,11 @@ export class AiAnalysisPage implements OnInit, ViewWillEnter {
 
   isLoading(): void {
     this.loading = !this.loading;
+  }
+
+  async getCoinsBalance() {
+    this.fsCoinService.getBalance()
+      .then(bal => this.userFsCoins = bal)
+      .catch(err => console.error(err));
   }
 }

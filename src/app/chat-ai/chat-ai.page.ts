@@ -11,7 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ChatMessage, ChatRequest } from '../model/ai-advice.model';
 import { MarkdownUtils } from '../utils/markdown-utils';
-import { AlertController, ViewWillEnter } from '@ionic/angular';
+import { AlertController, ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { AiAssistantService } from '../service/ai-assistant.service';
 import { addIcons } from 'ionicons';
 import { 
@@ -19,14 +19,15 @@ import {
   ellipsisVerticalOutline,
   sendOutline,
   arrowDownOutline,
-  cashOutline
+  cashOutline,
+  helpCircle
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FsCoinService } from '../service/fs-coin-service';
-import { CommonService } from '../service/common.service';
 import { AdmobService } from '../service/admob.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-chat-ai',
@@ -43,7 +44,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     IonCheckbox
   ]
 })
-export class ChatAiPage implements OnInit, ViewWillEnter {
+export class ChatAiPage implements OnInit, ViewWillEnter, ViewWillLeave {
   userMessage: string | null | undefined = '';
   chatHistory: ChatMessage[] = [];
   isTyping: boolean = false;
@@ -62,9 +63,10 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
   loading = false;
   userFsCoins = 0;
   earnAmount = 10; // Amount of coins to earn per ad view
-  coinsForChatCost = 100; // Cost in coins to continue the chat
+  coinsForChatCost = 25; // Cost in coins to continue the chat
   isUsingFsCoins: boolean = false;
   animate = false;
+  isWeb = Capacitor.getPlatform() === 'web';
 
   constructor(
     private aiAssistantService: AiAssistantService,
@@ -72,7 +74,6 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     private alertController: AlertController,
     private sanitizer: DomSanitizer,
     private fsCoinService: FsCoinService,
-    private commonService: CommonService,
     private admobService: AdmobService
   ) {
     addIcons({
@@ -80,7 +81,8 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
       'ellipsis-vertical-outline': ellipsisVerticalOutline,
       'send-outline': sendOutline,
       'arrow-down-outline': arrowDownOutline,
-      'cash-outline': cashOutline
+      'cash-outline': cashOutline,
+      'help-circle': helpCircle
     });
   }
 
@@ -88,6 +90,10 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     await this.loadMoreMessages();
     await this.getCoinsBalance();
     setTimeout(() => this.scrollToBottom(), 500);
+  }
+
+  async ionViewWillLeave(): Promise<void> {
+    await this.admobService.showRewardedInterstitial()
   }
 
   async ngOnInit() {
@@ -267,6 +273,14 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
   }
 
   async processRewardFlow() {
+    if(this.isWeb) {
+      this.alertController.create({
+        header: 'Atenção',
+        message: 'Baixe o app na Play Store para usar essa funcionalidade.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return
+    }
     this.showLoading();
     try {
       const reward = await this.admobService.showRewardedAd();
@@ -305,6 +319,14 @@ export class ChatAiPage implements OnInit, ViewWillEnter {
     setTimeout(() => {
       this.animate = false;
     }, 300);
+  }
+
+  showFsCoinsHelp() {
+    this.alertController.create({
+      header: 'O que são FSCoins?',
+      message: 'FSCoins são a moeda virtual do FinSavior. Você pode usá-las para pagar por análises de IA e outras funcionalidades premium. Você pode ganhar FSCoins assistindo a anúncios ou realizando tarefas dentro do aplicativo. Custos: Chat com Savi: 25 FSCoins, Análise de IA Mensal: 25 FSCoins, Análise de IA Trimestral: 60 FSCoins, Análise de IA Anual: 120 FSCoins.',
+      buttons: ['OK']
+    }).then(alert => alert.present());
   }
 
   showLoading() {

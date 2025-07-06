@@ -1,3 +1,7 @@
+<div class="overlay" *ngIf="loading">
+  <div class="custom-loader"></div>
+</div>
+
 <ion-header>
   <ion-toolbar>
     <ion-title>Nova Análise de IA</ion-title>
@@ -11,11 +15,21 @@
   <form [formGroup]="form">
     <ion-item>
       <ion-label>Tipo de Análise</ion-label>
-      <ion-select formControlName="analysisType" interface="action-sheet">
+      <ion-select formControlName="analysisType" interface="action-sheet" (ionChange)="onAnalysisTypeSelected()">
         <ion-select-option *ngFor="let type of analysisTypes" [value]="type.analysisTypeId">
           {{ type.label }}
         </ion-select-option>
       </ion-select>
+
+      <ion-button fill="clear" class="help-icon" (click)="showFsCoinsHelp()">
+        <ion-icon slot="icon-only" name="help-circle"></ion-icon>
+      </ion-button>
+
+      <div class="fscoin-toggle" (click)="toggleFsCoinsUsage()">
+        <div class="fscoin-label" [class.selected]="isUsingFsCoins" [class.animate]="animate">
+          <img src="assets/fscoin-icon.png" class="fscoin-icon" alt="FSCoin"/>
+        </div>
+      </div>
     </ion-item>
 
     <ion-item>

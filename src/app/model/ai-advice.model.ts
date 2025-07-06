@@ -5,9 +5,9 @@ export interface AnalysisType {
 }
 
 export const AnalysisTypeEnum = {
-    ANNUAL: { label: '1 Ano', analysisTypeId: 3, period: 12 },
-    TRIMESTER: { label: '3 Meses', analysisTypeId: 2, period: 3 },
-    FREE: { label: '1 Mês', analysisTypeId: 1, period: 1 }
+    ANNUAL: { label: '1 Ano', analysisTypeId: 3, period: 12, coinCostForAnalysis: 120 },
+    TRIMESTER: { label: '3 Meses', analysisTypeId: 2, period: 3, coinCostForAnalysis: 60 },
+    FREE: { label: '1 Mês', analysisTypeId: 1, period: 1, coinCostForAnalysis: 25 }
 };
 
 export interface AiAdviceRequest {
@@ -15,6 +15,7 @@ export interface AiAdviceRequest {
     temperature: number;
     startDate: string;
     finishDate: string;
+    isUsingCoins: boolean;
 }
 
 export interface AiAdviceResponse {
