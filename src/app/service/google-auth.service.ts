@@ -13,8 +13,8 @@ import { app } from '../config/firebase-config';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { GOOGLE_LOGIN } from 'src/environments/environment';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import { isPlatform, Platform } from '@ionic/angular';
+import { GoogleLoginResponse, SocialLogin } from '@capgo/capacitor-social-login';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +30,11 @@ export class GoogleAuthService {
     private authService: AuthService,
     private platform: Platform
   ) {
-    this.platform.ready().then(() => {
+    /*this.platform.ready().then(() => {
       if (isPlatform('capacitor') && (isPlatform('android') || isPlatform('ios'))) {
         GoogleAuth.initialize();
       }
-    });
+    });*/
   }
 
   async signIn(): Promise<{ idToken: string }> {
@@ -62,11 +62,24 @@ export class GoogleAuthService {
 
   private async signInNative(): Promise<{ idToken: string }> {
     try {
-      const googleUser = await GoogleAuth.signIn();
-      const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
-      const firebaseUserCredential = await signInWithCredential(this.firebaseAuth, credential);
-      const idToken = await firebaseUserCredential.user.getIdToken();
-      return { idToken };
+      const res = await SocialLogin.login({
+        provider: 'google',
+        options: {
+          scopes: ['email', 'profile']
+        }
+      });
+
+      if (res.provider === 'google' && res.result.responseType === 'online' && res.result.idToken) {
+        const idToken = res.result.idToken;
+
+        const credential = GoogleAuthProvider.credential(idToken);
+        const firebaseUserCredential = await signInWithCredential(this.firebaseAuth, credential);
+        const finalIdToken = await firebaseUserCredential.user.getIdToken();
+        return { idToken: finalIdToken };
+      } else {
+        throw new Error('Falha no login com Google: idToken não encontrado na resposta online.');
+      }
+
     } catch (error) {
       console.error('Erro ao logar com Google no app:', error);
       throw error;
@@ -137,7 +150,7 @@ export class GoogleAuthService {
       await signOut(this.firebaseAuth);
 
       if (!this.isWeb) {
-        await GoogleAuth.signOut();
+        await SocialLogin.logout({ provider: 'google' });
       }
     } catch (error) {
       console.error('Erro ao deslogar do Firebase/Google:', error);

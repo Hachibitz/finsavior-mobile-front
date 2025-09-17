@@ -1,5 +1,6 @@
 import { Component, Injectable } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
+import { SocialLogin } from '@capgo/capacitor-social-login';
 import { AuthService } from './service/auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { TermsAndPrivacyService } from './service/terms-and-privacy-service';
@@ -46,12 +47,23 @@ import { AdmobService } from './service/admob.service';
   imports: [HttpClientModule, IonApp, IonRouterOutlet, IonicStorageModule],
 })
 export class AppComponent {
-  constructor(private storageService: StorageService, private themeService: ThemeService, private admobService: AdmobService) {
+  constructor(private storageService: StorageService, private themeService: ThemeService, private admobService: AdmobService, private platform: Platform) {
     this.initApp();
   }
   
   async initApp() {
     await this.storageService.init();
     await this.admobService.initialize();
+
+    this.platform.ready().then(() => {
+      if (this.platform.is('capacitor')) {
+        SocialLogin.initialize({
+          google: {
+            webClientId: '770396493441-m20ptqar465dckq4ur9hg597t6tq7v3o.apps.googleusercontent.com',
+            mode: 'online'
+          }
+        });
+      }
+    });
   }
 }
