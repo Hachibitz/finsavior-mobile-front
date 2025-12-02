@@ -5,14 +5,13 @@ import { ModalController, IonicModule } from '@ionic/angular';
 import { ThemeService } from 'src/app/service/theme.service';
 
 @Component({
-  selector: 'app-theme-selector',
-  templateUrl: './theme-selector.component.html',
-  styleUrls: ['./theme-selector.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
-  providers: [
-    ModalController
-  ]
+    selector: 'app-theme-selector',
+    templateUrl: './theme-selector.component.html',
+    styleUrls: ['./theme-selector.component.scss'],
+    imports: [CommonModule, FormsModule, IonicModule],
+    providers: [
+        ModalController
+    ]
 })
 export class ThemeSelectorComponent {
   selectedTheme = 'system';

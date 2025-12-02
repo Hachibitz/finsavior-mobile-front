@@ -22,19 +22,18 @@ import { ToastComponent } from '../components/toast/toast.component';
 addIcons({ 'trash': trash });
 
 @Component({
-  selector: 'app-main-card-details',
-  templateUrl: './main-card-details.page.html',
-  styleUrls: ['./main-card-details.page.scss'],
-  standalone: true,
-  providers: [BillService, ModalController],
-  imports: [
-    CommonModule, IonHeader, IonToolbar, 
-    IonTitle, IonContent, IonLabel, 
-    IonItem, IonButton, IonList,
-    IonIcon, IonButtons, IonSegment,
-    IonSegmentButton, FormsModule, 
-    ToastComponent
-  ]
+    selector: 'app-main-card-details',
+    templateUrl: './main-card-details.page.html',
+    styleUrls: ['./main-card-details.page.scss'],
+    providers: [BillService, ModalController],
+    imports: [
+        CommonModule, IonHeader, IonToolbar,
+        IonTitle, IonContent, IonLabel,
+        IonItem, IonButton, IonList,
+        IonIcon, IonButtons, IonSegment,
+        IonSegmentButton, FormsModule,
+        ToastComponent
+    ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {
   @ViewChild(ToastComponent) toastComponent!: ToastComponent;

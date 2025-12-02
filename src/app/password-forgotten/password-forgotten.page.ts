@@ -13,17 +13,16 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-password-forgotten',
-  templateUrl: './password-forgotten.page.html',
-  styleUrls: ['./password-forgotten.page.scss'],
-  standalone: true,
-  providers: [
-    AuthService
-  ],
-  imports: [
-    IonicModule, CommonModule, 
-    FormsModule, ReactiveFormsModule
-  ]
+    selector: 'app-password-forgotten',
+    templateUrl: './password-forgotten.page.html',
+    styleUrls: ['./password-forgotten.page.scss'],
+    providers: [
+        AuthService
+    ],
+    imports: [
+        IonicModule, CommonModule,
+        FormsModule, ReactiveFormsModule
+    ]
 })
 export class PasswordForgottenPage implements OnInit {
   passwordRecoveryForm: FormGroup;

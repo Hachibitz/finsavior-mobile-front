@@ -17,15 +17,14 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-about-dev',
-  templateUrl: './about-dev.page.html',
-  styleUrls: ['./about-dev.page.scss'],
-  standalone: true,
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, 
-    IonButton, IonIcon, IonButtons
-  ]
+    selector: 'app-about-dev',
+    templateUrl: './about-dev.page.html',
+    styleUrls: ['./about-dev.page.scss'],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonButton, IonIcon, IonButtons
+    ]
 })
 export class AboutDevPage implements OnInit {
   githubUrl = 'https://github.com/Hachibitz';

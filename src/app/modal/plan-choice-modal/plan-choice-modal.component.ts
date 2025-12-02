@@ -9,16 +9,15 @@ import {
 } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-plan-choice-modal',
-  templateUrl: './plan-choice-modal.component.html',
-  styleUrls: ['./plan-choice-modal.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule,
-    IonContent, IonHeader, IonTitle,
-    IonToolbar, IonButtons, IonButton,
-    IonList, IonItem, IonLabel
-  ]
+    selector: 'app-plan-choice-modal',
+    templateUrl: './plan-choice-modal.component.html',
+    styleUrls: ['./plan-choice-modal.component.scss'],
+    imports: [
+        CommonModule, FormsModule,
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, IonButtons, IonButton,
+        IonList, IonItem, IonLabel
+    ]
 })
 export class PlanChoiceModalComponent {
   @Input() planGroup: any; 

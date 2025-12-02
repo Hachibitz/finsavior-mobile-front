@@ -29,19 +29,18 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-ai-analysis',
-  templateUrl: './ai-analysis.page.html',
-  styleUrls: ['./ai-analysis.page.scss'],
-  standalone: true,
-  providers: [
-    ModalController, AlertController
-  ],
-  imports: [
-    IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonButton, IonLabel,
-    IonItem, IonList, IonButtons,
-    IonIcon, CommonModule
-  ]
+    selector: 'app-ai-analysis',
+    templateUrl: './ai-analysis.page.html',
+    styleUrls: ['./ai-analysis.page.scss'],
+    providers: [
+        ModalController, AlertController
+    ],
+    imports: [
+        IonHeader, IonToolbar, IonTitle,
+        IonContent, IonButton, IonLabel,
+        IonItem, IonList, IonButtons,
+        IonIcon, CommonModule
+    ]
 })
 export class AiAnalysisPage implements OnInit, ViewWillEnter {
   analyses: Analysis[] = [];

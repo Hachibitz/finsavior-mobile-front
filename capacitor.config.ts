@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'br.com.finsavior',
   appName: 'FinSavior',
-  webDir: 'www',
+  webDir: 'www/browser',
   plugins: {
     CapacitorCookies: {
       enabled: true

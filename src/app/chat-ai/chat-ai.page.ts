@@ -30,19 +30,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Capacitor } from '@capacitor/core';
 
 @Component({
-  selector: 'app-chat-ai',
-  templateUrl: './chat-ai.page.html',
-  styleUrls: ['./chat-ai.page.scss'],
-  standalone: true,
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, 
-    IonIcon, IonButton, IonItem,
-    IonFooter, IonLabel, IonList,
-    IonInput, IonButtons, IonPopover,
-    IonText, IonFabButton, IonFab,
-    IonCheckbox
-  ]
+    selector: 'app-chat-ai',
+    templateUrl: './chat-ai.page.html',
+    styleUrls: ['./chat-ai.page.scss'],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonIcon, IonButton, IonItem,
+        IonFooter, IonLabel, IonList,
+        IonInput, IonButtons, IonPopover,
+        IonText, IonFabButton, IonFab,
+        IonCheckbox
+    ]
 })
 export class ChatAiPage implements OnInit, ViewWillEnter, ViewWillLeave {
   userMessage: string | null | undefined = '';

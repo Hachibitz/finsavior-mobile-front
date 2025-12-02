@@ -33,20 +33,19 @@ export interface IncomeRow {
 }
 
 @Component({
-  selector: 'app-main-assets',
-  templateUrl: './main-assets.page.html',
-  styleUrls: ['./main-assets.page.scss'],
-  standalone: true,
-  providers: [
-    BillService, ModalController
-  ],
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule,
-    MainPageComponent, IonHeader, IonToolbar, 
-    IonTitle, IonContent, IonButton,
-    IonLabel, IonItem, IonList,
-    IonIcon, IonButtons, ToastComponent
-  ]
+    selector: 'app-main-assets',
+    templateUrl: './main-assets.page.html',
+    styleUrls: ['./main-assets.page.scss'],
+    providers: [
+        BillService, ModalController
+    ],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        MainPageComponent, IonHeader, IonToolbar,
+        IonTitle, IonContent, IonButton,
+        IonLabel, IonItem, IonList,
+        IonIcon, IonButtons, ToastComponent
+    ]
 })
 export class MainAssetsPage implements OnInit, ViewWillEnter {
   @ViewChild(ToastComponent) toastComponent!: ToastComponent;

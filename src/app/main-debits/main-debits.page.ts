@@ -25,22 +25,21 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-main-debits',
-  templateUrl: './main-debits.page.html',
-  styleUrls: ['./main-debits.page.scss'],
-  standalone: true,
-  providers: [
-    BillService, ModalController, AlertController
-  ],
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, 
-    IonTitle, IonContent, IonLabel, 
-    IonItem, IonInput, IonButton,
-    IonText, IonList, IonButtons,
-    IonSelectOption, IonSelect, IonIcon,
-    IonCheckbox, IonToast, ToastComponent
-  ]
+    selector: 'app-main-debits',
+    templateUrl: './main-debits.page.html',
+    styleUrls: ['./main-debits.page.scss'],
+    providers: [
+        BillService, ModalController, AlertController
+    ],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        IonHeader, IonToolbar,
+        IonTitle, IonContent, IonLabel,
+        IonItem, IonInput, IonButton,
+        IonText, IonList, IonButtons,
+        IonSelectOption, IonSelect, IonIcon,
+        IonCheckbox, IonToast, ToastComponent
+    ]
 })
 export class MainDebitsPage implements OnInit, ViewWillEnter {
   @ViewChild(ToastComponent) toastComponent!: ToastComponent;

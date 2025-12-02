@@ -10,17 +10,16 @@ import {
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-billtypes-guide',
-  templateUrl: './billtypes-guide.page.html',
-  styleUrls: ['./billtypes-guide.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule,
-    IonHeader, IonToolbar, IonTitle,
-    IonContent, IonCard, IonCardHeader,
-    IonCardTitle, IonCardContent, 
-    IonButtons, IonButton
-  ]
+    selector: 'app-billtypes-guide',
+    templateUrl: './billtypes-guide.page.html',
+    styleUrls: ['./billtypes-guide.page.scss'],
+    imports: [
+        CommonModule, FormsModule,
+        IonHeader, IonToolbar, IonTitle,
+        IonContent, IonCard, IonCardHeader,
+        IonCardTitle, IonCardContent,
+        IonButtons, IonButton
+    ]
 })
 export class BilltypesGuidePage implements OnInit {
 

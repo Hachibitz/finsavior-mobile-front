@@ -19,32 +19,31 @@ import { FsCoinService } from './service/fs-coin-service';
 import { AdmobService } from './service/admob.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  standalone: true,
-  providers: [
-    AuthService,
-    CookieService,
-    BillService,
-    UserService,
-    Injectable,
-    HttpClient,
-    TermsAndPrivacyService,
-    IonicStorageModule,
-    CommonService,
-    PaymentService,
-    GoogleAuthService,
-    AiAssistantService,
-    ThemeService,
-    FsCoinService,
-    AdmobService,
-    { 
-      provide: HTTP_INTERCEPTORS, 
-      useClass: TokenInterceptor, 
-      multi: true 
-    },
-  ],
-  imports: [HttpClientModule, IonApp, IonRouterOutlet, IonicStorageModule],
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    providers: [
+        AuthService,
+        CookieService,
+        BillService,
+        UserService,
+        Injectable,
+        HttpClient,
+        TermsAndPrivacyService,
+        IonicStorageModule,
+        CommonService,
+        PaymentService,
+        GoogleAuthService,
+        AiAssistantService,
+        ThemeService,
+        FsCoinService,
+        AdmobService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true
+        },
+    ],
+    imports: [HttpClientModule, IonApp, IonRouterOutlet, IonicStorageModule]
 })
 export class AppComponent {
   constructor(private storageService: StorageService, private themeService: ThemeService, private admobService: AdmobService, private platform: Platform) {

@@ -9,15 +9,14 @@ import {
 } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-change-password-modal',
-  templateUrl: './change-password-modal.component.html',
-  standalone: true,
-  imports: [
-    IonHeader, IonToolbar, IonTitle,
-    IonButtons, IonButton, IonContent,
-    IonItem, IonLabel, IonInput,
-    ReactiveFormsModule, CommonModule, FormsModule
-  ]
+    selector: 'app-change-password-modal',
+    templateUrl: './change-password-modal.component.html',
+    imports: [
+        IonHeader, IonToolbar, IonTitle,
+        IonButtons, IonButton, IonContent,
+        IonItem, IonLabel, IonInput,
+        ReactiveFormsModule, CommonModule, FormsModule
+    ]
 })
 export class ChangePasswordModalComponent {
   @Input() form!: FormGroup;

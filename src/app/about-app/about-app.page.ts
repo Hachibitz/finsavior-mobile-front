@@ -18,16 +18,15 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-about-app',
-  templateUrl: './about-app.page.html',
-  styleUrls: ['./about-app.page.scss'],
-  standalone: true,
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, 
-    IonButton, IonLabel, IonIcon, 
-    IonItem, IonList, IonButtons
-  ]
+    selector: 'app-about-app',
+    templateUrl: './about-app.page.html',
+    styleUrls: ['./about-app.page.scss'],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonButton, IonLabel, IonIcon,
+        IonItem, IonList, IonButtons
+    ]
 })
 export class AboutAppPage implements OnInit {
 

@@ -9,15 +9,14 @@ import { ModalController } from '@ionic/angular';
 import { TermsAndPrivacyService } from '../../service/terms-and-privacy-service';
 
 @Component({
-  selector: 'app-terms-and-privacy-dialog',
-  templateUrl: './terms-and-privacy-dialog.page.html',
-  styleUrls: ['./terms-and-privacy-dialog.page.scss'],
-  standalone: true,
-  imports: [
-    ReactiveFormsModule, CommonModule, FormsModule,
-    IonHeader, IonContent, IonToolbar,
-    IonTitle, IonButtons, IonButton
-  ]
+    selector: 'app-terms-and-privacy-dialog',
+    templateUrl: './terms-and-privacy-dialog.page.html',
+    styleUrls: ['./terms-and-privacy-dialog.page.scss'],
+    imports: [
+        ReactiveFormsModule, CommonModule, FormsModule,
+        IonHeader, IonContent, IonToolbar,
+        IonTitle, IonButtons, IonButton
+    ]
 })
 export class TermsAndPrivacyDialogPage implements OnInit {
   @Input() type!: string;

@@ -14,8 +14,8 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../service/common.service';
 
 @Component({
-  selector: 'app-add-register-modal',
-  template: `
+    selector: 'app-add-register-modal',
+    template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Adicionar Registro</ion-title>
@@ -70,11 +70,10 @@ import { CommonService } from '../../service/common.service';
       </form>
     </ion-content>
   `,
-    standalone: true,
     imports: [
-        IonHeader, IonToolbar, IonTitle, 
+        IonHeader, IonToolbar, IonTitle,
         IonContent, IonButtons, IonButton,
-        IonItem, IonLabel, IonInput, 
+        IonItem, IonLabel, IonInput,
         IonSelect, IonSelectOption, CommonModule,
         ReactiveFormsModule, IonCheckbox
     ]

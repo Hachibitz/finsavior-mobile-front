@@ -11,20 +11,19 @@ import {
 import { FileInputComponent } from 'src/app/file-input-component/file-input.component';
 
 @Component({
-  selector: 'app-profile-edit-modal',
-  templateUrl: './profile-edit-modal.component.html',
-  styleUrls: ['./profile-edit-modal.component.scss'],
-  standalone: true,
-  providers: [
-    AlertController
-  ],
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule, 
-    IonButton, IonLabel, IonItem,
-    IonContent, IonButtons, IonTitle,
-    IonToolbar, IonHeader, IonInput,
-    FileInputComponent
-  ]
+    selector: 'app-profile-edit-modal',
+    templateUrl: './profile-edit-modal.component.html',
+    styleUrls: ['./profile-edit-modal.component.scss'],
+    providers: [
+        AlertController
+    ],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        IonButton, IonLabel, IonItem,
+        IonContent, IonButtons, IonTitle,
+        IonToolbar, IonHeader, IonInput,
+        FileInputComponent
+    ]
 })
 export class ProfileEditModalComponent implements OnInit {
   @Input() form!: FormGroup;

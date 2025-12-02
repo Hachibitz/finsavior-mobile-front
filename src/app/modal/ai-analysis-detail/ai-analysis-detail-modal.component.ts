@@ -13,15 +13,14 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MarkdownUtils } from 'src/app/utils/markdown-utils';
 
 @Component({
-  selector: 'app-ai-analysis-detail-modal.component',
-  templateUrl: './ai-analysis-detail-modal.component.html',
-  standalone: true,
-  imports: [
-    CommonModule, IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonCard, IonCardContent, 
-    IonCardHeader, IonCardTitle, IonButton,
-    IonLabel, IonCardSubtitle, IonButtons
-  ]
+    selector: 'app-ai-analysis-detail-modal.component',
+    templateUrl: './ai-analysis-detail-modal.component.html',
+    imports: [
+        CommonModule, IonHeader, IonToolbar, IonTitle,
+        IonContent, IonCard, IonCardContent,
+        IonCardHeader, IonCardTitle, IonButton,
+        IonLabel, IonCardSubtitle, IonButtons
+    ]
 })
 export class AiAnalysisDetailModalComponent implements OnInit {
   @Input() analysis!: Analysis;

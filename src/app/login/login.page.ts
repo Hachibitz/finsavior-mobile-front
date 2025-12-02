@@ -24,22 +24,21 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
-  standalone: true,
-  providers: [
-    AuthService, ModalController
-  ],
-  imports: [
-    CommonModule, FormsModule, IonHeader, 
-    IonToolbar, IonTitle, IonContent, 
-    IonButton, IonText, IonLabel, 
-    IonItem, IonIcon, IonCard, 
-    IonCardContent, IonCardHeader, IonCardTitle,
-    IonCheckbox, IonInput, IonFooter,
-    IonButtons
-  ]
+    selector: 'app-login',
+    templateUrl: './login.page.html',
+    styleUrls: ['./login.page.scss'],
+    providers: [
+        AuthService, ModalController
+    ],
+    imports: [
+        CommonModule, FormsModule, IonHeader,
+        IonToolbar, IonTitle, IonContent,
+        IonButton, IonText, IonLabel,
+        IonItem, IonIcon, IonCard,
+        IonCardContent, IonCardHeader, IonCardTitle,
+        IonCheckbox, IonInput, IonFooter,
+        IonButtons
+    ]
 })
 export class LoginPage implements OnInit {
 

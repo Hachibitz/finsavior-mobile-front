@@ -25,19 +25,18 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-landing-page',
-  templateUrl: './landing-page.page.html',
-  styleUrls: ['./landing-page.page.scss'],
-  standalone: true,
-  providers: [
-    ModalController
-  ],
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule,
-    IonButton, IonText, IonIcon,
-    IonFooter
-  ]
+    selector: 'app-landing-page',
+    templateUrl: './landing-page.page.html',
+    styleUrls: ['./landing-page.page.scss'],
+    providers: [
+        ModalController
+    ],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonButton, IonText, IonIcon,
+        IonFooter
+    ]
 })
 export class LandingPagePage implements OnInit {
 

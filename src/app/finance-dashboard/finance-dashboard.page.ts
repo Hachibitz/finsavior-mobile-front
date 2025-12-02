@@ -37,20 +37,19 @@ import { Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
-  selector: 'app-finance-dashboard',
-  templateUrl: './finance-dashboard.page.html',
-  styleUrls: ['./finance-dashboard.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule,
-    IonHeader, IonToolbar, IonTitle,
-    IonContent, IonSegment, IonSegmentButton,
-    IonLabel, IonCard, IonCardHeader,
-    IonCardTitle, IonCardContent, IonList, 
-    IonButtons, IonButton, IonIcon,
-    BaseChartDirective, IonItem, IonNote, 
-    IonDatetime, IonDatetimeButton, IonModal
-  ]
+    selector: 'app-finance-dashboard',
+    templateUrl: './finance-dashboard.page.html',
+    styleUrls: ['./finance-dashboard.page.scss'],
+    imports: [
+        CommonModule, FormsModule,
+        IonHeader, IonToolbar, IonTitle,
+        IonContent, IonSegment, IonSegmentButton,
+        IonLabel, IonCard, IonCardHeader,
+        IonCardTitle, IonCardContent, IonList,
+        IonButtons, IonButton, IonIcon,
+        BaseChartDirective, IonItem, IonNote,
+        IonDatetime, IonDatetimeButton, IonModal
+    ]
 })
 export class FinanceDashboardPage implements OnInit, ViewWillEnter {
   @ViewChild('dateTimePicker') dateTimePicker?: IonDatetime;

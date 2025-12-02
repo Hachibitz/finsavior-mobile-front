@@ -51,25 +51,24 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-main-page',
-  templateUrl: './main-page.page.html',
-  styleUrls: ['./main-page.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule,
-    MainSummaryPage, MainAssetsPage, MainDebitsPage,
-    IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonTabs, IonTab,
-    IonTabBar, IonTabButton, IonLabel,
-    IonIcon, IonDatetime, IonModal,
-    IonDatetimeButton, IonButtons, IonButton,
-    MainCardDetailsPage, IonItem, IonMenu,
-    IonList, IonAvatar, IonMenuButton,
-    IonPopover, IonText
-  ],
-  providers: [
-    ModalController
-  ]
+    selector: 'app-main-page',
+    templateUrl: './main-page.page.html',
+    styleUrls: ['./main-page.page.scss'],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        MainSummaryPage, MainAssetsPage, MainDebitsPage,
+        IonHeader, IonToolbar, IonTitle,
+        IonContent, IonTabs, IonTab,
+        IonTabBar, IonTabButton, IonLabel,
+        IonIcon, IonDatetime, IonModal,
+        IonDatetimeButton, IonButtons, IonButton,
+        MainCardDetailsPage, IonItem, IonMenu,
+        IonList, IonAvatar, IonMenuButton,
+        IonPopover, IonText
+    ],
+    providers: [
+        ModalController
+    ]
 })
 export class MainPageComponent implements OnInit, ViewWillEnter {
   @ViewChild('dateTimePicker') dateTimePicker?: IonDatetime;

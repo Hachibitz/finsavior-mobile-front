@@ -21,21 +21,20 @@ import { LoginRequest } from '../model/user.model';
 import { GoogleAuthService } from '../service/google-auth.service';
 
 @Component({
-  selector: 'app-my-account',
-  templateUrl: './my-account.page.html',
-  styleUrls: ['./my-account.page.scss'],
-  standalone: true,
-  providers: [
-    ModalController, AlertController
-  ],
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, 
-    ReactiveFormsModule, IonButton, IonLabel,
-    IonItem, IonInput, IonChip, 
-    IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonButtons
-  ]
+    selector: 'app-my-account',
+    templateUrl: './my-account.page.html',
+    styleUrls: ['./my-account.page.scss'],
+    providers: [
+        ModalController, AlertController
+    ],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        ReactiveFormsModule, IonButton, IonLabel,
+        IonItem, IonInput, IonChip,
+        IonCard, IonCardContent, IonCardHeader,
+        IonCardTitle, IonButtons
+    ]
 })
 export class MyAccountPage implements OnInit, ViewWillEnter {
 

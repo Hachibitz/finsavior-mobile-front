@@ -22,20 +22,19 @@ import { loadStripe, Stripe, StripeEmbeddedCheckout } from '@stripe/stripe-js';
 import { STRIPE_PUBLIC_KEY } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-subscription',
-  templateUrl: './subscription.page.html',
-  styleUrls: ['./subscription.page.scss'],
-  standalone: true,
-  providers: [
-    ModalController
-  ],
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, 
-    IonButtons, IonButton, IonIcon,
-    IonCardContent, IonCardHeader, IonCard,
-    IonCardTitle, IonCardSubtitle, IonChip
-  ]
+    selector: 'app-subscription',
+    templateUrl: './subscription.page.html',
+    styleUrls: ['./subscription.page.scss'],
+    providers: [
+        ModalController
+    ],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonButtons, IonButton, IonIcon,
+        IonCardContent, IonCardHeader, IonCard,
+        IonCardTitle, IonCardSubtitle, IonChip
+    ]
 })
 export class SubscriptionPage implements OnInit, ViewWillEnter {
 

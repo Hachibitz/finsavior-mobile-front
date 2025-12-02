@@ -9,18 +9,17 @@ import {
 } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-delete-account-modal',
-  templateUrl: './delete-account-modal.component.html',
-  standalone: true,
-  providers: [
-    AlertController
-  ],
-  imports: [
-    IonHeader, IonToolbar, IonTitle,
-    IonButtons, IonButton, IonContent,
-    IonItem, IonLabel, IonInput,
-    ReactiveFormsModule, CommonModule, FormsModule
-  ]
+    selector: 'app-delete-account-modal',
+    templateUrl: './delete-account-modal.component.html',
+    providers: [
+        AlertController
+    ],
+    imports: [
+        IonHeader, IonToolbar, IonTitle,
+        IonButtons, IonButton, IonContent,
+        IonItem, IonLabel, IonInput,
+        ReactiveFormsModule, CommonModule, FormsModule
+    ]
 })
 export class DeleteAccountModalComponent {
   @Input() form!: FormGroup;

@@ -14,17 +14,16 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
-  standalone: true,
-  providers: [
-    AuthService, ModalController
-  ],
-  imports: [
-    CommonModule, FormsModule,
-    ReactiveFormsModule, IonicModule
-  ]
+    selector: 'app-register',
+    templateUrl: './register.page.html',
+    styleUrls: ['./register.page.scss'],
+    providers: [
+        AuthService, ModalController
+    ],
+    imports: [
+        CommonModule, FormsModule,
+        ReactiveFormsModule, IonicModule
+    ]
 })
 export class RegisterPage implements OnInit {
   registerForm: FormGroup;

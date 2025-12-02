@@ -18,18 +18,17 @@ import { helpCircle } from 'ionicons/icons';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-main-summary',
-  templateUrl: './main-summary.page.html',
-  styleUrls: ['./main-summary.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonCard, IonCardContent, 
-    IonCardHeader, IonCardTitle, IonButton,
-    IonLabel, IonCardSubtitle, IonIcon,
-    IonButtons
-  ]
+    selector: 'app-main-summary',
+    templateUrl: './main-summary.page.html',
+    styleUrls: ['./main-summary.page.scss'],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        IonHeader, IonToolbar, IonTitle,
+        IonContent, IonCard, IonCardContent,
+        IonCardHeader, IonCardTitle, IonButton,
+        IonLabel, IonCardSubtitle, IonIcon,
+        IonButtons
+    ]
 })
 export class MainSummaryPage implements OnInit, ViewWillEnter {
   cards: { title: string; value: number; description: string }[] = [];

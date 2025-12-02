@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-toast',
-  templateUrl: './toast.component.html',
-  styleUrls: ['./toast.component.scss'],
-  standalone: true,
-  imports: [CommonModule]
+    selector: 'app-toast',
+    templateUrl: './toast.component.html',
+    styleUrls: ['./toast.component.scss'],
+    imports: [CommonModule]
 })
 export class ToastComponent {
   toastQueue: { message: string; color: 'success' | 'danger'; fadeOut: boolean }[] = [];

@@ -25,19 +25,18 @@ addIcons({
 });
 
 @Component({
-  selector: 'app-ticket',
-  templateUrl: './ticket.page.html',
-  styleUrls: ['./ticket.page.scss'],
-  standalone: true,
-  imports: [
-    IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule,
-    IonCard, IonItem, IonCardHeader,
-    IonCardContent, IonCardTitle, IonSelect,
-    IonSelectOption, IonButton, IonLabel,
-    ReactiveFormsModule, IonInput, IonTextarea,
-    IonText, IonButtons, IonIcon
-  ]
+    selector: 'app-ticket',
+    templateUrl: './ticket.page.html',
+    styleUrls: ['./ticket.page.scss'],
+    imports: [
+        IonContent, IonHeader, IonTitle,
+        IonToolbar, CommonModule, FormsModule,
+        IonCard, IonItem, IonCardHeader,
+        IonCardContent, IonCardTitle, IonSelect,
+        IonSelectOption, IonButton, IonLabel,
+        ReactiveFormsModule, IonInput, IonTextarea,
+        IonText, IonButtons, IonIcon
+    ]
 })
 export class TicketPage implements ViewWillEnter {
   ticket: {

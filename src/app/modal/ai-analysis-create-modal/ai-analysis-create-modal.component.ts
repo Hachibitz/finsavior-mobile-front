@@ -23,18 +23,17 @@ import { helpCircle } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 @Component({
-  selector: 'app-ai-analysis-create-modal',
-  templateUrl: './ai-analysis-create-modal.component.html',
-  styleUrls: ['./ai-analysis-create-modal.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle,
-    IonButtons, IonButton, IonContent,
-    IonItem, IonLabel, IonInput, IonDatetime,
-    IonDatetimeButton, IonSelect, IonSelectOption,
-    FormsModule, NgxSliderModule, IonIcon
-  ]
+    selector: 'app-ai-analysis-create-modal',
+    templateUrl: './ai-analysis-create-modal.component.html',
+    styleUrls: ['./ai-analysis-create-modal.component.scss'],
+    imports: [
+        CommonModule, ReactiveFormsModule,
+        IonHeader, IonToolbar, IonTitle,
+        IonButtons, IonButton, IonContent,
+        IonItem, IonLabel, IonInput, IonDatetime,
+        IonDatetimeButton, IonSelect, IonSelectOption,
+        FormsModule, NgxSliderModule, IonIcon
+    ]
 })
 export class AiAnalysisCreateModalComponent implements ViewWillLeave {
   form: FormGroup;

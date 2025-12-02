@@ -11,20 +11,19 @@ import {
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-register-modal',
-  templateUrl: './edit-register-modal.component.html',
-  styleUrls: ['./edit-register-modal.component.scss'],
-  standalone: true,
-  providers: [
-    ModalController
-  ],
-  imports: [
-    CommonModule, FormsModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle,
-    IonButtons, IonButton, IonContent,
-    IonItem, IonLabel, IonInput,
-    IonSelectOption, IonSelect
-  ]
+    selector: 'app-edit-register-modal',
+    templateUrl: './edit-register-modal.component.html',
+    styleUrls: ['./edit-register-modal.component.scss'],
+    providers: [
+        ModalController
+    ],
+    imports: [
+        CommonModule, FormsModule, ReactiveFormsModule,
+        IonHeader, IonToolbar, IonTitle,
+        IonButtons, IonButton, IonContent,
+        IonItem, IonLabel, IonInput,
+        IonSelectOption, IonSelect
+    ]
 })
 export class EditRegisterModalComponent implements OnInit {
   @Input() registerData!: BillRegisterRequest;
