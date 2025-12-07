@@ -25,6 +25,8 @@ export interface BillRegisterRequest {
     billTable: string;
     billCategory: string;
     isRecurrent: boolean;
+    isInstallment?: boolean;
+    installmentCount?: number;
     paid: boolean;
 }
 

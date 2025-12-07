@@ -39,7 +39,19 @@
 
     <div class="slider-container">
       <label>Termômetro de Criatividade</label>
-      <ngx-slider [(value)]="temperatureSliderValue" [options]="sliderOptions"></ngx-slider>
+
+      <ion-range
+        min="0"
+        max="1"
+        step="0.1"
+        snaps="true"
+        ticks="true"
+        [disabled]="!userHasNeededPlan"
+        [(ngModel)]="temperatureSliderValue"
+      >
+        <ion-label slot="start">Precisão</ion-label>
+        <ion-label slot="end">Criativo</ion-label>
+      </ion-range>
     </div>
 
     <ion-button expand="block" color="primary" (click)="onSave()" [disabled]="form.invalid">

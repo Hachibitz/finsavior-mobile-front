@@ -25,7 +25,12 @@
   <ion-list *ngIf="!loading && rows.length > 0">
     <ion-item *ngFor="let item of rows">
       <ion-label>
-        <h2>{{ item.billName }}</h2>
+        <h2>
+          {{ item.billName }} 
+          <span *ngIf="item.totalInstallments" style="font-size: 0.8em; color: var(--ion-color-medium); font-weight: normal;">
+            ({{ item.currentInstallment }}/{{ item.totalInstallments }})
+          </span>
+        </h2>
         <p>Valor: {{ item.billValue }}</p>
         <p>Descrição: {{ item.billDescription }}</p>
       </ion-label>

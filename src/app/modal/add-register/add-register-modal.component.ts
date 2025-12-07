@@ -8,7 +8,8 @@ import {
     IonContent, IonButtons, IonButton,
     IonItem, IonLabel, IonInput, 
     IonSelect, IonSelectOption,
-    IonCheckbox
+    IonCheckbox, IonSegment, IonSegmentButton, 
+    IonIcon
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../service/common.service';
@@ -31,18 +32,20 @@ import { CommonService } from '../../service/common.service';
 
     <ion-content class="ion-padding">
       <form [formGroup]="billRegisterForm" (ngSubmit)="addRegister()">
+        
         <ion-item>
           <ion-label position="floating">Nome da Conta</ion-label>
           <ion-input formControlName="billName"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Valor</ion-label>
+          <ion-label position="floating">Valor (Parcela ou Total)</ion-label>
           <ion-input type="number" formControlName="billValue"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
+
         <ion-item *ngIf="showCategorySelect">
           <ion-label>Categoria</ion-label>
           <ion-select formControlName="billCategory" interface="action-sheet">
@@ -51,6 +54,7 @@ import { CommonService } from '../../service/common.service';
             </ion-select-option>
           </ion-select>
         </ion-item>
+
         <div *ngIf="isAssets">
           <ion-item>
             <ion-label>Tipo</ion-label>
@@ -59,14 +63,38 @@ import { CommonService } from '../../service/common.service';
             </ion-select>
           </ion-item>
         </div>
-        <ion-item *ngIf="showRecurrentCheckbox">
-          <ion-label>Recorrente</ion-label>
-          <ion-checkbox 
-            formControlName="isRecurrent" 
-            (ionChange)="onRecurrentChange($event)">
-          </ion-checkbox>
+
+        <div class="frequency-section" *ngIf="showRecurrentCheckbox" style="margin-top: 20px;">
+            <ion-label style="margin-left: 15px; font-size: 0.9em; color: gray;">Frequência</ion-label>
+            <ion-segment (ionChange)="onFrequencyChange($event)" [value]="frequencyType">
+                <ion-segment-button value="SINGLE">
+                    <ion-label>Único</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="RECURRENT">
+                    <ion-label>Fixo</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="INSTALLMENT">
+                    <ion-label>Parcelado</ion-label>
+                </ion-segment-button>
+            </ion-segment>
+        </div>
+
+        <ion-item *ngIf="frequencyType === 'INSTALLMENT'" lines="none" class="animate-fade">
+            <ion-label position="stacked">Número de Parcelas</ion-label>
+            <ion-input 
+                type="number" 
+                formControlName="installmentCount" 
+                placeholder="Ex: 12">
+            </ion-input>
         </ion-item>
-        <ion-button expand="block" type="submit" [disabled]="billRegisterForm.invalid">Salvar</ion-button>
+
+        <ion-item *ngIf="frequencyType === 'RECURRENT'" lines="none" class="animate-fade">
+           <p style="font-size: 0.8em; color: var(--ion-color-medium);">
+             Isso repetirá a conta todos os meses até Dezembro.
+           </p>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="billRegisterForm.invalid" class="ion-margin-top">Salvar</ion-button>
       </form>
     </ion-content>
   `,
@@ -75,14 +103,17 @@ import { CommonService } from '../../service/common.service';
         IonContent, IonButtons, IonButton,
         IonItem, IonLabel, IonInput,
         IonSelect, IonSelectOption, CommonModule,
-        ReactiveFormsModule, IonCheckbox
-    ]
+        ReactiveFormsModule, IonCheckbox, 
+        IonSegment, IonSegmentButton, IonIcon
+    ],
+    standalone: true
 })
 export class AddRegisterModalComponent {
 
   isAssets: boolean = false;
   showRecurrentCheckbox: boolean = false;
   showCategorySelect: boolean = false;
+  frequencyType: 'SINGLE' | 'RECURRENT' | 'INSTALLMENT' = 'SINGLE';
 
   private _tableType: string = '';
   @Input() set tableType(value: string) {
@@ -163,6 +194,8 @@ export class AddRegisterModalComponent {
       billType: [''],
       isRecurrent: [false],
       billCategory: ['Outras'],
+      frequencyType: ['SINGLE'],
+      installmentCount: [2]
     });
   }
 
@@ -192,6 +225,18 @@ export class AddRegisterModalComponent {
     }
   }
 
+  onFrequencyChange(event: any) {
+    this.frequencyType = event.detail.value;
+    const countControl = this.billRegisterForm.get('installmentCount');
+
+    if (this.frequencyType === 'INSTALLMENT') {
+        countControl?.setValidators([Validators.required, Validators.min(2)]);
+    } else {
+        countControl?.clearValidators();
+    }
+    countControl?.updateValueAndValidity();
+  }
+
   async confirmRecurrentChange() {
     const alert = await this.alertController.create({
       header: 'Confirmação',
@@ -219,12 +264,16 @@ export class AddRegisterModalComponent {
   async addRegister() {
     if (this.billRegisterForm.invalid) return;
 
+    const formVal = this.billRegisterForm.value;
+    
     const billRegisterRequest: BillRegisterRequest = {
-      ...this.billRegisterForm.value,
+      ...formVal,
       billDate: this.commonService.formatDate(this.billDate),
       billTable: this.tableType,
       paid: false,
-      isRecurrent: this.billRegisterForm.value.isRecurrent
+      isRecurrent: this.frequencyType === 'RECURRENT',
+      isInstallment: this.frequencyType === 'INSTALLMENT',
+      installmentCount: this.frequencyType === 'INSTALLMENT' ? formVal.installmentCount : null
     };
 
     this.setBillType(billRegisterRequest);

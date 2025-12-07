@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgxSliderModule, Options } from '@angular-slider/ngx-slider';
+import { IonRange } from '@ionic/angular/standalone';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonButtons, IonButton, IonContent,
@@ -32,29 +32,12 @@ import { addIcons } from 'ionicons';
         IonButtons, IonButton, IonContent,
         IonItem, IonLabel, IonInput, IonDatetime,
         IonDatetimeButton, IonSelect, IonSelectOption,
-        FormsModule, NgxSliderModule, IonIcon
+        FormsModule, IonRange, IonIcon
     ]
 })
 export class AiAnalysisCreateModalComponent implements ViewWillLeave {
   form: FormGroup;
   temperatureSliderValue: number = 0;
-  sliderOptions: Options = {
-    showTicksValues: true,
-    stepsArray: [
-      { value: 0, legend: "Mais precisão" },
-      { value: 0.1 },
-      { value: 0.2 },
-      { value: 0.3 },
-      { value: 0.4 },
-      { value: 0.5, legend: "Equilibrado" },
-      { value: 0.6 },
-      { value: 0.7 },
-      { value: 0.8 },
-      { value: 0.9 },
-      { value: 1, legend: "Mais criativo" }
-    ],
-    disabled: false
-  };
   userHasNeededPlan = false;
 
   analysisTypes = [AnalysisTypeEnum.FREE, AnalysisTypeEnum.TRIMESTER, AnalysisTypeEnum.ANNUAL];
@@ -130,10 +113,8 @@ export class AiAnalysisCreateModalComponent implements ViewWillLeave {
   checkUserPlan(): void {
     this.userService.getProfileData().then((result) => {
       this.userHasNeededPlan = result.plan.planId !== PlanCoverageEnum.FREE.planId;
-      this.updateSliderState();
     }).catch((error) => {
       this.userHasNeededPlan = false;
-      this.updateSliderState();
     });
   }
 
@@ -161,10 +142,6 @@ export class AiAnalysisCreateModalComponent implements ViewWillLeave {
     this.fsCoinService.getBalance()
       .then(bal => this.userFsCoins = bal)
       .catch(err => console.error(err));
-  }
-
-  updateSliderState() {
-    this.sliderOptions = Object.assign({}, this.sliderOptions, {disabled: !this.userHasNeededPlan});
   }
 
   toggleFsCoinsUsage() {
