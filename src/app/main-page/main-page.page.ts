@@ -6,11 +6,7 @@ import { BillRegisterRequest, TipoConta } from '../model/main.model';
 import { BillService } from '../service/bill.service';
 import { AnalysisType, AnalysisTypeEnum } from '../model/ai-advice.model';
 import { UserService } from '../service/user.service';
-import { MainSummaryPage } from '../main-summary/main-summary.page';
-import { MainAssetsPage } from '../main-assets/main-assets.page';
-import { MainDebitsPage } from '../main-debits/main-debits.page';
 import { CommonService } from '../service/common.service';
-import { MainCardDetailsPage } from '../main-card-details/main-card-details.page';
 import { 
   IonHeader, IonToolbar, IonTitle, 
   IonContent, IonTabs, IonTab,
@@ -55,16 +51,14 @@ addIcons({
     templateUrl: './main-page.page.html',
     styleUrls: ['./main-page.page.scss'],
     imports: [
-        CommonModule, FormsModule, ReactiveFormsModule,
-        MainSummaryPage, MainAssetsPage, MainDebitsPage,
-        IonHeader, IonToolbar, IonTitle,
-        IonContent, IonTabs, IonTab,
-        IonTabBar, IonTabButton, IonLabel,
-        IonIcon, IonDatetime, IonModal,
-        IonDatetimeButton, IonButtons, IonButton,
-        MainCardDetailsPage, IonItem, IonMenu,
-        IonList, IonAvatar, IonMenuButton,
-        IonPopover, IonText
+      CommonModule, FormsModule, ReactiveFormsModule,
+      IonHeader, IonToolbar, IonTitle,
+      IonContent, IonTabs, IonTab,
+      IonTabBar, IonTabButton, IonLabel,
+      IonIcon, IonDatetime, IonModal,
+      IonDatetimeButton, IonButtons, IonButton,
+      IonItem, IonMenu, IonList, IonAvatar,
+      IonMenuButton, IonPopover, IonText
     ],
     providers: [
         ModalController

@@ -30,6 +30,10 @@ export class AdmobService {
   ) {}
 
   async initialize() {
+    if(this.isWeb) {
+      return;
+    }
+
     await AdMob.initialize();
 
     // Solicita consentimento apenas se necessário (GDPR/LGPD)
