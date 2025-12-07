@@ -82,4 +82,8 @@
 
     <p *ngIf="!loading && paymentRows.length === 0" class="ion-text-center">Nenhum pagamento registrado encontrado.</p>
   </div>
+  <app-voice-fab 
+      tableType="MAIN" 
+      (onBillDetected)="onVoiceDataReceived($event)">
+  </app-voice-fab>
 </ion-content>

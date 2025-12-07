@@ -38,6 +38,7 @@
     "@ionic/storage-angular": "^4.0.0",
     "@stripe/stripe-js": "^8.5.3",
     "animate.css": "^4.1.1",
+    "capacitor-voice-recorder": "^7.0.6",
     "chart.js": "^4.4.8",
     "cordova-plugin-cookies": "^0.0.2",
     "firebase": "^11.0.2",
@@ -89,7 +90,8 @@
     "esbuild": "^0.25.9",
     "vite": "^5.4.21",
     "js-yaml": "^4.1.1",
-    "tmp": "^0.2.5"
+    "tmp": "^0.2.5",
+    "@babel/runtime": "^7.26.0" 
   },
   "description": "FinSavior mobile front-end application"
 }

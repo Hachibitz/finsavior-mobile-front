@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalController, AlertController } from '@ionic/angular';
 import { BillService } from '../../service/bill.service';
@@ -48,11 +48,17 @@ import { CommonService } from '../../service/common.service';
 
         <ion-item *ngIf="showCategorySelect">
           <ion-label>Categoria</ion-label>
-          <ion-select formControlName="billCategory" interface="action-sheet">
+          <ion-select formControlName="billCategory" interface="action-sheet" (ionChange)="onCategoryChange($event)">
             <ion-select-option *ngFor="let category of categories" [value]="category.value">
               {{ category.label }}
             </ion-select-option>
+            <ion-select-option value="custom">+ Nova Categoria...</ion-select-option>
           </ion-select>
+        </ion-item>
+
+        <ion-item *ngIf="isCustomCategory" class="animate-fade">
+           <ion-label position="floating">Digite a Nova Categoria</ion-label>
+           <ion-input formControlName="customCategory"></ion-input>
         </ion-item>
 
         <div *ngIf="isAssets">
@@ -108,7 +114,7 @@ import { CommonService } from '../../service/common.service';
     ],
     standalone: true
 })
-export class AddRegisterModalComponent {
+export class AddRegisterModalComponent implements OnInit {
 
   isAssets: boolean = false;
   showRecurrentCheckbox: boolean = false;
@@ -180,6 +186,9 @@ export class AddRegisterModalComponent {
 
   categories: { label: string; value: string }[] = [];
 
+  @Input() initialData: any = null;
+  isCustomCategory: boolean = false;
+
   constructor(
     private modalController: ModalController,
     private alertController: AlertController,
@@ -197,6 +206,46 @@ export class AddRegisterModalComponent {
       frequencyType: ['SINGLE'],
       installmentCount: [2]
     });
+  }
+
+  ngOnInit(): void {
+    if (this.initialData) {
+      this.populateForm(this.initialData);
+    }
+  }
+
+  populateForm(data: any) {
+    if (data.isInstallment) {
+      this.frequencyType = 'INSTALLMENT';
+      this.billRegisterForm.get('installmentCount')?.setValidators([Validators.required, Validators.min(2)]);
+    } else if (data.isRecurrent) {
+      this.frequencyType = 'RECURRENT';
+    } else {
+      this.frequencyType = 'SINGLE';
+    }
+
+    this.billRegisterForm.patchValue({
+      billName: data.billName,
+      billValue: data.billValue,
+      billDescription: data.billDescription,
+      billCategory: data.billCategory || 'Outras',
+      installmentCount: data.installmentCount,
+      frequencyType: this.frequencyType
+    });
+    
+    this.billRegisterForm.updateValueAndValidity();
+  }
+
+  onCategoryChange(event: any) {
+    if (event.detail.value === 'custom') {
+      this.isCustomCategory = true;
+      this.billRegisterForm.get('customCategory')?.setValidators([Validators.required]);
+    } else {
+      this.isCustomCategory = false;
+      this.billRegisterForm.get('customCategory')?.clearValidators();
+      this.billRegisterForm.get('customCategory')?.setValue('');
+    }
+    this.billRegisterForm.get('customCategory')?.updateValueAndValidity();
   }
 
   setValidationRules() {
@@ -265,6 +314,11 @@ export class AddRegisterModalComponent {
     if (this.billRegisterForm.invalid) return;
 
     const formVal = this.billRegisterForm.value;
+
+    let finalCategory = formVal.billCategory;
+    if (this.isCustomCategory) {
+        finalCategory = formVal.customCategory;
+    }
     
     const billRegisterRequest: BillRegisterRequest = {
       ...formVal,

@@ -18,6 +18,7 @@ import { AddRegisterModalComponent } from '../modal/add-register/add-register-mo
 import { tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 import { ToastComponent } from '../components/toast/toast.component';
+import { VoiceFabComponent } from '../components/voice-fab/voice-fab.component';
 
 addIcons({
   'trash': trash
@@ -44,7 +45,8 @@ export interface IncomeRow {
         MainPageComponent, IonHeader, IonToolbar,
         IonTitle, IonContent, IonButton,
         IonLabel, IonItem, IonList,
-        IonIcon, IonButtons, ToastComponent
+        IonIcon, IonButtons, ToastComponent, 
+        VoiceFabComponent
     ]
 })
 export class MainAssetsPage implements OnInit, ViewWillEnter {
@@ -78,6 +80,27 @@ export class MainAssetsPage implements OnInit, ViewWillEnter {
 
   async clearAllDataBeforeLoading() {
     this.incomeRows = [];
+  }
+
+  async onVoiceDataReceived(aiData: any) {
+    const { AddRegisterModalComponent } = await import('../modal/add-register/add-register-modal.component');
+    
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        tableType: tableTypes.MAIN,
+        billDate: this.billDate,
+        initialData: aiData
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadIncomeData();
+      }
+    });
+
+    await modal.present();
   }
 
   async openAddRegisterModal() {

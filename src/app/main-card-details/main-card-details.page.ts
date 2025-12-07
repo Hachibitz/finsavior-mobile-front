@@ -18,6 +18,7 @@ import { TableDataResponse, tableTypes } from '../model/main.model';
 import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-register-modal.component';
 import { FormsModule } from '@angular/forms';
 import { ToastComponent } from '../components/toast/toast.component';
+import { VoiceFabComponent } from '../components/voice-fab/voice-fab.component';
 
 addIcons({ 'trash': trash });
 
@@ -32,7 +33,7 @@ addIcons({ 'trash': trash });
         IonItem, IonButton, IonList,
         IonIcon, IonButtons, IonSegment,
         IonSegmentButton, FormsModule,
-        ToastComponent
+        ToastComponent, VoiceFabComponent
     ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {
@@ -103,6 +104,28 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     } finally {
       this.isLoading();
     }
+  }
+
+  async onVoiceDataReceived(aiData: any) {
+    const { AddRegisterModalComponent } = await import('../modal/add-register/add-register-modal.component');
+    
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        tableType: tableTypes.MAIN,
+        billDate: this.billDate,
+        initialData: aiData
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadCardTableData();
+        this.loadPaymentData();
+      }
+    });
+
+    await modal.present();
   }
 
   async openAddRegisterModal() {

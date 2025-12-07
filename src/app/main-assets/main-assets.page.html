@@ -39,4 +39,8 @@
       </ion-buttons>
     </ion-item>
   </ion-list>
+  <app-voice-fab 
+      tableType="MAIN" 
+      (onBillDetected)="onVoiceDataReceived($event)">
+  </app-voice-fab>
 </ion-content>

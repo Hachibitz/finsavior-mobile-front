@@ -12,7 +12,8 @@ import {
          DELETE_ITEM,
          LOAD_ASSETS_TABLE_DATA,
          GET_AI_ADVICE_BY_ID,
-         VALIDATE_HAS_COVERAGE} from 'src/environments/environment';
+         VALIDATE_HAS_COVERAGE,
+         AI_TRANSCRIPTION_ADD_BILL} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
@@ -203,5 +204,19 @@ export class BillService {
                 },
             });
         });
+    }
+
+    processAudio(formData: FormData): Promise<BillRegisterRequest> {
+        const promessa = new Promise<BillRegisterRequest>((resolve, reject) => {
+            this.http.post<BillRegisterRequest>(AI_TRANSCRIPTION_ADD_BILL, formData, { responseType: 'json' }).subscribe({
+                next: (result: BillRegisterRequest) => {
+                    resolve(result);
+                },
+                error: (e: HttpErrorResponse) => {
+                    reject(e);
+                },
+            });
+        });
+        return promessa;
     }
 }

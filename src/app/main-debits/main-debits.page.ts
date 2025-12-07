@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
@@ -18,6 +18,7 @@ import { addIcons } from 'ionicons';
 import { trash, create } from 'ionicons/icons';
 import { CommonService } from '../service/common.service';
 import { ToastComponent } from '../components/toast/toast.component';
+import { VoiceFabComponent } from '../components/voice-fab/voice-fab.component';
 
 addIcons({
   'trash': trash,
@@ -38,7 +39,8 @@ addIcons({
         IonItem, IonInput, IonButton,
         IonText, IonList, IonButtons,
         IonSelectOption, IonSelect, IonIcon,
-        IonCheckbox, IonToast, ToastComponent
+        IonCheckbox, IonToast, ToastComponent,
+        VoiceFabComponent
     ]
 })
 export class MainDebitsPage implements OnInit, ViewWillEnter {
@@ -92,6 +94,27 @@ export class MainDebitsPage implements OnInit, ViewWillEnter {
       await this.clearAllDataBeforeLoading();
       await this.loadTableData();
     });
+  }
+
+  async onVoiceDataReceived(aiData: any) {
+    const { AddRegisterModalComponent } = await import('../modal/add-register/add-register-modal.component');
+    
+    const modal = await this.modalController.create({
+      component: AddRegisterModalComponent,
+      componentProps: {
+        tableType: tableTypes.MAIN,
+        billDate: this.billDate,
+        initialData: aiData
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'saved') {
+        this.loadTableData();
+      }
+    });
+
+    await modal.present();
   }
 
   async clearAllDataBeforeLoading() {
