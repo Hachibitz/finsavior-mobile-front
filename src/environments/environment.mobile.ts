@@ -65,6 +65,7 @@ export const FS_COIN_BALANCE = FS_COIN_SERVICE + '/balance';
 export const FS_COIN_EARN = FS_COIN_SERVICE + '/earn';
 export const AI_TRANSCRIPTION_SERVICE = URL_BASE_MOBILE + '/ai/transcription';
 export const AI_TRANSCRIPTION_ADD_BILL = AI_TRANSCRIPTION_SERVICE + '/process-audio';
+export const AI_TRANSCRIPTION_TRANSCRIBE_ONLY = AI_TRANSCRIPTION_SERVICE + '/transcribe';
 
 export const CLIENT_ID = 'ARBQ9WR2ziMtCYL7jaVFixfJqueUZFrFx1W_tlWdqTCjJf8wSoST6DZrRq9JQb3tqvOVDHmJ9drge69f';
 export const CLIENT_SECRET = 'EL4A37GecMI5wji0sOuJ1MT8lQGR9PJzjZozSCxkBup3p1bih2A5irWjZWNSkFYaQURk5ZHbejWxdQPr';

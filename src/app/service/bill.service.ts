@@ -13,7 +13,8 @@ import {
          LOAD_ASSETS_TABLE_DATA,
          GET_AI_ADVICE_BY_ID,
          VALIDATE_HAS_COVERAGE,
-         AI_TRANSCRIPTION_ADD_BILL} from 'src/environments/environment';
+         AI_TRANSCRIPTION_ADD_BILL,
+         AI_TRANSCRIPTION_TRANSCRIBE_ONLY} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
@@ -216,6 +217,16 @@ export class BillService {
                 error: (e: HttpErrorResponse) => {
                     reject(e);
                 },
+            });
+        });
+        return promessa;
+    }
+
+    transcribeAudioOnly(formData: FormData): Promise<{ text: string }> {
+        const promessa = new Promise<{ text: string }>((resolve, reject) => {         
+            this.http.post<{ text: string }>(AI_TRANSCRIPTION_TRANSCRIBE_ONLY, formData, { responseType: 'json' }).subscribe({
+                next: (result) => resolve(result),
+                error: (e) => reject(e)
             });
         });
         return promessa;

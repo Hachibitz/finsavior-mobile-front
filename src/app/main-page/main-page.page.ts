@@ -160,6 +160,11 @@ export class MainPageComponent implements OnInit, ViewWillEnter {
     setTimeout(() => {
       this.showDragHint = false;
     }, 4000);
+
+    this.fsCoinService.balance$.subscribe(bal => {
+        this.userFsCoins = bal;
+    });
+    this.fsCoinService.refreshBalance();
   }
 
   async loadData(): Promise<void> {

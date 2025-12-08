@@ -73,7 +73,7 @@
   <ion-item lines="none">
     <ion-input
       placeholder="Digite sua dúvida..."
-      (ionChange)="userMessage = $event.detail.value"
+      (ionInput)="userMessage = $event.detail.value" 
       (keyup.enter)="sendMessage()"
       [value]="userMessage"
       inputmode="text"
@@ -83,14 +83,22 @@
     <ion-button fill="clear" class="help-icon" (click)="showFsCoinsHelp()">
       <ion-icon slot="icon-only" name="help-circle"></ion-icon>
     </ion-button>
+    
     <div class="fscoin-toggle" (click)="toggleFsCoinsUsage()">
       <div class="fscoin-label" [class.selected]="isUsingFsCoins" [class.animate]="animate">
         <img src="assets/fscoin-icon.png" class="fscoin-icon" alt="FSCoin"/>
       </div>
     </div>
 
-    <ion-button slot="end" (click)="sendMessage()">
+    <ion-button slot="end" (click)="sendMessage()" *ngIf="userMessage && userMessage.trim().length > 0">
       <ion-icon name="send-outline"></ion-icon>
     </ion-button>
+    
+    <app-voice-fab 
+        slot="end" 
+        mode="CHAT" 
+        (onTextTranscribed)="onAudioMessage($event)" 
+        *ngIf="!userMessage || userMessage.trim().length === 0">
+    </app-voice-fab>
   </ion-item>
 </ion-footer>

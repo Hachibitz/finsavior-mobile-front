@@ -28,6 +28,7 @@ import { FsCoinService } from '../service/fs-coin-service';
 import { AdmobService } from '../service/admob.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Capacitor } from '@capacitor/core';
+import { VoiceFabComponent } from '../components/voice-fab/voice-fab.component';
 
 @Component({
     selector: 'app-chat-ai',
@@ -40,7 +41,7 @@ import { Capacitor } from '@capacitor/core';
         IonFooter, IonLabel, IonList,
         IonInput, IonButtons, IonPopover,
         IonText, IonFabButton, IonFab,
-        IonCheckbox
+        IonCheckbox, VoiceFabComponent
     ]
 })
 export class ChatAiPage implements OnInit, ViewWillEnter, ViewWillLeave {
@@ -129,6 +130,13 @@ export class ChatAiPage implements OnInit, ViewWillEnter, ViewWillLeave {
     if (this.content) {
       this.content.scrollToBottom(300);
     }
+  }
+
+  onAudioMessage(text: string) {
+      if (!text) return;
+      
+      this.userMessage = text;
+      this.sendMessage();
   }
 
   async sendMessage() {
