@@ -21,6 +21,7 @@ import {
 } from '@angular/common/http';
 import { BillRegisterRequest, GenericResponse, TableDataResponse } from '../model/main.model';
 import { AiAdviceRequest, AiAdviceResponse, Analysis } from '../model/ai-advice.model';
+import { AiBillExtractionDTO } from '../model/ai-audio-transcription.model';
 
 @Injectable({ providedIn: 'root' })
 export class BillService {
@@ -206,10 +207,10 @@ export class BillService {
         });
     }
 
-    processAudio(formData: FormData): Promise<BillRegisterRequest> {
-        const promessa = new Promise<BillRegisterRequest>((resolve, reject) => {
-            this.http.post<BillRegisterRequest>(AI_TRANSCRIPTION_ADD_BILL, formData, { responseType: 'json' }).subscribe({
-                next: (result: BillRegisterRequest) => {
+    processAudio(formData: FormData): Promise<AiBillExtractionDTO> {
+        const promessa = new Promise<AiBillExtractionDTO>((resolve, reject) => {
+            this.http.post<AiBillExtractionDTO>(AI_TRANSCRIPTION_ADD_BILL, formData, { responseType: 'json' }).subscribe({
+                next: (result: AiBillExtractionDTO) => {
                     resolve(result);
                 },
                 error: (e: HttpErrorResponse) => {

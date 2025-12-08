@@ -188,6 +188,7 @@ export class AddRegisterModalComponent implements OnInit {
 
   @Input() initialData: any = null;
   isCustomCategory: boolean = false;
+  entryMethod: 'MANUAL' | 'AUDIO' = 'MANUAL';
 
   constructor(
     private modalController: ModalController,
@@ -215,6 +216,7 @@ export class AddRegisterModalComponent implements OnInit {
   }
 
   populateForm(data: any) {
+    this.entryMethod = 'AUDIO';
     if (data.isInstallment) {
       this.frequencyType = 'INSTALLMENT';
       this.billRegisterForm.get('installmentCount')?.setValidators([Validators.required, Validators.min(2)]);
@@ -230,7 +232,8 @@ export class AddRegisterModalComponent implements OnInit {
       billDescription: data.billDescription,
       billCategory: data.billCategory || 'Outras',
       installmentCount: data.installmentCount,
-      frequencyType: this.frequencyType
+      frequencyType: this.frequencyType,
+      entryMethod: this.entryMethod
     });
     
     this.billRegisterForm.updateValueAndValidity();
@@ -327,7 +330,9 @@ export class AddRegisterModalComponent implements OnInit {
       paid: false,
       isRecurrent: this.frequencyType === 'RECURRENT',
       isInstallment: this.frequencyType === 'INSTALLMENT',
-      installmentCount: this.frequencyType === 'INSTALLMENT' ? formVal.installmentCount : null
+      installmentCount: this.frequencyType === 'INSTALLMENT' ? formVal.installmentCount : null,
+      frequencyType: this.frequencyType,
+      entryMethod: this.entryMethod
     };
 
     this.setBillType(billRegisterRequest);

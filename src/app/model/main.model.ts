@@ -27,6 +27,7 @@ export interface BillRegisterRequest {
     isRecurrent: boolean;
     isInstallment?: boolean;
     installmentCount?: number;
+    entryMethod?: 'MANUAL' | 'AUDIO';
     paid: boolean;
 }
 
