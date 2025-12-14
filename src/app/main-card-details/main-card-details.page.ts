@@ -159,6 +159,7 @@ export class MainCardDetailsPage implements OnInit, ViewWillEnter {
     modal.onDidDismiss().then((result) => {
       if (result.role === 'saved') {
         this.loadCardTableData();
+        this.loadPaymentData();
       }
     });
 
