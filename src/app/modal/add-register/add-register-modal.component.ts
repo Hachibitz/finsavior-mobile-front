@@ -34,7 +34,8 @@ import { CommonService } from '../../service/common.service';
       <form [formGroup]="billRegisterForm" (ngSubmit)="addRegister()">
         
         <ion-item>
-          <ion-label position="floating">Nome da Conta</ion-label>
+          <ion-label *ngIf="isPayment" position="floating">Título do Cartão</ion-label>
+          <ion-label *ngIf="!isPayment" position="floating">Título da Conta</ion-label>
           <ion-input formControlName="billName"></ion-input>
         </ion-item>
         <ion-item>
@@ -45,8 +46,16 @@ import { CommonService } from '../../service/common.service';
           <ion-label position="floating">Descrição</ion-label>
           <ion-input formControlName="billDescription"></ion-input>
         </ion-item>
+        <ion-item *ngIf="isPayment">
+          <ion-select formControlName="paymentType" interface="action-sheet" (ionChange)="onCategoryChange($event)">
+            <ion-select-option *ngFor="let payType of paymentTypes" [value]="payType.value">
+              {{ payType.label }}
+            </ion-select-option>
+            <ion-select-option value="custom">+ Outro...</ion-select-option>
+          </ion-select>
+        </ion-item>
 
-        <ion-item *ngIf="showCategorySelect">
+        <ion-item *ngIf="!isPayment">
           <ion-label>Categoria</ion-label>
           <ion-select formControlName="billCategory" interface="action-sheet" (ionChange)="onCategoryChange($event)">
             <ion-select-option *ngFor="let category of categories" [value]="category.value">
@@ -118,7 +127,7 @@ export class AddRegisterModalComponent implements OnInit {
 
   isAssets: boolean = false;
   showRecurrentCheckbox: boolean = false;
-  showCategorySelect: boolean = false;
+  isPayment: boolean = false;
   frequencyType: 'SINGLE' | 'RECURRENT' | 'INSTALLMENT' = 'SINGLE';
 
   private _tableType: string = '';
@@ -126,7 +135,7 @@ export class AddRegisterModalComponent implements OnInit {
     this._tableType = value;
     this.isAssets = this.tableType == tableTypes.ASSETS;
     this.showRecurrentCheckbox = this.tableType !== tableTypes.PAYMENT_CARD;
-    this.showCategorySelect = this.tableType !== tableTypes.PAYMENT_CARD;
+    this.isPayment = this.tableType == tableTypes.PAYMENT_CARD;
     this.setValidationRules();
     this.updateCategories();
   }
@@ -149,6 +158,11 @@ export class AddRegisterModalComponent implements OnInit {
     { label: 'Ativo', value: 'Ativo' },
     { label: 'Caixa', value: 'Caixa' },
     { label: 'Poupança', value: 'Poupança' }
+  ];
+  paymentTypes: TipoConta[] = [
+    { label: 'Total', value: 'Total' },
+    { label: 'Parcial', value: 'Parcial' },
+    { label: 'Mínimo', value: 'Mínimo' }
   ];
 
   loading: boolean =  false;
@@ -205,6 +219,7 @@ export class AddRegisterModalComponent implements OnInit {
       isRecurrent: [false],
       billCategory: ['Outras'],
       frequencyType: ['SINGLE'],
+      paymentType: ['Total'],
       installmentCount: [2]
     });
   }
@@ -332,7 +347,8 @@ export class AddRegisterModalComponent implements OnInit {
       isInstallment: this.frequencyType === 'INSTALLMENT',
       installmentCount: this.frequencyType === 'INSTALLMENT' ? formVal.installmentCount : null,
       frequencyType: this.frequencyType,
-      entryMethod: this.entryMethod
+      entryMethod: this.entryMethod,
+      paymentType: this.isPayment ? formVal.paymentType : null,
     };
 
     this.setBillType(billRegisterRequest);

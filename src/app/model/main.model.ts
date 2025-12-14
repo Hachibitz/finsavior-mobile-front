@@ -29,6 +29,7 @@ export interface BillRegisterRequest {
     installmentCount?: number;
     entryMethod?: 'MANUAL' | 'AUDIO';
     paid: boolean;
+    paymentType?: string;
 }
 
 export type TableDataResponse = BillRegisterRequest[];

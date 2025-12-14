@@ -68,6 +68,7 @@
           <h2>{{ payment.billName }}</h2>
           <p>Valor: {{ payment.billValue }}</p>
           <p>Descrição: {{ payment.billDescription }}</p>
+          <p>Tipo de pagamento: {{ payment.paymentType }}</p>
         </ion-label>
         <ion-buttons>
           <ion-button color="primary" (click)="openEditModal(payment)">
