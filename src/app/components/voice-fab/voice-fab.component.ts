@@ -3,25 +3,37 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { VoiceRecorder } from 'capacitor-voice-recorder';
 import { BillService } from '../../service/bill.service';
-import { AlertController, LoadingController } from '@ionic/angular/standalone';
-import { mic, square } from 'ionicons/icons';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular/standalone';
+import { mic, square, close } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Router } from '@angular/router';
 import { FsCoinService } from '../../service/fs-coin-service';
 import { AdmobService } from '../../service/admob.service';
 import { Capacitor } from '@capacitor/core';
 
-addIcons({ mic, square });
+addIcons({ mic, square, close });
 
 @Component({
   selector: 'app-voice-fab',
   template: `
     <div [ngClass]="mode === 'CHAT' ? 'voice-fab-inline' : 'voice-fab-floating'">
+      
+      <ion-fab-button 
+        *ngIf="isRecording"
+        (click)="cancelRecording()" 
+        color="medium"
+        class="cancel-btn"
+        [size]="mode === 'CHAT' ? 'small' : 'small'"> 
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+
       <ion-fab-button 
         (click)="toggleRecording()" 
         [color]="isRecording ? 'danger' : 'primary'"
-        [size]="mode === 'CHAT' ? 'small' : 'default'"> <ion-icon [name]="isRecording ? 'square' : 'mic'"></ion-icon>
+        [size]="mode === 'CHAT' ? 'small' : 'default'"> 
+        <ion-icon [name]="isRecording ? 'square' : 'mic'"></ion-icon>
       </ion-fab-button>
+
     </div>
   `,
   styles: [`
@@ -32,29 +44,41 @@ addIcons({ mic, square });
       right: 20px;
       z-index: 999;
       display: flex;
-      flex-direction: column;
+      flex-direction: column; /* Botão de cancelar fica acima */
       align-items: center;
+      gap: 10px; /* Espaço entre o X e o Mic */
     }
 
     /* Estilo Inline (Chat WhatsApp) */
     .voice-fab-inline {
-      position: relative; /* Segue o fluxo do footer */
-      margin-left: 8px;   /* Espaço do botão de enviar texto */
+      position: relative;
+      margin-left: 8px;
       display: flex;
+      flex-direction: row; /* Botão de cancelar fica ao lado */
       align-items: center;
       justify-content: center;
+      gap: 8px; /* Espaço entre o X e o Mic */
     }
     
-    /* Ajuste para o botão small ficar alinhado */
     .voice-fab-inline ion-fab-button {
         width: 40px;
         height: 40px;
-        --box-shadow: none; /* Remove sombra pra ficar flat */
+        --box-shadow: none;
+    }
+
+    /* Animação suave para o botão de cancelar aparecer */
+    .cancel-btn {
+      animation: popIn 0.2s ease-out;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   `],
   standalone: true,
   imports: [CommonModule, IonicModule],
-  providers: [LoadingController, AlertController]
+  providers: [LoadingController, AlertController, ToastController]
 })
 export class VoiceFabComponent {
   @Input() tableType: string = '';
@@ -72,6 +96,7 @@ export class VoiceFabComponent {
     private billService: BillService,
     private loadingController: LoadingController,
     private alertController: AlertController,
+    private toastController: ToastController,
     private router: Router,
     private fsCoinService: FsCoinService,
     private admobService: AdmobService
@@ -108,6 +133,25 @@ export class VoiceFabComponent {
     }
   }
 
+  async cancelRecording() {
+    try {
+      this.isRecording = false; 
+      await VoiceRecorder.stopRecording(); 
+
+      const toast = await this.toastController.create({
+        message: 'Gravação cancelada',
+        duration: 1500,
+        position: 'bottom',
+        color: 'medium'
+      });
+      await toast.present();
+
+    } catch (error) {
+      console.error('Erro ao cancelar gravação', error);
+      this.isRecording = false;
+    }
+  }
+
   async stopRecording() {
     try {
       this.isRecording = false;
@@ -125,13 +169,14 @@ export class VoiceFabComponent {
     } catch (error) {
       console.error(error);
       this.isRecording = false;
+      try { await this.loadingController.dismiss(); } catch (e) {}
     }
   }
 
   private async processAudioRequest(blob: Blob, useCoins: boolean, loader: HTMLIonLoadingElement) {
     const formData = new FormData();
     formData.append('file', blob, 'audio.aac');
-    formData.append('isUsingCoins', String(useCoins)); // Envia a flag
+    formData.append('isUsingCoins', String(useCoins));
 
     if (this.mode === 'CHAT') {
         this.billService.transcribeAudioOnly(formData)
@@ -165,7 +210,7 @@ export class VoiceFabComponent {
         await this.refreshCoins();
         const msg = err.error?.message || 'Limite de áudio atingido no plano Free.';
         this.presentLimitAlert(msg);
-    } else if (err.status === 412) { // InsufficientFsCoinsException
+    } else if (err.status === 412) { 
         this.presentInsufficientCoinsAlert();
     } else {
         this.showAlert('Erro', 'Não consegui processar o áudio. Tente novamente.');
