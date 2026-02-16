@@ -14,7 +14,8 @@ import {
          GET_AI_ADVICE_BY_ID,
          VALIDATE_HAS_COVERAGE,
          AI_TRANSCRIPTION_ADD_BILL,
-         AI_TRANSCRIPTION_TRANSCRIBE_ONLY} from 'src/environments/environment';
+         AI_TRANSCRIPTION_TRANSCRIBE_ONLY,
+         BILLS_SERVICE_BATCH_REGISTER} from 'src/environments/environment';
 import {
     HttpClient,
     HttpErrorResponse,
@@ -23,6 +24,7 @@ import {
 import { BillRegisterRequest, GenericResponse, TableDataResponse } from '../model/main.model';
 import { AiAdviceRequest, AiAdviceResponse, Analysis } from '../model/ai-advice.model';
 import { AiBillExtractionDTO } from '../model/ai-audio-transcription.model';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class BillService {
@@ -230,5 +232,9 @@ export class BillService {
             });
         });
         return promessa;
+    }
+
+    batchRegister(requests: any[]): Observable<void> {
+        return this.http.post<void>(BILLS_SERVICE_BATCH_REGISTER, requests);
     }
 }

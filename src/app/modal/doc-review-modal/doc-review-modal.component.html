@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Revisar Importação</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="summary-info">
+    <p>A IA encontrou <strong>{{ extractedBills.length }}</strong> transações.</p>
+    <p>Selecione as que deseja importar.</p>
+  </div>
+
+  <ion-list>
+    <ion-item *ngFor="let bill of extractedBills; let i = index">
+      <ion-checkbox slot="start" [(ngModel)]="bill.selected"></ion-checkbox>
+      
+      <ion-label>
+        <div *ngIf="!bill.editing">
+          <h2>{{ bill.billName }}</h2>
+          <h3>{{ bill.billValue | currency:'BRL' }} <small>({{ bill.possibleDate }})</small></h3>
+          <p>{{ bill.billCategory }}</p>
+        </div>
+
+        <div *ngIf="bill.editing">
+          <ion-input label="Nome" labelPlacement="stacked" [(ngModel)]="bill.billName"></ion-input>
+          <ion-input label="Valor" type="number" labelPlacement="stacked" [(ngModel)]="bill.billValue"></ion-input>
+          <ion-input label="Data" labelPlacement="stacked" [(ngModel)]="bill.possibleDate" placeholder="dd/MM/yyyy"></ion-input>
+        </div>
+      </ion-label>
+
+      <ion-button fill="clear" slot="end" (click)="bill.editing = !bill.editing">
+        <ion-icon [name]="bill.editing ? 'checkmark' : 'create-outline'"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="saveSelected()" [disabled]="getSelectedCount() === 0">
+      Importar {{ getSelectedCount() }} Contas
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

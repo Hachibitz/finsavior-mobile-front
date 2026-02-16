@@ -19,6 +19,7 @@ import { EditRegisterModalComponent } from '../modal/edit-register-modal/edit-re
 import { FormsModule } from '@angular/forms';
 import { ToastComponent } from '../components/toast/toast.component';
 import { VoiceFabComponent } from '../components/voice-fab/voice-fab.component';
+import { ImportDocButtonComponent } from '../components/import-doc-button/import-doc-button.component';
 
 addIcons({ 'trash': trash });
 
@@ -33,7 +34,8 @@ addIcons({ 'trash': trash });
         IonItem, IonButton, IonList,
         IonIcon, IonButtons, IonSegment,
         IonSegmentButton, FormsModule,
-        ToastComponent, VoiceFabComponent
+        ToastComponent, VoiceFabComponent,
+        ImportDocButtonComponent
     ]
 })
 export class MainCardDetailsPage implements OnInit, ViewWillEnter {

@@ -38,6 +38,7 @@ export const PASSWORD_RESET_REQUEST = URL_BASE_MOBILE + AUTH_SERVICE + '/passwor
 export const USER_PROFILE = URL_BASE_MOBILE + USER_SERVICE + '/profile-data';
 export const GET_PROFILE_DATA = URL_BASE_MOBILE + USER_SERVICE + '/get-profile-data';
 export const BILLS_SERVICE_BILL_REGISTER = URL_BASE_MOBILE + BILL_SERVICE + '/bill-register';
+export const BILLS_SERVICE_BATCH_REGISTER = URL_BASE_MOBILE + BILL_SERVICE + '/batch-register';
 export const BILLS_SERVICE_CARD_PAYMENT_REGISTER = URL_BASE_MOBILE + BILL_SERVICE + '/card-payment-register';
 export const LOAD_MAIN_TABLE_DATA = URL_BASE_MOBILE + BILL_SERVICE + '/load-main-table-data';
 export const LOAD_CARD_TABLE_DATA = URL_BASE_MOBILE + BILL_SERVICE + '/load-card-table-data';
@@ -66,6 +67,8 @@ export const FS_COIN_EARN = FS_COIN_SERVICE + '/earn';
 export const AI_TRANSCRIPTION_SERVICE = URL_BASE_MOBILE + '/ai/transcription';
 export const AI_TRANSCRIPTION_ADD_BILL = AI_TRANSCRIPTION_SERVICE + '/process-audio';
 export const AI_TRANSCRIPTION_TRANSCRIBE_ONLY = AI_TRANSCRIPTION_SERVICE + '/transcribe';
+export const AI_DOCUMENT_SERVICE = URL_BASE_MOBILE + '/ai/document';
+export const AI_DOCUMENT_UPLOAD = AI_DOCUMENT_SERVICE + '/upload';
 
 export const CLIENT_ID = 'ARBQ9WR2ziMtCYL7jaVFixfJqueUZFrFx1W_tlWdqTCjJf8wSoST6DZrRq9JQb3tqvOVDHmJ9drge69f';
 export const CLIENT_SECRET = 'EL4A37GecMI5wji0sOuJ1MT8lQGR9PJzjZozSCxkBup3p1bih2A5irWjZWNSkFYaQURk5ZHbejWxdQPr';

@@ -1,6 +1,14 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Débitos</ion-title>
+
+    <ion-buttons slot="end">
+        <app-import-doc-button 
+            docType="BANK_STATEMENT" 
+            tableType="MAIN">
+        </app-import-doc-button>
+    </ion-buttons>
+
     <ion-label slot="end" style="margin-right: 20px;">Total: {{ totalDebit.toFixed(2) }}</ion-label>
   </ion-toolbar>
 </ion-header>
