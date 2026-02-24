@@ -4,6 +4,7 @@ import { IonicModule, ModalController, LoadingController, AlertController } from
 import { documentTextOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { DocReviewModalComponent } from '../../modal/doc-review-modal/doc-review-modal.component';
 import { FsCoinService } from '../../service/fs-coin-service';
 import { AdmobService } from '../../service/admob.service';
@@ -31,9 +32,12 @@ export class ImportDocButtonComponent {
   importCost: number = 10;
   userFsCoins: number = 0;
   isWeb = Capacitor.getPlatform() === 'web';
+  isUsingFsCoins: boolean = false;
+  earnAmount: number = 10;
 
   constructor(
     private http: HttpClient,
+    private router: Router,
     private modalController: ModalController,
     private loadingController: LoadingController,
     private alertController: AlertController,
@@ -48,11 +52,7 @@ export class ImportDocButtonComponent {
       console.error(e);
     }
 
-    if (this.userFsCoins < this.importCost) {
-      this.presentInsufficientCoinsAlert();
-    } else {
-      this.triggerFileInput();
-    }
+    this.triggerFileInput();
   }
 
   triggerFileInput() {
@@ -81,6 +81,7 @@ export class ImportDocButtonComponent {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('docType', this.docType);
+    formData.append('isUsingCoins', this.isUsingFsCoins.toString());
     
     if (password) {
       formData.append('password', password);
@@ -90,6 +91,7 @@ export class ImportDocButtonComponent {
       next: async (extractedBills) => {
         loader.dismiss();
         fileInputElement.value = null;
+        this.isUsingFsCoins = false;
         this.openReviewModal(extractedBills);
       },
       error: async (err) => {
@@ -100,6 +102,12 @@ export class ImportDocButtonComponent {
 
         if (errorMessage.includes('PASSWORD_REQUIRED')) {
           this.promptForPassword(file, fileInputElement, !!password);
+        } else if (err.status === 412) {
+          fileInputElement.value = null;
+          this.presentLimitAlert(file, fileInputElement, errorMessage);
+        } else if (err.status === 400 && errorMessage.includes('Saldo insuficiente')) {
+          fileInputElement.value = null;
+          this.presentInsufficientCoinsAlert();
         } else {
           fileInputElement.value = null;
           this.showAlert('Erro', 'Falha ao processar o documento. Verifique se é um PDF válido.');
@@ -165,14 +173,46 @@ export class ImportDocButtonComponent {
     await modal.present();
   }
 
+  async presentLimitAlert(file: File, fileInputElement: any, errorMessage: string) {
+    const alert = await this.alertController.create({
+      header: 'Limite de Importações',
+      message: `${errorMessage} Você pode usar ${this.importCost} FSCoins para importar mais documentos, ou assinar um plano premium para importações ilimitadas.`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Planos',
+          handler: () => {
+            this.router.navigate(['/main-page/subscription']);
+          }
+        },
+        {
+          text: `Usar ${this.importCost} FSCoins`,
+          handler: () => {
+            if (this.userFsCoins >= this.importCost) {
+              this.isUsingFsCoins = true;
+              this.processUpload(file, fileInputElement);
+            } else {
+              this.presentInsufficientCoinsAlert();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async presentInsufficientCoinsAlert() {
     const alert = await this.alertController.create({
       header: 'Saldo Insuficiente 🪙',
-      message: `A importação via IA custa ${this.importCost} moedas. Seu saldo é ${this.userFsCoins}. Deseja assistir a um anúncio para ganhar mais?`,
+      message: `A importação custa ${this.importCost} moedas. Seu saldo é ${this.userFsCoins}. Deseja assistir a um anúncio para ganhar mais?`,
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Assistir (+10 Moedas)',
+          text: `Assistir (+${this.earnAmount} Moedas)`,
           handler: () => {
              setTimeout(() => this.watchAdAndRetry(), 200); 
           }
@@ -199,9 +239,9 @@ export class ImportDocButtonComponent {
         loader.dismiss();
         
         if (this.userFsCoins >= this.importCost) {
-            this.triggerFileInput();
+          this.triggerFileInput();
         } else {
-            this.showAlert('Saldo', `Você ganhou moedas! Saldo atual: ${this.userFsCoins}. Precisa de ${this.importCost}.`);
+          this.showAlert('Saldo', `Você ganhou moedas! Saldo atual: ${this.userFsCoins}. Precisa de ${this.importCost}.`);
         }
       } else {
         loader.dismiss();
