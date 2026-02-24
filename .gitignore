@@ -70,3 +70,4 @@ testem.log
 Thumbs.db
 
 **/google-services.json
+**/firebase-config.ts
